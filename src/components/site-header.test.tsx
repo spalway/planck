@@ -3,12 +3,15 @@ import { MemoryRouter } from "react-router-dom"
 import { describe, expect, it } from "vitest"
 
 import { SiteHeader } from "@/components/site-header"
+import { WalletProvider } from "@/components/wallet-context"
 import { ROUTES } from "@/lib/nav"
 
 function header(at = "/") {
   return render(
     <MemoryRouter initialEntries={[at]}>
-      <SiteHeader />
+      <WalletProvider>
+        <SiteHeader />
+      </WalletProvider>
     </MemoryRouter>
   )
 }
@@ -39,8 +42,9 @@ describe("SiteHeader", () => {
     )
   })
 
-  it("keeps connect disabled until launch", () => {
+  it("offers a live connect action", () => {
+    // Was a disabled "Connect · soon" placeholder; wallet connect now works.
     header()
-    expect(screen.getByRole("button", { name: /connect/i })).toBeDisabled()
+    expect(screen.getByRole("button", { name: "Connect" })).toBeEnabled()
   })
 })

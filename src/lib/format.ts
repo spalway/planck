@@ -27,3 +27,9 @@ export function pct(n: number | null | undefined): string {
   const sign = n > 0 ? "+" : ""
   return `${sign}${n.toFixed(2)}%`
 }
+
+/** Wallet addresses are 44 chars; the middle carries no meaning for a reader. */
+export function shortAddress(a: string, lead = 4, tail = 4): string {
+  if (a.length <= lead + tail) return a
+  return `${a.slice(0, lead)}…${a.slice(-tail)}`
+}

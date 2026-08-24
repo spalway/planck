@@ -1,5 +1,7 @@
 import { NavLink } from "react-router-dom"
 
+import { ConnectButton } from "@/components/connect-button"
+
 import { ROUTES } from "@/lib/nav"
 import { cn } from "@/lib/utils"
 
@@ -20,7 +22,7 @@ export function SiteHeader() {
               className={({ isActive }) =>
                 cn(
                   "shrink-0 text-xs tracking-widest uppercase hover:text-cobalt",
-                  isActive ? "text-cobalt" : "text-ink-muted"
+                  isActive ? "text-cobalt" : "text-ink-muted",
                 )
               }
             >
@@ -29,13 +31,7 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <button
-          type="button"
-          disabled
-          className="cursor-not-allowed border border-ink/25 px-3 py-1.5 text-xs tracking-widest text-ink-muted uppercase"
-        >
-          Connect · soon
-        </button>
+        <ConnectButton />
       </div>
     </header>
   )

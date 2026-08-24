@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import { EMPTY, pct, usd } from "@/lib/format"
+import { EMPTY, pct, shortAddress, usd } from "@/lib/format"
 
 describe("usd", () => {
   it("formats with two decimals and a thousands separator", () => {
@@ -37,5 +37,15 @@ describe("pct", () => {
 
   it("renders the em dash for null", () => {
     expect(pct(null)).toBe(EMPTY)
+  })
+})
+
+describe("shortAddress", () => {
+  it("elides the middle of a wallet address", () => {
+    expect(shortAddress("7pt9tkctJPK7PPNQJ77GKg8ZffSF6QxoMiCFYHxrtaCj")).toBe("7pt9…taCj")
+  })
+
+  it("leaves a string shorter than the cut alone", () => {
+    expect(shortAddress("abc")).toBe("abc")
   })
 })
