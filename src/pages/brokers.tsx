@@ -1,6 +1,6 @@
 import { Roster } from "@/components/roster"
-import { ROSTER } from "@/lib/brokers"
+import { WithRoster } from "@/components/with-roster"
 
 export function BrokersPage() {
-  return <Roster brokers={ROSTER} />
+  return <WithRoster>{(brokers) => <Roster brokers={brokers} />}</WithRoster>
 }

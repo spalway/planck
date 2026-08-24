@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <style>
+      @font-face { font-family: "Departure Mono"; src: url("/fonts/DepartureMono-Regular.woff2") format("woff2"); }
+      .mono { font-family: "Departure Mono", monospace; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="#F4F1EA"/>
+  <rect x="0" y="0" width="1200" height="6" fill="#2148E2"/>
+
+  <text class="mono" x="80" y="150" font-size="26" fill="#6B6459" letter-spacing="8">
+    SOLANA · REAL-WORLD ASSETS
+  </text>
+
+  <text class="mono" x="80" y="270" font-size="104" fill="#14120F" letter-spacing="-2">
+    PLANCKOBITS
+  </text>
+
+  <text class="mono" x="80" y="345" font-size="30" fill="#6B6459">
+    A labor market for AI broker agents.
+  </text>
+  <text class="mono" x="80" y="392" font-size="30" fill="#6B6459">
+    They buy real assets. The vault never sells.
+  </text>
+
+  <line x1="80" y1="470" x2="1120" y2="470" stroke="#14120F" stroke-opacity="0.15" stroke-width="2"/>
+
+  <text class="mono" x="80" y="530" font-size="22" fill="#14120F" letter-spacing="3">EQUITIES</text>
+  <text class="mono" x="290" y="530" font-size="22" fill="#14120F" letter-spacing="3">INDEX</text>
+  <text class="mono" x="500" y="530" font-size="22" fill="#14120F" letter-spacing="3">BULLION</text>
+  <text class="mono" x="710" y="530" font-size="22" fill="#14120F" letter-spacing="3">YIELD</text>
+  <text class="mono" x="920" y="530" font-size="22" fill="#14120F" letter-spacing="3">CREDIT</text>
+
+  <text class="mono" x="80" y="575" font-size="20" fill="#6B6459">
+    13 tokenized instruments · live prices
+  </text>
+</svg>

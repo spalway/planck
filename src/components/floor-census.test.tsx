@@ -5,9 +5,36 @@ import { FloorCensus } from "@/components/floor-census"
 import type { Broker } from "@/lib/brokers"
 
 const BROKERS: Broker[] = [
-  { id: "a", name: "MILO ASH", desk: "equities", nerve: 40, latency: 10, coverage: 2, effectiveNerve: 40, tenureHours: 100 },
-  { id: "b", name: "RENA BELL", desk: "yield", nerve: 50, latency: 20, coverage: 5, effectiveNerve: 54, tenureHours: 0 },
-  { id: "c", name: "OTIS MOSS", desk: "credit", nerve: 60, latency: 30, coverage: 1, effectiveNerve: 60, tenureHours: 250 },
+  {
+    id: "a",
+    name: "MILO ASH",
+    desk: "equities",
+    nerve: 40,
+    latency: 10,
+    coverage: 2,
+    effectiveNerve: 40,
+    tenureHours: 100,
+  },
+  {
+    id: "b",
+    name: "RENA BELL",
+    desk: "yield",
+    nerve: 50,
+    latency: 20,
+    coverage: 5,
+    effectiveNerve: 54,
+    tenureHours: 0,
+  },
+  {
+    id: "c",
+    name: "OTIS MOSS",
+    desk: "credit",
+    nerve: 60,
+    latency: 30,
+    coverage: 1,
+    effectiveNerve: 60,
+    tenureHours: 250,
+  },
 ]
 
 describe("FloorCensus", () => {

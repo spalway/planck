@@ -62,7 +62,7 @@ describe("ConnectButton", () => {
     fireEvent.click(screen.getByRole("button", { name: "Connect" }))
     fireEvent.click(screen.getByRole("button", { name: "Phantom" }))
     expect(state.connect).toHaveBeenCalledWith(
-      expect.objectContaining({ name: "Phantom" })
+      expect.objectContaining({ name: "Phantom" }),
     )
   })
 

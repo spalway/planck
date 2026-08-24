@@ -37,7 +37,7 @@ function Row({
             "num w-16 text-right text-xs",
             change === null && "text-ink-muted",
             change !== null && change >= 0 && "text-gain",
-            change !== null && change < 0 && "text-loss"
+            change !== null && change < 0 && "text-loss",
           )}
         >
           {change === null ? EMPTY : pct(change)}
@@ -67,13 +67,17 @@ export function DeskBoard({
       <div // grid-cols-1 is not redundant: without it the implicit mobile track is
         // auto-sized and grows past the viewport. min-w-0 on the item defeats
         // the default min-width:auto that stops a grid child from shrinking.
-        className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+      >
         {DESKS.map((desk) => {
           const totals = deskTotals(holdings, prices, desk.id)
           const assigned = brokers.filter((b) => b.desk === desk.id).length
 
           return (
-            <article key={desk.id} className="min-w-0 border border-ink/15 bg-paper p-4">
+            <article
+              key={desk.id}
+              className="min-w-0 border border-ink/15 bg-paper p-4"
+            >
               <h3 className="font-display text-lg">{desk.label}</h3>
               <p className="mt-1 mb-3 text-xs leading-relaxed text-ink-muted">
                 {desk.blurb}

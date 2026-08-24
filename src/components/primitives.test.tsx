@@ -36,7 +36,7 @@ describe("Section", () => {
     const { container } = render(
       <Section id="desks" label="02" title="THE DESKS">
         <p>body</p>
-      </Section>
+      </Section>,
     )
     expect(screen.getByText("THE DESKS")).toBeInTheDocument()
     expect(screen.getByText("02")).toBeInTheDocument()

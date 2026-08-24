@@ -38,7 +38,7 @@ function Chip({
         "border px-3 py-1 text-[0.65rem] tracking-widest uppercase",
         active
           ? "border-cobalt bg-cobalt text-white"
-          : "border-ink/20 text-ink-muted hover:border-ink/40"
+          : "border-ink/20 text-ink-muted hover:border-ink/40",
       )}
     >
       {children}

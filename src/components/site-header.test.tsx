@@ -12,7 +12,7 @@ function header(at = "/") {
       <WalletProvider>
         <SiteHeader />
       </WalletProvider>
-    </MemoryRouter>
+    </MemoryRouter>,
   )
 }
 
@@ -22,7 +22,7 @@ describe("SiteHeader", () => {
     for (const r of ROUTES) {
       expect(screen.getByRole("link", { name: r.label })).toHaveAttribute(
         "href",
-        r.path
+        r.path,
       )
     }
   })
@@ -30,7 +30,7 @@ describe("SiteHeader", () => {
   it("marks the current page as active", () => {
     header("/brokers")
     expect(screen.getByRole("link", { name: "Brokers" }).className).toContain(
-      "text-cobalt"
+      "text-cobalt",
     )
   })
 
@@ -38,7 +38,7 @@ describe("SiteHeader", () => {
     // Without `end`, "/" matches every path and Home never switches off.
     header("/brokers")
     expect(screen.getByRole("link", { name: "Home" }).className).toContain(
-      "text-ink-muted"
+      "text-ink-muted",
     )
   })
 

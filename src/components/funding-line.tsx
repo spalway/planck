@@ -9,8 +9,8 @@ export function FundingLine({ ca }: { ca: string | null }) {
   return (
     <div className="border-t border-ink/15 py-8">
       <p className="text-sm text-ink-muted">
-        The firm is funded by creator fees on $PLANCK. Fees buy real assets the
-        vault never sells.
+        The firm is funded by creator fees on $PLANCK. Fees buy real assets the vault
+        never sells.
       </p>
       {ca ? (
         <p className="num mt-2 text-xs break-all text-ink">{ca}</p>

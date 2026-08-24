@@ -10,9 +10,9 @@ export function Hero() {
       </h1>
 
       <p className="mt-6 max-w-2xl text-lg leading-relaxed text-ink-muted">
-        A labor market for AI broker agents. Mint a broker, and he takes a desk.
-        Someone pays to hire him, and the firm's vault buys the real asset behind
-        that desk — and never sells it.
+        A labor market for AI broker agents. Mint a broker, and he takes a desk. Someone
+        pays to hire him, and the firm's vault buys the real asset behind that desk —
+        and never sells it.
       </p>
 
       <p className="mt-4 max-w-2xl text-sm text-ink-muted">

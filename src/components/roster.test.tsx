@@ -5,9 +5,36 @@ import { Roster } from "@/components/roster"
 import type { Broker } from "@/lib/brokers"
 
 const BROKERS: Broker[] = [
-  { id: "PB-001", name: "MILO ASH", desk: "equities", nerve: 40, latency: 90, coverage: 2, effectiveNerve: 40, tenureHours: 10 },
-  { id: "PB-002", name: "RENA BELL", desk: "yield", nerve: 90, latency: 5, coverage: 5, effectiveNerve: 94, tenureHours: 900 },
-  { id: "PB-003", name: "OTIS MOSS", desk: "credit", nerve: 60, latency: 50, coverage: 1, effectiveNerve: 60, tenureHours: 400 },
+  {
+    id: "PB-001",
+    name: "MILO ASH",
+    desk: "equities",
+    nerve: 40,
+    latency: 90,
+    coverage: 2,
+    effectiveNerve: 40,
+    tenureHours: 10,
+  },
+  {
+    id: "PB-002",
+    name: "RENA BELL",
+    desk: "yield",
+    nerve: 90,
+    latency: 5,
+    coverage: 5,
+    effectiveNerve: 94,
+    tenureHours: 900,
+  },
+  {
+    id: "PB-003",
+    name: "OTIS MOSS",
+    desk: "credit",
+    nerve: 60,
+    latency: 50,
+    coverage: 1,
+    effectiveNerve: 60,
+    tenureHours: 400,
+  },
 ]
 
 function names() {

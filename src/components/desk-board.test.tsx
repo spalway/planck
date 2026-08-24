@@ -18,9 +18,36 @@ const mockFetchPrices = vi.mocked(fetchPrices)
 afterEach(() => vi.clearAllMocks())
 
 const BROKERS: Broker[] = [
-  { id: "PB-001", name: "MILO ASH", desk: "equities", nerve: 40, latency: 10, coverage: 2, effectiveNerve: 40, tenureHours: 10 },
-  { id: "PB-002", name: "RENA BELL", desk: "equities", nerve: 50, latency: 20, coverage: 3, effectiveNerve: 50, tenureHours: 20 },
-  { id: "PB-003", name: "OTIS MOSS", desk: "yield", nerve: 60, latency: 30, coverage: 1, effectiveNerve: 60, tenureHours: 30 },
+  {
+    id: "PB-001",
+    name: "MILO ASH",
+    desk: "equities",
+    nerve: 40,
+    latency: 10,
+    coverage: 2,
+    effectiveNerve: 40,
+    tenureHours: 10,
+  },
+  {
+    id: "PB-002",
+    name: "RENA BELL",
+    desk: "equities",
+    nerve: 50,
+    latency: 20,
+    coverage: 3,
+    effectiveNerve: 50,
+    tenureHours: 20,
+  },
+  {
+    id: "PB-003",
+    name: "OTIS MOSS",
+    desk: "yield",
+    nerve: 60,
+    latency: 30,
+    coverage: 1,
+    effectiveNerve: 60,
+    tenureHours: 30,
+  },
 ]
 
 function board(holdings: Holding[] = []) {
@@ -38,7 +65,12 @@ describe("DeskBoard", () => {
 
   it("shows a live price once it lands", async () => {
     mockFetchPrices.mockResolvedValue({
-      [NVDAX]: { mint: NVDAX, usdPrice: 259.49, priceChange24h: 0.16, fetchedAt: Date.now() },
+      [NVDAX]: {
+        mint: NVDAX,
+        usdPrice: 259.49,
+        priceChange24h: 0.16,
+        fetchedAt: Date.now(),
+      },
     })
     board()
     expect(await screen.findByText("$259.49")).toBeInTheDocument()
@@ -71,17 +103,26 @@ describe("DeskBoard", () => {
   it("counts the brokers assigned to each desk", async () => {
     mockFetchPrices.mockResolvedValue({})
     board()
-    expect(await screen.findByTestId("desk-brokers-equities")).toHaveTextContent("2 brokers")
+    expect(await screen.findByTestId("desk-brokers-equities")).toHaveTextContent(
+      "2 brokers",
+    )
     expect(screen.getByTestId("desk-brokers-yield")).toHaveTextContent("1 broker")
     expect(screen.getByTestId("desk-brokers-credit")).toHaveTextContent("0 brokers")
   })
 
   it("shows the desk's holding value once the vault has deployed", async () => {
     mockFetchPrices.mockResolvedValue({
-      [NVDAX]: { mint: NVDAX, usdPrice: 250, priceChange24h: null, fetchedAt: Date.now() },
+      [NVDAX]: {
+        mint: NVDAX,
+        usdPrice: 250,
+        priceChange24h: null,
+        fetchedAt: Date.now(),
+      },
     })
     board([{ mint: NVDAX, quantity: 10, costBasisUsd: 2000 }])
-    expect(await screen.findByTestId("desk-value-equities")).toHaveTextContent("$2,500.00")
+    expect(await screen.findByTestId("desk-value-equities")).toHaveTextContent(
+      "$2,500.00",
+    )
   })
 
   it("shows an em dash for the value of a desk holding nothing", async () => {

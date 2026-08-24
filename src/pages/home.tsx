@@ -1,12 +1,12 @@
-import { Hero } from "@/components/hero"
 import { FloorCensus } from "@/components/floor-census"
-import { ROSTER } from "@/lib/brokers"
+import { Hero } from "@/components/hero"
+import { WithRoster } from "@/components/with-roster"
 
 export function HomePage() {
   return (
     <>
       <Hero />
-      <FloorCensus brokers={ROSTER} />
+      <WithRoster>{(brokers) => <FloorCensus brokers={brokers} />}</WithRoster>
     </>
   )
 }

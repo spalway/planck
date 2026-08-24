@@ -290,15 +290,32 @@ Each unit has one purpose, a defined interface, and can be tested in isolation.
 
 ## 9. Delivery phasing
 
-The full dApp is in scope. It ships in two phases so the site is not blocked on the program,
-which carries the longest timeline and the audit surface.
+> **Revised 2026-08-23.** This section originally specified an Anchor program as Phase 2.
+> The stack is now **Railway + Supabase**, and the program is deferred behind an off-chain
+> v1. Sections 1–8 are unchanged; only how the broker layer is stored changes. The full
+> route to launch is tracked in [`LAUNCH.md`](../../../LAUNCH.md).
 
-**Phase 1 — site and feeds.** Complete landing site, full narrative, live desk board against
-real Jupiter prices, roster and record UI against fixture data, disclaimer gate, visual system.
-Mint and Hire render in a pre-launch state.
+**Phase 1 — site and feeds. Complete.** Landing site across five routes, live desk board
+against real Jupiter prices, generative pixel roster, disclaimer gate, visual system,
+wallet connect over the Wallet Standard. Mint and Hire render in a pre-launch state.
 
-**Phase 2 — program and wiring.** Anchor program, deployment, wallet connect, live chain reads
-replacing fixtures, mint and hire transactions, fee routing.
+**Phase 2 — off-chain v1 on Supabase.** Brokers, engagements and price history in Postgres.
+Hiring is paid in $PLANCK by ordinary transfer to the treasury and verified server-side by
+signature; the engagement row is written under the service role. Vault holdings are read
+from Solana RPC against a public treasury address.
+
+**Phase 3 — the Anchor program.** The program takes over minting, hiring and fee routing.
+Supabase becomes an indexer and price-history store rather than the source of truth.
+
+### What this costs, stated plainly
+
+The spec's second design principle is that no number is invented. Under Phase 2 that holds
+for prices and for vault holdings — both verifiable by anyone against Jupiter and Solana —
+and **does not hold** for engagements and track records, which are rows the firm writes.
+
+This is an acceptable trade for shipping, and it is not acceptable to paper over. Site copy
+must not describe broker records as trustless until Phase 3 lands. "Arithmetic on public
+data" is a fair claim for holdings and P&L; it is not a fair claim for a hire count.
 
 ---
 

@@ -59,7 +59,13 @@ function Modal({
   )
 }
 
-function WalletRow({ wallet, onPick }: { wallet: Wallet; onPick: (w: Wallet) => void }) {
+function WalletRow({
+  wallet,
+  onPick,
+}: {
+  wallet: Wallet
+  onPick: (w: Wallet) => void
+}) {
   return (
     <button
       type="button"
@@ -87,11 +93,7 @@ export function ConnectButton() {
     setOpen(false)
   }
 
-  const label = connecting
-    ? "Connecting…"
-    : address
-      ? shortAddress(address)
-      : "Connect"
+  const label = connecting ? "Connecting…" : address ? shortAddress(address) : "Connect"
 
   return (
     <>
@@ -108,8 +110,8 @@ export function ConnectButton() {
         <Modal title="CONNECT A WALLET" onClose={() => setOpen(false)}>
           {wallets.length === 0 ? (
             <p className="text-sm leading-relaxed text-ink-muted">
-              No Solana wallet detected in this browser. Install Phantom, Solflare
-              or Backpack, then reload this page.
+              No Solana wallet detected in this browser. Install Phantom, Solflare or
+              Backpack, then reload this page.
             </p>
           ) : (
             <div className="flex flex-col gap-2">

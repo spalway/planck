@@ -60,11 +60,7 @@ const BASE = [
 ]
 
 /** A brimmed hat for high nerve. */
-const HAT = [
-  "....hhhhhhhh....",
-  "...hhhhhhhhhh...",
-  ".hhhhhhhhhhhhhh.",
-]
+const HAT = ["....hhhhhhhh....", "...hhhhhhhhhh...", ".hhhhhhhhhhhhhh."]
 
 function setAt(row: string, i: number, ch: string): string {
   return row.slice(0, i) + ch + row.slice(i + 1)
@@ -129,9 +125,16 @@ export function BrokerSprite({ broker, size = 96 }: { broker: Broker; size?: num
       {rows.map((row, y) =>
         [...row].map((c, x) =>
           c === "." ? null : (
-            <rect key={`${x}-${y}`} x={x} y={y} width={1} height={1} fill={palette[c]} />
-          )
-        )
+            <rect
+              key={`${x}-${y}`}
+              x={x}
+              y={y}
+              width={1}
+              height={1}
+              fill={palette[c]}
+            />
+          ),
+        ),
       )}
     </svg>
   )

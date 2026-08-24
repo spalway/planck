@@ -27,7 +27,12 @@ describe("VaultRecord", () => {
 
   it("renders a holding row with its live value and gain", async () => {
     mockFetchPrices.mockResolvedValue({
-      [NVDAX]: { mint: NVDAX, usdPrice: 250, priceChange24h: null, fetchedAt: Date.now() },
+      [NVDAX]: {
+        mint: NVDAX,
+        usdPrice: 250,
+        priceChange24h: null,
+        fetchedAt: Date.now(),
+      },
     })
     render(<VaultRecord holdings={HOLDINGS} />)
 
@@ -41,7 +46,12 @@ describe("VaultRecord", () => {
 
   it("reports how many legs are priced", async () => {
     mockFetchPrices.mockResolvedValue({
-      [NVDAX]: { mint: NVDAX, usdPrice: 250, priceChange24h: null, fetchedAt: Date.now() },
+      [NVDAX]: {
+        mint: NVDAX,
+        usdPrice: 250,
+        priceChange24h: null,
+        fetchedAt: Date.now(),
+      },
     })
     render(<VaultRecord holdings={HOLDINGS} />)
     expect(await screen.findByText("1 of 1 priced")).toBeInTheDocument()

@@ -14,9 +14,9 @@ export function VaultRecord({ holdings }: { holdings: readonly Holding[] }) {
     <Section id="holdings" label="04" title="HOLDINGS">
       {holdings.length === 0 ? (
         <p className="border border-ink/15 bg-paper p-6 text-sm leading-relaxed text-ink-muted">
-          The vault has not deployed yet. Nothing has been bought, so there is
-          nothing to show. Holdings appear here — with cost basis and live value —
-          the moment the first broker is hired.
+          The vault has not deployed yet. Nothing has been bought, so there is nothing
+          to show. Holdings appear here — with cost basis and live value — the moment
+          the first broker is hired.
         </p>
       ) : (
         <>
@@ -66,7 +66,7 @@ export function VaultRecord({ holdings }: { holdings: readonly Holding[] }) {
                         "num p-3 text-right",
                         r.pnlPct === null && "text-ink-muted",
                         r.pnlPct !== null && r.pnlPct >= 0 && "text-gain",
-                        r.pnlPct !== null && r.pnlPct < 0 && "text-loss"
+                        r.pnlPct !== null && r.pnlPct < 0 && "text-loss",
                       )}
                     >
                       {pct(r.pnlPct)}

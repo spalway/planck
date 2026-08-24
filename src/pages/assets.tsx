@@ -1,7 +1,11 @@
 import { DeskBoard } from "@/components/desk-board"
-import { ROSTER } from "@/lib/brokers"
+import { WithRoster } from "@/components/with-roster"
 import { VAULT_HOLDINGS } from "@/lib/vault"
 
 export function AssetsPage() {
-  return <DeskBoard brokers={ROSTER} holdings={VAULT_HOLDINGS} />
+  return (
+    <WithRoster>
+      {(brokers) => <DeskBoard brokers={brokers} holdings={VAULT_HOLDINGS} />}
+    </WithRoster>
+  )
 }

@@ -10,7 +10,12 @@ describe("HowItWorks", () => {
 
   it("numbers them 01 through 06 in order", () => {
     expect(HOW_IT_WORKS_STEPS.map((s) => s.n)).toEqual([
-      "01", "02", "03", "04", "05", "06",
+      "01",
+      "02",
+      "03",
+      "04",
+      "05",
+      "06",
     ])
   })
 
