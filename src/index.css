@@ -1,0 +1,51 @@
+@import "tailwindcss";
+@import "@fontsource-variable/geist";
+
+@theme inline {
+  /* Prose only. The one non-pixel face on the page. */
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  /* Wordmark and section headings. Departure Mono arrives in Task 8; until
+     then these fall through to the system monospace, which is expected. */
+  --font-display: "Departure Mono", ui-monospace, monospace;
+  /* Every figure on the site. */
+  --font-num: "Departure Mono", ui-monospace, monospace;
+  /* Addresses and mints, where character width must be fixed. */
+  --font-mono: "Departure Mono", ui-monospace, monospace;
+
+  --color-ground: var(--ground);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-cobalt: var(--cobalt);
+  --color-gain: var(--gain);
+  --color-loss: var(--loss);
+  --color-paper: var(--paper);
+}
+
+:root {
+  /* Warm bone. A printed brokerage catalog, not a CRT terminal. */
+  --ground: #f4f1ea;
+  --ink: #14120f;
+  --ink-muted: #6b6459;
+  --cobalt: #2148e2;
+  --gain: #1b7f4b;
+  --loss: #c4362b;
+  --paper: #ffffff;
+}
+
+body {
+  background-color: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Every number on the site aligns in columns. */
+.num {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Sprites are authored small and scaled by integer factors only. */
+.pixel {
+  image-rendering: pixelated;
+}
