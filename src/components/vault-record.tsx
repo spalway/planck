@@ -11,7 +11,7 @@ export function VaultRecord({ holdings }: { holdings: readonly Holding[] }) {
   const totals = vaultTotals(holdings, prices)
 
   return (
-    <Section id="record" label="04" title="THE RECORD">
+    <Section id="holdings" label="04" title="HOLDINGS">
       {holdings.length === 0 ? (
         <p className="border border-ink/15 bg-paper p-6 text-sm leading-relaxed text-ink-muted">
           The vault has not deployed yet. Nothing has been bought, so there is

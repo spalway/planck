@@ -57,7 +57,7 @@ export function DeskBoard({
   const { prices, status } = usePrices(ALL_MINTS)
 
   return (
-    <Section id="desks" label="02" title="THE DESKS">
+    <Section id="assets" label="02" title="ASSETS">
       {status === "error" && (
         <p className="mb-6 border border-loss/30 bg-loss/5 px-3 py-2 text-xs text-loss">
           Price feed unavailable. Figures below are the last values received.

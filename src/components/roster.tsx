@@ -57,7 +57,7 @@ export function Roster({ brokers }: { brokers: readonly Broker[] }) {
   }, [brokers, desk, sort])
 
   return (
-    <Section id="roster" label="03" title="THE ROSTER">
+    <Section id="brokers" label="03" title="BROKERS">
       <div className="mb-6 flex flex-wrap items-center gap-2">
         <Chip active={desk === "all"} onClick={() => setDesk("all")}>
           All

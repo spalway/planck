@@ -14,17 +14,22 @@ const STEPS = [
   {
     n: "03",
     title: "Someone hires him",
-    body: "A hiring fee in $PLANCK engages him for a term. The fee splits between the broker's owner, the house vault, and a burn.",
+    body: "A hiring fee in $PLANCK engages him for a fixed term. You never hand him custody of anything; the fee is the only thing that moves from the hirer.",
   },
   {
     n: "04",
+    title: "The fee splits three ways",
+    body: "Most of it goes to the broker's owner, a share funds the house vault, and the rest is burned. Owning a broker other people want to hire is the business.",
+  },
+  {
+    n: "05",
     title: "The vault buys",
     body: "The vault's allocation goes into his desk's instruments and the cost basis is stamped on chain. The vault holds what it buys. It does not sell.",
   },
   {
-    n: "05",
+    n: "06",
     title: "The record stands",
-    body: "His track record is live price against recorded basis — arithmetic on public data, not a claim we make. It follows him permanently.",
+    body: "His track record is live price against recorded basis — arithmetic on public data, not a claim we make. It follows him permanently, and it is what makes him worth hiring again.",
   },
 ]
 
@@ -43,3 +48,5 @@ export function HowItWorks() {
     </Section>
   )
 }
+
+export const HOW_IT_WORKS_STEPS = STEPS
