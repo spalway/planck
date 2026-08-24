@@ -57,7 +57,6 @@
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",
-    "@fontsource-variable/geist-mono": "^5.3.0",
     "@tailwindcss/vite": "^4",
     "clsx": "^2.1.1",
     "react": "^19.2.6",
@@ -212,17 +211,17 @@ import "@testing-library/jest-dom/vitest"
 ```css
 @import "tailwindcss";
 @import "@fontsource-variable/geist";
-@import "@fontsource-variable/geist-mono";
 
 @theme inline {
-  /* Body copy. */
+  /* Prose only. The one non-pixel face on the page. */
   --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
-  /* Wordmark and section headings only. Pixelta is added in Task 8. */
-  --font-display: "Geist Variable", ui-sans-serif, sans-serif;
-  /* Every figure on the site. Tabular figures are mandatory. */
-  --font-num: "Geist Mono Variable", ui-monospace, monospace;
+  /* Wordmark and section headings. Departure Mono arrives in Task 8; until
+     then these fall through to the system monospace, which is expected. */
+  --font-display: "Departure Mono", ui-monospace, monospace;
+  /* Every figure on the site. */
+  --font-num: "Departure Mono", ui-monospace, monospace;
   /* Addresses and mints, where character width must be fixed. */
-  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+  --font-mono: "Departure Mono", ui-monospace, monospace;
 
   --color-ground: var(--ground);
   --color-ink: var(--ink);
@@ -1711,12 +1710,13 @@ git commit -m "feat: add pure P&L computation with null-safe partial pricing"
 
 ---
 
-### Task 8: Layout primitives, Pixelta font, and the page shell
+### Task 8: Layout primitives, Departure Mono, and the page shell
 
 **Files:**
 - Create: `src/components/primitives.tsx`, `src/components/site-header.tsx`, `src/components/site-footer.tsx`
-- Create: `public/fonts/Pixelta.ttf` (copied from `../../archieve_projects/Pixelta.ttf`)
-- Modify: `src/index.css` (add the `@font-face` and point `--font-display` at it)
+- Create: `public/fonts/DepartureMono-Regular.woff2`
+- Create: `public/fonts/DepartureMono-LICENSE.txt`
+- Modify: `src/index.css` (add the `@font-face`)
 - Modify: `src/App.tsx`
 - Test: `src/components/primitives.test.tsx`
 
@@ -1727,32 +1727,45 @@ git commit -m "feat: add pure P&L computation with null-safe partial pricing"
   - `<Stat label value hint tone? />` where `tone` is `"neutral" | "gain" | "loss"`
   - `<SiteHeader />`, `<SiteFooter />`
 
-**Licence note:** the spec flags Pixelta's licence as unverified. Before this task, read `archieve_projects/pixelta/Important Information About This Font !! Please Read Me !!-4.pdf`. If it does not permit web embedding, substitute a licensed pixel face (e.g. Silkscreen from Google Fonts) and leave `--font-display` pointed at the substitute. Do not ship an unlicensed font.
+**Font note:** Departure Mono is a pixel monospace under the **MIT licence** — no embedding restriction, unlike the unverified Pixelta this replaces. It is not on npm, so the file is fetched once from the official repo. It carries headings *and* every number, so the page reads as a dot-matrix printout rather than pixel headings bolted onto a normal mono. Geist is left for prose only.
 
-- [ ] **Step 1: Copy the font and register it**
+- [ ] **Step 1: Fetch the font and its licence**
+
+One file, 22 KB, from `rektdeckard/departure-mono` v1.500.
 
 ```bash
 mkdir -p public/fonts
-cp ../../archieve_projects/Pixelta.ttf public/fonts/Pixelta.ttf
+curl -fL -o public/fonts/DepartureMono-Regular.woff2 \
+  https://raw.githubusercontent.com/rektdeckard/departure-mono/HEAD/public/assets/DepartureMono-Regular.woff2
+curl -fL -o public/fonts/DepartureMono-LICENSE.txt \
+  https://raw.githubusercontent.com/rektdeckard/departure-mono/HEAD/LICENSE
 ```
+
+Verify the download is a real font and not an HTML error page — `curl -f` catches a 404, but a redirect to a login page would still write a file:
+
+```bash
+ls -l public/fonts/
+file public/fonts/DepartureMono-Regular.woff2
+```
+
+Expected: roughly 22 KB, reported as WOFF2 (or at minimum `data`, never `HTML document`). If it came back as HTML, stop and re-check the URL rather than shipping a broken font.
+
+- [ ] **Step 2: Register the face**
 
 Add to `src/index.css`, above the `@theme inline` block:
 
 ```css
 @font-face {
-  font-family: "Pixelta";
-  src: url("/fonts/Pixelta.ttf") format("truetype");
+  font-family: "Departure Mono";
+  src: url("/fonts/DepartureMono-Regular.woff2") format("woff2");
+  font-weight: 400;
   font-display: swap;
 }
 ```
 
-Change the display token inside `@theme inline`:
+The `@theme inline` tokens already point at `"Departure Mono"` from Task 1, so nothing else changes — the face simply starts resolving.
 
-```css
-  --font-display: "Pixelta", "Geist Variable", ui-sans-serif, sans-serif;
-```
-
-- [ ] **Step 2: Write the failing test**
+- [ ] **Step 3: Write the failing test**
 
 `src/components/primitives.test.tsx`:
 
@@ -1805,12 +1818,12 @@ describe("Section", () => {
 })
 ```
 
-- [ ] **Step 3: Run the test to verify it fails**
+- [ ] **Step 4: Run the test to verify it fails**
 
 Run: `npm test -- primitives`
 Expected: FAIL — cannot resolve `@/components/primitives`.
 
-- [ ] **Step 4: Write the implementation**
+- [ ] **Step 5: Write the implementation**
 
 `src/components/primitives.tsx`:
 
@@ -1937,12 +1950,12 @@ export function SiteFooter() {
 }
 ```
 
-- [ ] **Step 5: Run the test to verify it passes**
+- [ ] **Step 6: Run the test to verify it passes**
 
 Run: `npm test -- primitives`
 Expected: PASS, 6 tests.
 
-- [ ] **Step 6: Wire the shell into `src/App.tsx`**
+- [ ] **Step 7: Wire the shell into `src/App.tsx`**
 
 ```tsx
 import { SiteFooter } from "@/components/site-footer"
@@ -1961,11 +1974,11 @@ export function App() {
 }
 ```
 
-- [ ] **Step 7: Verify in the browser**
+- [ ] **Step 8: Verify in the browser**
 
-Start the dev server with the preview tool and confirm: bone background, ink text, the wordmark rendering in Pixelta (or the licensed substitute), sticky header, nav anchors present.
+Start the dev server with the preview tool and confirm: bone background, ink text, sticky header, nav anchors present, and the wordmark rendering in Departure Mono — pixel-edged, not the system monospace. If it looks like ordinary Consolas or Menlo, the `@font-face` is not resolving; check the network panel for a 404 on the woff2 before going further.
 
-- [ ] **Step 8: Commit**
+- [ ] **Step 9: Commit**
 
 ```bash
 git add -A
@@ -3336,6 +3349,6 @@ git commit -m "feat: add vault record, how-it-works, funding line and assemble t
 
 **Deliberate deviation from the spec.** §8 proposed nested directories (`lib/prices/`, `components/desks/`). This plan uses flat kebab-case files instead, matching the convention actually in use in `new_projects/airock`. The module boundaries are unchanged — only the paths differ.
 
-**Two spec open items land inside tasks.** The Pixelta licence check gates Task 8 with a named fallback (Silkscreen). The `$PLANCK` CA is typed `string | null` in Task 14 so its absence is a rendered state rather than a placeholder.
+**One spec open item closed, one landed inside a task.** The spec's Pixelta licence risk is gone: the font is now Departure Mono, MIT licensed, fetched from its official repo. It also widened in scope — it carries headings *and* all numeric data, so Geist Mono is dropped and the page reads as one dot-matrix system. The `$PLANCK` CA is typed `string | null` in Task 14 so its absence is a rendered state rather than a placeholder.
 
 **Still open, and not resolvable in code:** the 60/30/10 fee split. It is not referenced by any Phase 1 task — no displayed number depends on it — so Phase 1 is unblocked, but Phase 2 cannot start without a decision.

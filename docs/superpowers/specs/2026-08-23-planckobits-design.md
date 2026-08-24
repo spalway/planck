@@ -186,12 +186,16 @@ defined as CSS custom properties so one can be added later without refactoring.
 
 ### Typography
 
-- **Pixelta** (`archieve_projects/Pixelta.ttf`) — wordmark and section headings only.
-  *Licensing must be verified before ship;* a readme PDF ships alongside the font file at
-  `archieve_projects/pixelta/`. If the license does not permit web embedding, substitute a
-  licensed pixel face.
-- **Monospace** — every number, address, price, and stat. Tabular figures required.
-- **Clean grotesque sans** — prose and body copy.
+- **Departure Mono** — a pixel monospace, MIT licensed, from `rektdeckard/departure-mono`
+  v1.500. Self-hosted as a 22 KB woff2; it is not published to npm.
+- It carries **both** roles: the wordmark and section headings, *and* every number, address,
+  price and stat. Because it is genuinely monospaced, one face covers display and data, and
+  the page reads as a **dot-matrix printout on bone paper** rather than pixel headings bolted
+  onto an unrelated mono.
+- **Geist** — prose and body copy only. The single non-pixel face on the page.
+
+Pixelta was the original candidate and is rejected: its licence is unverified for web
+embedding. Departure Mono's MIT terms carry no embedding restriction.
 
 ### Pixel art
 
@@ -300,8 +304,10 @@ replacing fixtures, mint and hire transactions, fee routing.
 
 ## 10. Open items
 
-1. **Fee split percentages** — 60/30/10 is a placeholder default (see §5). Confirm before launch.
-2. **Pixelta font licence** — must be verified for web embedding before ship (see §6).
-3. **$PLANCK contract address** — pending the tokens.xyz launch; the funding line is a
-   placeholder until the CA exists.
-4. **Vault treasury address** — pending; required for the auditable-holdings link.
+1. **Fee split percentages** — 60/30/10 is a placeholder default (see §5). Confirm before
+   launch. Phase 1 does not depend on it; Phase 2 cannot start without it.
+2. **$PLANCK contract address** — pending the tokens.xyz launch. Typed `string | null`, so
+   its absence renders as "token not live yet" rather than a placeholder string.
+3. **Vault treasury address** — pending; required for the auditable-holdings link.
+
+*Closed:* the font licence question. Departure Mono (MIT) replaces Pixelta.
