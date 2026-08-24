@@ -12,6 +12,10 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
-  server: { port: 5190 },
-  preview: { port: 5190 },
+  // host:true binds 0.0.0.0 rather than just [::1]. Without it Vite listens
+  // on IPv6 loopback only, and a browser resolving localhost to 127.0.0.1
+  // gets connection refused. It also exposes the server on the LAN, so the
+  // site can be opened on a phone.
+  server: { port: 5190, host: true },
+  preview: { port: 5190, host: true },
 })
