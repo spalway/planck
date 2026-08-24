@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 
 import { ROSTER, effectiveNerve, rollBroker } from "@/lib/brokers"
-import { instrumentsForDesk } from "@/lib/instruments"
+import { DESKS, instrumentsForDesk } from "@/lib/instruments"
 
 /** Deterministic stand-in for Math.random, cycling a fixed sequence. */
 function seeded(values: number[]) {
@@ -76,6 +76,15 @@ describe("ROSTER", () => {
     expect(covered.size).toBe(5)
   })
 
+  it("puts at least three brokers on every desk", () => {
+    // One seed left CREDIT with a single broker beside ten on EQUITIES,
+    // which reads as broken rather than lopsided.
+    for (const d of DESKS) {
+      const n = ROSTER.filter((b) => b.desk === d.id).length
+      expect(n, d.id).toBeGreaterThanOrEqual(3)
+    }
+  })
+
   it("keeps effectiveNerve consistent with the overflow rule", () => {
     for (const b of ROSTER) {
       expect(b.effectiveNerve).toBe(
@@ -87,5 +96,25 @@ describe("ROSTER", () => {
         })
       )
     }
+  })
+
+  it("gives every broker a unique name", () => {
+    // Drawing first and last independently produced four ZEDs and a
+    // duplicated SABLE VANCE, which reads as a bug rather than a roster.
+    const names = ROSTER.map((b) => b.name)
+    expect(new Set(names).size).toBe(names.length)
+  })
+
+  it("leaves part of the floor idle, so brokers are actually hireable", () => {
+    const idle = ROSTER.filter((b) => b.tenureHours === 0).length
+    expect(idle).toBeGreaterThan(0)
+    expect(idle).toBeLessThan(ROSTER.length)
+  })
+
+  it("puts the most brokers on the deepest desk", () => {
+    // EQUITIES carries seven instruments; INDEX carries two. An unweighted
+    // roll inverted this and made the flagship desk look abandoned.
+    const count = (d: string) => ROSTER.filter((b) => b.desk === d).length
+    expect(count("equities")).toBeGreaterThan(count("index"))
   })
 })

@@ -1,6 +1,13 @@
 @import "tailwindcss";
 @import "@fontsource-variable/geist";
 
+@font-face {
+  font-family: "Departure Mono";
+  src: url("/fonts/DepartureMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
 @theme inline {
   /* Prose only. The one non-pixel face on the page. */
   --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;

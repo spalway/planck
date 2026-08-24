@@ -31,6 +31,8 @@ export type Broker = BrokerTraits & {
 }
 
 const MAX_NERVE = 100
+const ROSTER_SIZE = 24
+const MIN_PER_DESK = 3
 
 export function effectiveNerve(t: BrokerTraits): number {
   const deskSize = instrumentsForDesk(t.desk).length
@@ -91,36 +93,97 @@ function mulberry32(seed: number): () => number {
   }
 }
 
-/** Move a broker to another desk, recomputing the traits that depend on it. */
-function reassign(b: Broker, desk: DeskId): Broker {
-  const traits: BrokerTraits = {
-    desk,
-    nerve: b.nerve,
-    latency: b.latency,
-    coverage: b.coverage,
+/**
+ * Desk assignment weighted by how many instruments the desk carries.
+ *
+ * An unweighted roll put three brokers on EQUITIES (seven instruments) and
+ * six on INDEX (two), which reads backwards — the deepest desk looked
+ * abandoned. Weighting by depth makes the floor mirror the book.
+ */
+function weightedDesk(rand: () => number): DeskId {
+  // sqrt, not raw depth: raw proportional weighting put 13 of 24 brokers on
+  // EQUITIES and left YIELD and CREDIT with one each. The square root keeps
+  // the ordering while giving the shallow desks a real presence.
+  const weights = DESKS.map((d) => Math.sqrt(instrumentsForDesk(d.id).length))
+  const total = weights.reduce((a, b) => a + b, 0)
+  let n = rand() * total
+  for (let i = 0; i < DESKS.length; i++) {
+    n -= weights[i]
+    if (n <= 0) return DESKS[i].id
   }
-  return { ...b, ...traits, effectiveNerve: effectiveNerve(traits) }
+  return DESKS[DESKS.length - 1].id
+}
+
+/** Deterministic Fisher-Yates, so the shuffle is stable across loads. */
+function shuffled<T>(arr: readonly T[], rand: () => number): T[] {
+  const out = [...arr]
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1))
+    const tmp = out[i]
+    out[i] = out[j]
+    out[j] = tmp
+  }
+  return out
 }
 
 function buildRoster(): Broker[] {
   const rand = mulberry32(0x504c4b42)
+
+  // Unique names. Drawing first and last independently produced four ZEDs
+  // and a duplicated SABLE VANCE, which reads as a bug rather than a roster.
+  const pairs: string[] = []
+  for (const f of FIRST) for (const l of LAST) pairs.push(`${f} ${l}`)
+  const names = shuffled(pairs, rand).slice(0, ROSTER_SIZE)
+
   const out: Broker[] = []
+  for (let i = 0; i < ROSTER_SIZE; i++) {
+    const traits: BrokerTraits = {
+      desk: weightedDesk(rand),
+      nerve: roll(rand, 1, MAX_NERVE),
+      latency: roll(rand, 1, 100),
+      coverage: roll(rand, 1, 9),
+    }
 
-  for (let i = 0; i < 24; i++) {
-    const b = rollBroker(`PB-${String(i + 1).padStart(3, "0")}`, rand)
-    out.push({ ...b, tenureHours: roll(rand, 0, 4000) })
+    // Roughly a third of the floor is idle. With every broker employed the
+    // census reported zero available to hire, contradicting the product.
+    const idle = roll(rand, 0, 2) === 0
+
+    out.push({
+      ...traits,
+      id: `PB-${String(i + 1).padStart(3, "0")}`,
+      name: names[i],
+      effectiveNerve: effectiveNerve(traits),
+      tenureHours: idle ? 0 : roll(rand, 40, 4000),
+    })
   }
 
-  // Guarantee every desk appears so no desk card renders an empty roster.
+  // Enforce a floor per desk rather than merely non-empty. Weighted rolling
+  // is still random: one seed left CREDIT with a single broker next to ten on
+  // EQUITIES, which looks broken rather than lopsided. Moving surplus off the
+  // largest desk is deterministic and holds for any seed.
   for (const desk of DESKS) {
-    if (out.some((b) => b.desk === desk.id)) continue
-    const victim = out.findIndex(
-      (b) => out.filter((o) => o.desk === b.desk).length > 1
-    )
-    if (victim === -1) continue
-    out[victim] = reassign(out[victim], desk.id)
-  }
+    while (out.filter((b) => b.desk === desk.id).length < MIN_PER_DESK) {
+      const counts = new Map<DeskId, number>()
+      for (const b of out) counts.set(b.desk, (counts.get(b.desk) ?? 0) + 1)
 
+      let biggest: DeskId | null = null
+      for (const [id, n] of counts) {
+        if (id === desk.id) continue
+        if (biggest === null || n > (counts.get(biggest) ?? 0)) biggest = id
+      }
+      if (biggest === null || (counts.get(biggest) ?? 0) <= MIN_PER_DESK) break
+
+      const victim = out.findIndex((b) => b.desk === biggest)
+      const v = out[victim]
+      const traits: BrokerTraits = {
+        desk: desk.id,
+        nerve: v.nerve,
+        latency: v.latency,
+        coverage: v.coverage,
+      }
+      out[victim] = { ...v, ...traits, effectiveNerve: effectiveNerve(traits) }
+    }
+  }
   return out
 }
 
