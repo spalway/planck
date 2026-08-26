@@ -13,7 +13,7 @@ export function VaultRecord({ holdings }: { holdings: readonly Holding[] }) {
   return (
     <Section id="holdings" label="04" title="HOLDINGS">
       {holdings.length === 0 ? (
-        <p className="border border-ink/15 bg-paper p-6 text-sm leading-relaxed text-ink-muted">
+        <p className="panel p-6 text-sm leading-relaxed text-ink-muted">
           The vault has not deployed yet. Nothing has been bought, so there is nothing
           to show. Holdings appear here — with cost basis and live value — the moment
           the first broker is hired.
@@ -41,10 +41,10 @@ export function VaultRecord({ holdings }: { holdings: readonly Holding[] }) {
             />
           </div>
 
-          <div className="overflow-x-auto border border-ink/15 bg-paper">
+          <div className="panel overflow-x-auto">
             <table className="w-full min-w-[36rem] text-sm">
               <thead>
-                <tr className="border-b border-ink/15 text-left text-[0.65rem] tracking-widest text-ink-muted uppercase">
+                <tr className="border-b-2 border-umber bg-tan text-left text-[0.65rem] tracking-widest text-ink-muted uppercase">
                   <th className="p-3 font-normal">Instrument</th>
                   <th className="p-3 text-right font-normal">Quantity</th>
                   <th className="p-3 text-right font-normal">Cost</th>
@@ -54,7 +54,7 @@ export function VaultRecord({ holdings }: { holdings: readonly Holding[] }) {
               </thead>
               <tbody>
                 {records.map((r) => (
-                  <tr key={r.mint} className="border-b border-ink/10 last:border-0">
+                  <tr key={r.mint} className="border-b border-umber/15 last:border-0">
                     <td className="num p-3">
                       {instrumentByMint(r.mint)?.symbol ?? EMPTY}
                     </td>

@@ -37,15 +37,15 @@ export function DisclaimerGate({ onAccept }: { onAccept: () => void }) {
       role="dialog"
       aria-modal="true"
       aria-label="Risk disclaimer"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-umber/50 p-4"
     >
-      <div className="max-h-[85vh] w-full max-w-xl overflow-y-auto border border-ink/25 bg-paper p-6 shadow-[0_24px_60px_-20px_rgba(20,18,15,0.45)]">
+      <div className="panel max-h-[85vh] w-full max-w-xl overflow-y-auto p-6 shadow-[8px_8px_0_0_var(--umber)]">
         {/*
           The wordmark and rule are not decoration. Without them the gate is a
           white panel on a pale ground, which reads as a broken page rather
           than a dialog — it was mistaken for exactly that.
         */}
-        <div className="mb-5 flex items-baseline justify-between gap-4 border-b border-ink/15 pb-4">
+        <div className="mb-5 flex items-baseline justify-between gap-4 border-b-2 border-umber pb-4">
           <span className="font-brand text-lg tracking-tight">PLANCKBITS</span>
           <span className="text-[0.65rem] tracking-widest text-ink-muted uppercase">
             Solana · RWAs
@@ -56,7 +56,7 @@ export function DisclaimerGate({ onAccept }: { onAccept: () => void }) {
 
         <ul className="mt-5 flex flex-col gap-3 text-sm leading-relaxed">
           {POINTS.map((p) => (
-            <li key={p} className="border-l border-ink/20 pl-3 text-ink-muted">
+            <li key={p} className="border-l-4 border-umber/30 pl-3 text-ink-muted">
               {p}
             </li>
           ))}
@@ -67,7 +67,7 @@ export function DisclaimerGate({ onAccept }: { onAccept: () => void }) {
             type="checkbox"
             checked={checked}
             onChange={(e) => setChecked(e.target.checked)}
-            className="mt-1 accent-cobalt"
+            className="mt-1 h-4 w-4 shrink-0 accent-cobalt"
           />
           <span>
             I have read the above and accept that I may lose everything I risk.
@@ -78,7 +78,7 @@ export function DisclaimerGate({ onAccept }: { onAccept: () => void }) {
           type="button"
           disabled={!checked}
           onClick={accept}
-          className="mt-6 w-full bg-cobalt py-3 text-sm tracking-widest text-white uppercase disabled:cursor-not-allowed disabled:bg-ink/20"
+          className="btn btn-primary mt-6 w-full py-3 text-sm disabled:cursor-not-allowed"
         >
           {checked ? "Enter the floor" : "Tick the box to continue"}
         </button>

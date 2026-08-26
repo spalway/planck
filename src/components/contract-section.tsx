@@ -37,26 +37,22 @@ export function ContractSection() {
   const live = CA.length > 0
 
   return (
-    <section
-      id="contract"
-      aria-label="Contract address"
-      className="border border-ink/20 bg-paper"
-    >
+    <section id="contract" aria-label="Contract address" className="panel">
       <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
         <div className="min-w-0">
-          <p className="text-[0.65rem] tracking-widest text-ink-muted uppercase">
-            $PLANCK contract
-          </p>
+          <span className="tag text-[0.6rem]">$PLANCK contract</span>
 
           {live ? (
+            // A sunk well: the address is a value to be read and copied, not
+            // a surface to act on.
             <p
               data-testid="contract-address"
-              className="num mt-1.5 text-sm break-all text-ink sm:text-base"
+              className="num panel-sunk mt-2.5 px-3 py-2 text-sm break-all text-ink sm:text-base"
             >
               {CA}
             </p>
           ) : (
-            <p className="mt-1.5 text-sm text-ink-muted">
+            <p className="mt-2.5 text-sm text-ink-muted">
               Not live yet — the address appears here the moment it launches.
             </p>
           )}
@@ -66,14 +62,14 @@ export function ContractSection() {
           <button
             type="button"
             onClick={() => copy(CA)}
-            className="shrink-0 border border-ink/25 px-4 py-2 text-xs tracking-widest uppercase hover:border-cobalt hover:text-cobalt"
+            className="btn shrink-0 px-4 py-2 text-xs"
           >
             {copied ? "Copied" : "Copy"}
           </button>
         )}
       </div>
 
-      <p className="border-t border-ink/15 px-5 py-3 text-xs leading-relaxed text-ink-muted">
+      <p className="border-t-2 border-umber/20 px-5 py-3 text-xs leading-relaxed text-ink-muted">
         Creator fees on $PLANCK fund the vault, which buys real tokenized assets
         and never sells them. Holding is what opens minting and hiring.
       </p>

@@ -37,8 +37,8 @@ function Chip({
       className={cn(
         "border px-3 py-1 text-[0.65rem] tracking-widest uppercase",
         active
-          ? "border-cobalt bg-cobalt text-white"
-          : "border-ink/20 text-ink-muted hover:border-ink/40",
+          ? "border-umber bg-umber text-ground"
+          : "border-umber/30 text-ink-muted hover:border-umber hover:text-ink",
       )}
     >
       {children}
@@ -79,7 +79,7 @@ export function Roster({ brokers }: { brokers: readonly Broker[] }) {
       </div>
 
       {shown.length === 0 ? (
-        <p className="border border-ink/15 p-6 text-sm text-ink-muted">
+        <p className="panel-flat p-6 text-sm text-ink-muted">
           No brokers on this desk yet.
         </p>
       ) : (

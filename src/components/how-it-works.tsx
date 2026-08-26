@@ -36,11 +36,13 @@ const STEPS = [
 export function HowItWorks() {
   return (
     <Section id="how" label="05" title="HOW IT WORKS">
-      <ol className="grid grid-cols-1 gap-px border border-ink/15 bg-ink/15 md:grid-cols-2 lg:grid-cols-3">
+      {/* 2px gaps over an umber ground: the steps read as cells ruled off on
+          one sheet, which is what a numbered sequence should look like. */}
+      <ol className="panel grid grid-cols-1 gap-0.5 bg-umber md:grid-cols-2 lg:grid-cols-3">
         {STEPS.map((s) => (
-          <li key={s.n} className="bg-paper p-5">
-            <span className="num text-xs text-cobalt">{s.n}</span>
-            <h3 className="mt-2 font-display text-base">{s.title}</h3>
+          <li key={s.n} className="flex min-w-0 flex-col bg-paper p-5">
+            <span className="num tag self-start text-[0.6rem]">{s.n}</span>
+            <h3 className="mt-3 font-display text-base font-bold">{s.title}</h3>
             <p className="mt-2 text-sm leading-relaxed text-ink-muted">{s.body}</p>
           </li>
         ))}

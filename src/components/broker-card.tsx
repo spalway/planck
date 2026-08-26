@@ -6,13 +6,33 @@ function deskLabel(id: Broker["desk"]) {
   return DESKS.find((d) => d.id === id)?.label ?? id.toUpperCase()
 }
 
-function Trait({ label, value }: { label: string; value: string }) {
+/**
+ * One trait, drawn as a labelled bar.
+ *
+ * The number alone made three good rolls and three poor ones look identical
+ * at a glance. A bar is comparable across a grid of cards without reading.
+ */
+function Trait({ label, value, max }: { label: string; value: number; max: number }) {
+  const filled = Math.round((value / max) * 10)
+
   return (
-    <div className="flex items-baseline justify-between">
-      <span className="text-[0.65rem] tracking-widest text-ink-muted uppercase">
+    <div className="flex items-center justify-between gap-2">
+      <span className="w-16 shrink-0 text-[0.6rem] tracking-widest text-ink-muted uppercase">
         {label}
       </span>
-      <span className="num text-sm">{value}</span>
+
+      {/* Ten discrete cells rather than a continuous fill — a bar drawn the
+          way a sprite would draw it. */}
+      <span aria-hidden="true" className="flex flex-1 gap-px">
+        {Array.from({ length: 10 }, (_, i) => (
+          <span
+            key={i}
+            className={i < filled ? "h-2 flex-1 bg-umber" : "h-2 flex-1 bg-umber/15"}
+          />
+        ))}
+      </span>
+
+      <span className="num w-6 shrink-0 text-right text-xs font-bold">{value}</span>
     </div>
   )
 }
@@ -21,33 +41,39 @@ export function BrokerCard({ broker }: { broker: Broker }) {
   return (
     <article
       data-testid={`broker-card-${broker.id}`}
-      className="flex min-w-0 flex-col border border-ink/15 bg-paper p-4"
+      className="panel flex min-w-0 flex-col p-4"
     >
       <div className="flex items-start gap-3">
-        <BrokerSprite broker={broker} size={56} />
-        <div className="min-w-0">
-          <h3 data-testid="broker-name" className="truncate font-display text-sm">
+        <div className="panel-sunk shrink-0 p-1">
+          <BrokerSprite broker={broker} size={56} />
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <h3
+            data-testid="broker-name"
+            className="truncate font-display text-sm font-bold"
+          >
             {broker.name}
           </h3>
           <p className="num text-[0.65rem] text-ink-muted">{broker.id}</p>
-          <p className="mt-1 text-[0.65rem] tracking-widest text-cobalt uppercase">
-            {deskLabel(broker.desk)}
-          </p>
+          <p className="tag mt-1.5 text-[0.55rem]">{deskLabel(broker.desk)}</p>
         </div>
       </div>
 
-      <div className="mt-4 flex flex-col gap-1.5 border-t border-ink/10 pt-3">
-        <Trait label="Nerve" value={String(broker.effectiveNerve)} />
-        <Trait label="Latency" value={String(broker.latency)} />
-        <Trait label="Coverage" value={String(broker.coverage)} />
-        <Trait label="Tenure" value={`${broker.tenureHours}h`} />
+      <div className="mt-4 flex flex-col gap-2 border-t-2 border-umber/20 pt-3">
+        <Trait label="Nerve" value={broker.effectiveNerve} max={100} />
+        <Trait label="Latency" value={broker.latency} max={100} />
+        <Trait label="Coverage" value={broker.coverage} max={9} />
       </div>
 
-      <button
-        type="button"
-        disabled
-        className="mt-4 w-full cursor-not-allowed border border-ink/20 py-2 text-xs tracking-widest text-ink-muted uppercase"
-      >
+      <div className="mt-3 flex items-baseline justify-between border-t-2 border-umber/20 pt-2">
+        <span className="text-[0.6rem] tracking-widest text-ink-muted uppercase">
+          Tenure
+        </span>
+        <span className="num text-xs font-bold">{broker.tenureHours}h</span>
+      </div>
+
+      <button type="button" disabled className="btn mt-4 w-full py-2 text-[0.65rem]">
         Hire · soon
       </button>
     </article>

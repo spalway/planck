@@ -51,19 +51,23 @@ export function BrokerShowcase({ brokers }: { brokers: readonly Broker[] }) {
   const broker = brokers[i % brokers.length]
 
   return (
-    <figure className="flex flex-col items-center gap-4">
-      <div className="relative border border-ink/15 bg-paper p-6">
+    <figure className="panel flex flex-col items-center gap-3 p-3">
+      {/* The portrait sits in a sunk well so the frame reads as a mount with
+          depth rather than as one more outlined box on the page. */}
+      <div className="panel-sunk relative w-full px-6 py-6">
         {/* Corner ticks — a mounted print, not a floating image. */}
-        <span className="absolute top-0 left-0 h-3 w-3 border-t border-l border-ink/40" />
-        <span className="absolute top-0 right-0 h-3 w-3 border-t border-r border-ink/40" />
-        <span className="absolute bottom-0 left-0 h-3 w-3 border-b border-l border-ink/40" />
-        <span className="absolute right-0 bottom-0 h-3 w-3 border-r border-b border-ink/40" />
+        <span className="absolute top-1 left-1 h-3 w-3 border-t-2 border-l-2 border-umber/60" />
+        <span className="absolute top-1 right-1 h-3 w-3 border-t-2 border-r-2 border-umber/60" />
+        <span className="absolute bottom-1 left-1 h-3 w-3 border-b-2 border-l-2 border-umber/60" />
+        <span className="absolute right-1 bottom-1 h-3 w-3 border-r-2 border-b-2 border-umber/60" />
 
-        <BrokerSprite broker={broker} size={168} />
+        <div className="flex justify-center">
+          <BrokerSprite broker={broker} size={168} />
+        </div>
       </div>
 
-      <figcaption className="text-center">
-        <p className="font-display text-sm">{broker.name}</p>
+      <figcaption className="w-full border-t-2 border-umber/20 pt-2 text-center">
+        <p className="font-display text-sm font-bold">{broker.name}</p>
         <p className="num mt-1 text-[0.65rem] text-ink-muted">
           {broker.id} · <span className="text-cobalt">{deskLabel(broker.desk)}</span>
         </p>

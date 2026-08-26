@@ -35,15 +35,15 @@ function Modal({
       role="dialog"
       aria-modal="true"
       aria-label={title}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-umber/50 p-4"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-sm border border-ink/25 bg-paper p-5"
+        className="panel w-full max-w-sm p-5"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-baseline justify-between">
-          <h2 className="font-display text-base">{title}</h2>
+          <h2 className="font-display text-base font-bold">{title}</h2>
           <button
             type="button"
             onClick={onClose}
@@ -70,7 +70,7 @@ function WalletRow({
     <button
       type="button"
       onClick={() => onPick(wallet)}
-      className="flex w-full items-center gap-3 border border-ink/15 px-3 py-2.5 text-left hover:border-cobalt hover:text-cobalt"
+      className="flex w-full items-center gap-3 border-2 border-umber px-3 py-2.5 text-left hover:border-cobalt hover:bg-tan hover:text-cobalt"
     >
       {/* Wallet-supplied data URI. Decorative — the name is the label. */}
       <img src={wallet.icon} alt="" className="h-5 w-5 shrink-0" />
@@ -101,7 +101,7 @@ export function ConnectButton() {
         type="button"
         onClick={() => setOpen(true)}
         disabled={connecting}
-        className="num shrink-0 border border-ink/25 px-3 py-1.5 text-xs tracking-widest uppercase hover:border-cobalt hover:text-cobalt disabled:cursor-wait disabled:text-ink-muted"
+        className="num btn shrink-0 px-3 py-1.5 text-xs disabled:cursor-wait"
       >
         {label}
       </button>
@@ -128,12 +128,12 @@ export function ConnectButton() {
           <p className="text-[0.65rem] tracking-widest text-ink-muted uppercase">
             Connected
           </p>
-          <p className="num mt-1 text-xs break-all">{address}</p>
+          <p className="num panel-sunk mt-2 px-2 py-1.5 text-xs break-all">{address}</p>
 
           <button
             type="button"
             onClick={leave}
-            className="mt-5 w-full border border-ink/25 py-2 text-xs tracking-widest uppercase hover:border-loss hover:text-loss"
+            className="btn mt-5 w-full py-2 text-xs hover:border-loss hover:text-loss"
           >
             Disconnect
           </button>

@@ -12,7 +12,7 @@
   /* The whole site is monospace. Geist Mono is variable, so headers get a
      real bold rather than a synthesised one. */
   --font-sans: "Geist Mono Variable", ui-monospace, monospace;
-  /* Section headings: the same monospace, set bold. */
+  /* Section headings: the same monospace, set heavy. */
   --font-display: "Geist Mono Variable", ui-monospace, monospace;
   /* The logotype keeps the pixel monospace. It is the mark, not body text. */
   --font-brand: "Departure Mono", "Geist Mono Variable", ui-monospace, monospace;
@@ -24,6 +24,9 @@
   --color-ground: var(--ground);
   --color-ink: var(--ink);
   --color-ink-muted: var(--ink-muted);
+  --color-umber: var(--umber);
+  --color-tan: var(--tan);
+  --color-rust: var(--rust);
   --color-cobalt: var(--cobalt);
   --color-gain: var(--gain);
   --color-loss: var(--loss);
@@ -31,25 +34,55 @@
 }
 
 :root {
-  /* Warm bone. A printed brokerage catalog, not a CRT terminal. */
-  --ground: #f4f1ea;
-  --ink: #14120f;
-  --ink-muted: #6b6459;
+  /* Warm bone and dark brown. A printed brokerage ledger left in the sun,
+     not a CRT terminal — the browns are what keep it off the black-and-blue
+     default every crypto site lands on. */
+  --ground: #efe9dc;
+  --ink: #1b1410;
+  --ink-muted: #6d5b48;
+
+  /* The structural brown. Every rule, frame and hard shadow is this colour,
+     which is what makes the chrome read as one drawn system. */
+  --umber: #4a3728;
+  /* Fills that need to sit back from paper without going grey. */
+  --tan: #ded1ba;
+  /* Second accent, warm, for counts and marks that are not links. */
+  --rust: #a8481f;
+
   --cobalt: #2148e2;
-  --gain: #1b7f4b;
-  --loss: #c4362b;
-  --paper: #ffffff;
+  --gain: #1b6b3f;
+  --loss: #b3352a;
+  --paper: #fdfaf3;
+
+  /* One knob for the whole blocky look. Chrome is drawn at 2px so it reads
+     as deliberate weight rather than a hairline the browser rounded off. */
+  --stroke: 2px;
 }
 
 body {
   background-color: var(--ground);
   color: var(--ink);
   font-family: var(--font-sans);
+
+  /* Graph paper. Two 1px gradients on an 8px grid — the pixel texture comes
+     from real geometry, so it stays crisp at any zoom and costs no image. */
+  background-image:
+    linear-gradient(rgba(74, 55, 40, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(74, 55, 40, 0.05) 1px, transparent 1px);
+  background-size: 8px 8px;
+
   -webkit-font-smoothing: antialiased;
 }
 
-/* Headings share the body face and are separated by weight, not family. */
-h1, h2, h3 {
+/* Headings share the body face and are separated by weight, not family.
+   Geist Mono is variable, so 800 is a drawn weight, not a smeared one. */
+h1,
+h2 {
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+h3 {
   font-weight: 700;
 }
 
@@ -62,4 +95,114 @@ h1, h2, h3 {
 /* Sprites are authored small and scaled by integer factors only. */
 .pixel {
   image-rendering: pixelated;
+}
+
+@layer components {
+  /*
+   * The blocky kit.
+   *
+   * Every surface is a rectangle with a thick brown rule and a hard offset
+   * shadow — no blur, no radius. The shadow is a second rectangle, which is
+   * how a pixel UI would draw depth, and it is the single detail that makes
+   * the whole page read as retro rather than as flat minimalism.
+   */
+
+  .panel {
+    border: var(--stroke) solid var(--umber);
+    background-color: var(--paper);
+    box-shadow: 4px 4px 0 0 var(--umber);
+  }
+
+  /* For panels that tile against each other, where stacked shadows would
+     read as noise rather than as depth. */
+  .panel-flat {
+    border: var(--stroke) solid var(--umber);
+    background-color: var(--paper);
+  }
+
+  /* Sunk instead of raised: the shadow falls inward. Used for wells that
+     hold a value rather than for surfaces you can act on. */
+  .panel-sunk {
+    border: var(--stroke) solid var(--umber);
+    background-color: var(--tan);
+    box-shadow: inset 3px 3px 0 0 rgba(74, 55, 40, 0.18);
+  }
+
+  .btn {
+    display: inline-block;
+    border: var(--stroke) solid var(--umber);
+    background-color: var(--paper);
+    box-shadow: 3px 3px 0 0 var(--umber);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    /* steps() rather than a smooth ease: the press should snap between two
+       states like a sprite swapping frames. */
+    transition:
+      transform 90ms steps(2),
+      box-shadow 90ms steps(2);
+  }
+
+  .btn:hover:not(:disabled) {
+    border-color: var(--cobalt);
+    color: var(--cobalt);
+  }
+
+  /* Travels exactly as far as the shadow is deep, so it lands flush. */
+  .btn:active:not(:disabled) {
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 0 var(--umber);
+  }
+
+  .btn:disabled {
+    border-color: var(--ink-muted);
+    color: var(--ink-muted);
+    box-shadow: 2px 2px 0 0 var(--ink-muted);
+  }
+
+  .btn-primary {
+    background-color: var(--cobalt);
+    color: var(--paper);
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background-color: var(--ink);
+    border-color: var(--umber);
+    color: var(--paper);
+  }
+
+  .btn-primary:disabled {
+    background-color: var(--tan);
+  }
+
+  /* A filled index mark — section numbers, desk labels, the active nav item.
+     Solid umber on bone is the loudest thing the palette does, so it is
+     reserved for labels that index something. */
+  .tag {
+    display: inline-block;
+    border: var(--stroke) solid var(--umber);
+    background-color: var(--umber);
+    color: var(--ground);
+    padding: 0.1rem 0.4rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+
+  /* The structural divider between sections. */
+  .rule {
+    border-top: var(--stroke) solid var(--umber);
+  }
+}
+
+/* The press animation is motion; the OS setting asks about exactly this. */
+@media (prefers-reduced-motion: reduce) {
+  .btn {
+    transition: none;
+  }
+
+  .btn:active:not(:disabled) {
+    transform: none;
+  }
 }

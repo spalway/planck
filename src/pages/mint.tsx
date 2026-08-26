@@ -17,7 +17,7 @@ import { mintBroker, type MintResult, type MintedBroker } from "@/lib/token-api"
 
 function Panel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="border border-ink/15 bg-paper p-6 text-sm leading-relaxed text-ink-muted">
+    <div className="panel p-6 text-sm leading-relaxed text-ink-muted">
       {children}
     </div>
   )
@@ -39,7 +39,7 @@ function toBroker(m: MintedBroker): Broker {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-baseline justify-between border-t border-ink/10 py-1.5">
+    <div className="flex items-baseline justify-between border-t border-umber/15 py-1.5">
       <span className="text-[0.65rem] tracking-widest text-ink-muted uppercase">
         {label}
       </span>
@@ -50,7 +50,7 @@ function Stat({ label, value }: { label: string; value: string }) {
 
 function Minted({ broker }: { broker: Broker }) {
   return (
-    <div className="flex flex-col gap-4 border border-cobalt/40 bg-paper p-6 sm:flex-row sm:items-start">
+    <div className="panel flex flex-col gap-4 p-6 sm:flex-row sm:items-start">
       <BrokerSprite broker={broker} size={120} />
 
       <div className="min-w-0 flex-1">
@@ -135,7 +135,7 @@ export function MintPage() {
               type="button"
               onClick={mint}
               disabled={minting}
-              className="w-full max-w-xs bg-cobalt py-3 text-xs tracking-widest text-white uppercase disabled:cursor-wait disabled:bg-ink/20"
+              className="btn btn-primary w-full max-w-xs py-3 text-xs disabled:cursor-wait"
             >
               {minting ? "Rolling…" : "Mint a broker"}
             </button>

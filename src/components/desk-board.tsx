@@ -22,7 +22,7 @@ function Row({
   const change = quote?.priceChange24h ?? null
 
   return (
-    <div className="flex items-baseline justify-between gap-3 border-t border-ink/10 py-2 first:border-t-0">
+    <div className="flex items-baseline justify-between gap-3 border-t border-umber/15 py-2 first:border-t-0">
       {/* truncate only works on a flex/block child with min-w-0; on the
           inline span it did nothing and long names such as "MicroStrategy
           xStock" forced the card wider than a phone viewport. */}
@@ -59,7 +59,7 @@ export function DeskBoard({
   return (
     <Section id="assets" label="02" title="ASSETS">
       {status === "error" && (
-        <p className="mb-6 border border-loss/30 bg-loss/5 px-3 py-2 text-xs text-loss">
+        <p className="mb-6 border-2 border-loss bg-loss/10 px-3 py-2 text-xs font-bold text-loss">
           Price feed unavailable. Figures below are the last values received.
         </p>
       )}
@@ -76,14 +76,14 @@ export function DeskBoard({
           return (
             <article
               key={desk.id}
-              className="min-w-0 border border-ink/15 bg-paper p-4"
+              className="panel min-w-0 p-4"
             >
-              <h3 className="font-display text-lg">{desk.label}</h3>
+              <h3 className="font-display text-lg font-bold">{desk.label}</h3>
               <p className="mt-1 mb-3 text-xs leading-relaxed text-ink-muted">
                 {desk.blurb}
               </p>
 
-              <div className="mb-3 flex items-baseline justify-between border-y border-ink/10 py-2">
+              <div className="mb-3 flex items-baseline justify-between border-y-2 border-umber/20 py-2">
                 <span
                   data-testid={`desk-brokers-${desk.id}`}
                   className="text-[0.65rem] tracking-widest text-ink-muted uppercase"

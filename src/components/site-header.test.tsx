@@ -29,8 +29,10 @@ describe("SiteHeader", () => {
 
   it("marks the current page as active", () => {
     header("/brokers")
+    // The active page is a filled block. Asserting the fill rather than a
+    // text colour, because a tint alone was too easy to miss at this size.
     expect(screen.getByRole("link", { name: "Brokers" }).className).toContain(
-      "text-cobalt",
+      "bg-umber",
     )
   })
 

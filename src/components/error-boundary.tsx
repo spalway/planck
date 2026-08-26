@@ -29,7 +29,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
     if (!error) return this.props.children
 
     return (
-      <section className="border-t border-ink/15 py-14">
+      <section className="rule py-14">
         <header className="mb-6 flex items-baseline gap-4">
           <span className="num text-xs text-loss">!!</span>
           <h2 className="font-display text-2xl tracking-tight">SOMETHING BROKE</h2>
@@ -43,7 +43,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
         <button
           type="button"
           onClick={() => window.location.reload()}
-          className="mt-6 border border-ink/25 px-4 py-2 text-xs tracking-widest uppercase hover:border-cobalt hover:text-cobalt"
+          className="btn mt-6 px-4 py-2 text-xs"
         >
           Reload
         </button>
