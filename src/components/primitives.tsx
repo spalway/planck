@@ -56,7 +56,7 @@ export function Stat({
 }) {
   return (
     <div className="panel flex min-w-0 flex-col gap-1 p-3">
-      <span className="text-[0.7rem] tracking-widest text-ink-muted uppercase">
+      <span className="text-[0.7rem] tracking-widest text-ink-muted">
         {label}
       </span>
       <span className={cn("num text-2xl font-bold", TONE[tone])}>{value}</span>

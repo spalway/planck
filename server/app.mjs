@@ -232,8 +232,17 @@ export function createApp({ config = {}, deps, dist = null }) {
       })
     )
 
-    /** SPA fallback: client-side routes are not files on disk. */
+    /**
+     * SPA fallback: client-side routes are not files on disk.
+     *
+     * The no-cache header has to be set here too. express.static's setHeaders
+     * never runs for this path, so a deep link was served "public, max-age=0"
+     * while the same document at / was served "no-cache". Behind a CDN that
+     * is how a stale index.html ends up pointing at a bundle the last deploy
+     * deleted, which renders as a blank page until a hard refresh.
+     */
     app.get(/.*/, (_req, res) => {
+      res.setHeader("Cache-Control", "no-cache")
       res.sendFile(dist + "/index.html")
     })
   }

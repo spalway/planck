@@ -36,7 +36,7 @@ export function VaultMandate() {
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <h3 className="font-display text-base font-bold">THE MANDATE</h3>
+        <h3 className="font-display text-base font-bold">the mandate</h3>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-muted">
           {INSTRUMENTS.length} tokenized instruments across {DESKS.length} desks.
           When a broker is hired, the vault buys into his desk — and only his desk.
@@ -90,7 +90,7 @@ export function VaultMandate() {
       </div>
 
       <div>
-        <h3 className="font-display text-base font-bold">THE RULES</h3>
+        <h3 className="font-display text-base font-bold">the rules</h3>
         <ol className="panel mt-3 grid grid-cols-1 gap-0.5 bg-ink md:grid-cols-3">
           {RULES.map((r, i) => (
             <li key={r.head} className="flex min-w-0 flex-col bg-paper p-4">

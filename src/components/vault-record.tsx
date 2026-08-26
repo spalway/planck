@@ -12,7 +12,7 @@ export function VaultRecord({ holdings }: { holdings: readonly Holding[] }) {
   const totals = vaultTotals(holdings, prices)
 
   return (
-    <Section id="holdings" label="04" title="HOLDINGS">
+    <Section id="holdings" label="04" title="holdings">
       {holdings.length === 0 ? (
         <div className="flex flex-col gap-10">
           <p className="panel p-6 text-sm leading-relaxed text-ink-muted">
@@ -49,7 +49,7 @@ export function VaultRecord({ holdings }: { holdings: readonly Holding[] }) {
           <div className="panel overflow-x-auto">
             <table className="w-full min-w-[36rem] text-sm">
               <thead>
-                <tr className="border-b-2 border-ink bg-tan text-left text-[0.65rem] tracking-widest text-ink-muted uppercase">
+                <tr className="border-b-2 border-ink bg-tan text-left text-[0.65rem] tracking-widest text-ink-muted">
                   <th className="p-3 font-normal">Instrument</th>
                   <th className="p-3 text-right font-normal">Quantity</th>
                   <th className="p-3 text-right font-normal">Cost</th>

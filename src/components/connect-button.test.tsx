@@ -36,7 +36,7 @@ function setup(over: Partial<WalletState> = {}) {
 describe("ConnectButton", () => {
   it("reads Connect when disconnected", () => {
     setup()
-    expect(screen.getByRole("button", { name: "Connect" })).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: /^connect$/i })).toBeInTheDocument()
   })
 
   it("shows the truncated address when connected", () => {
@@ -46,20 +46,20 @@ describe("ConnectButton", () => {
 
   it("lists detected wallets in the picker", () => {
     setup({ wallets: [fakeWallet("Phantom"), fakeWallet("Solflare")] })
-    fireEvent.click(screen.getByRole("button", { name: "Connect" }))
+    fireEvent.click(screen.getByRole("button", { name: /^connect$/i }))
     expect(screen.getByRole("button", { name: "Phantom" })).toBeInTheDocument()
     expect(screen.getByRole("button", { name: "Solflare" })).toBeInTheDocument()
   })
 
   it("says so plainly when no wallet is installed", () => {
     setup({ wallets: [] })
-    fireEvent.click(screen.getByRole("button", { name: "Connect" }))
+    fireEvent.click(screen.getByRole("button", { name: /^connect$/i }))
     expect(screen.getByText(/no solana wallet detected/i)).toBeInTheDocument()
   })
 
   it("connects with the wallet that was clicked", () => {
     const state = setup({ wallets: [fakeWallet("Phantom")] })
-    fireEvent.click(screen.getByRole("button", { name: "Connect" }))
+    fireEvent.click(screen.getByRole("button", { name: /^connect$/i }))
     fireEvent.click(screen.getByRole("button", { name: "Phantom" }))
     expect(state.connect).toHaveBeenCalledWith(
       expect.objectContaining({ name: "Phantom" }),
@@ -83,7 +83,7 @@ describe("ConnectButton", () => {
 
   it("closes the picker on Escape", () => {
     setup({ wallets: [fakeWallet("Phantom")] })
-    fireEvent.click(screen.getByRole("button", { name: "Connect" }))
+    fireEvent.click(screen.getByRole("button", { name: /^connect$/i }))
     expect(screen.getByRole("dialog")).toBeInTheDocument()
 
     fireEvent.keyDown(window, { key: "Escape" })

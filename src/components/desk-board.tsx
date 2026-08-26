@@ -57,7 +57,7 @@ export function DeskBoard({
   const { prices, status } = usePrices(ALL_MINTS)
 
   return (
-    <Section id="assets" label="02" title="ASSETS">
+    <Section id="assets" label="02" title="assets">
       {status === "error" && (
         <p className="mb-6 border-2 border-loss bg-loss/10 px-3 py-2 text-xs font-bold text-loss">
           Price feed unavailable. Figures below are the last values received.
@@ -86,7 +86,7 @@ export function DeskBoard({
               <div className="mb-3 flex items-baseline justify-between border-y-2 border-ink/20 py-2">
                 <span
                   data-testid={`desk-brokers-${desk.id}`}
-                  className="text-[0.65rem] tracking-widest text-ink-muted uppercase"
+                  className="text-[0.65rem] tracking-widest text-ink-muted"
                 >
                   {assigned} {assigned === 1 ? "broker" : "brokers"}
                 </span>

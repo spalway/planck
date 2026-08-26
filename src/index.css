@@ -26,6 +26,7 @@
   --color-ink: var(--ink);
   --color-ink-muted: var(--ink-muted);
   --color-umber: var(--umber);
+  --color-bar: var(--bar);
   --color-tan: var(--tan);
   --color-rust: var(--rust);
   --color-cobalt: var(--cobalt);
@@ -54,6 +55,11 @@
   --umber: #4a3728;
   --rust: #a8481f;
 
+  /* The bars that bracket the page. Dark brown rather than black: it keeps
+     the warmth of the palette at the two heaviest points, and leaves pure
+     black to mean structure. */
+  --bar: #3b2a1d;
+
   --cobalt: #2148e2;
   --gain: #1b6b3f;
   --loss: #b3352a;
@@ -63,6 +69,24 @@
      the bars that bound the page get 3px so they read as edges. */
   --stroke: 2px;
   --stroke-bold: 3px;
+}
+
+/*
+ * Lowercase everything — but not the things where case carries meaning.
+ *
+ * Base58 is case-sensitive, so a lowercased Solana address is a WRONG
+ * address, and anyone reading one off the screen to check it against a
+ * wallet would be misled. Ticker symbols (NVDAx, PAXG) are identifiers too.
+ * Both already carry .num, so scoping the opt-out to that class splits it
+ * exactly where it needs splitting: prose and labels go lowercase, data
+ * keeps the case it was given.
+ */
+body { text-transform: lowercase; }
+
+.num,
+input,
+textarea {
+  text-transform: none;
 }
 
 body {
@@ -83,13 +107,11 @@ body {
 /* Headings share the body face and are separated by weight, not family.
    Geist Mono is variable, so 800 is a drawn weight, not a smeared one. */
 h1,
-h2 {
+h2,
+h3,
+h4 {
   font-weight: 800;
-  letter-spacing: -0.01em;
-}
-
-h3 {
-  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 /* Every number on the site aligns in columns. */
@@ -150,7 +172,7 @@ h3 {
     color: var(--ink);
     box-shadow: 3px 3px 0 0 var(--ink);
     font-weight: 700;
-    text-transform: uppercase;
+    text-transform: lowercase;
     letter-spacing: 0.12em;
     /* steps() rather than a smooth ease: the press should snap between two
        states like a sprite swapping frames. */
@@ -189,24 +211,28 @@ h3 {
     background-color: var(--tan);
   }
 
-  /* For controls sitting on the black bar, where a black rule and a black
-     shadow would both vanish. Inverted rather than restyled, so it is
-     visibly the same control. */
+  /* For controls sitting on the bar, where a black rule and a black shadow
+     would both vanish into it.
+
+     No offset shadow. A translucent bone one hung off the Connect button as
+     a faint L-shaped ghost that read as a rendering artifact rather than as
+     depth — it was the stray stroke on the nav bar. The bar is already a
+     raised surface; nothing on it needs to be raised again. */
   .btn-invert {
     border-color: var(--ground);
     background-color: transparent;
     color: var(--ground);
-    box-shadow: 3px 3px 0 0 rgba(239, 233, 220, 0.4);
+    box-shadow: none;
   }
 
   .btn-invert:hover:not(:disabled) {
     background-color: var(--ground);
-    color: var(--ink);
+    color: var(--bar);
   }
 
   .btn-invert:active:not(:disabled) {
-    transform: translate(3px, 3px);
-    box-shadow: 0 0 0 0 rgba(239, 233, 220, 0);
+    transform: none;
+    box-shadow: none;
   }
 
   /* A filled index mark — section numbers, desk labels, the active nav item.
@@ -220,7 +246,7 @@ h3 {
     padding: 0.1rem 0.4rem;
     font-weight: 700;
     letter-spacing: 0.12em;
-    text-transform: uppercase;
+    text-transform: lowercase;
     line-height: 1.4;
   }
 

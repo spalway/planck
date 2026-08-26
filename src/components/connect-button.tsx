@@ -47,8 +47,8 @@ function Modal({
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close"
-            className="text-xs tracking-widest text-ink-muted uppercase hover:text-ink"
+            aria-label="close"
+            className="text-xs tracking-widest text-ink-muted hover:text-ink"
           >
             Close
           </button>
@@ -93,7 +93,7 @@ export function ConnectButton() {
     setOpen(false)
   }
 
-  const label = connecting ? "Connecting…" : address ? shortAddress(address) : "Connect"
+  const label = connecting ? "connecting…" : address ? shortAddress(address) : "connect"
 
   return (
     <>
@@ -107,7 +107,7 @@ export function ConnectButton() {
       </button>
 
       {open && !address && (
-        <Modal title="CONNECT A WALLET" onClose={() => setOpen(false)}>
+        <Modal title="connect a wallet" onClose={() => setOpen(false)}>
           {wallets.length === 0 ? (
             <p className="text-sm leading-relaxed text-ink-muted">
               No Solana wallet detected in this browser. Install Phantom, Solflare or
@@ -124,9 +124,9 @@ export function ConnectButton() {
       )}
 
       {open && address && (
-        <Modal title="WALLET" onClose={() => setOpen(false)}>
-          <p className="text-[0.65rem] tracking-widest text-ink-muted uppercase">
-            Connected
+        <Modal title="wallet" onClose={() => setOpen(false)}>
+          <p className="text-[0.65rem] tracking-widest text-ink-muted">
+            connected
           </p>
           <p className="num panel-sunk mt-2 px-2 py-1.5 text-xs break-all">{address}</p>
 
@@ -135,7 +135,7 @@ export function ConnectButton() {
             onClick={leave}
             className="btn mt-5 w-full py-2 text-xs hover:border-loss hover:text-loss"
           >
-            Disconnect
+            disconnect
           </button>
         </Modal>
       )}

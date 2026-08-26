@@ -29,7 +29,7 @@ function Odds() {
   return (
     <table className="w-full text-sm">
       <thead>
-        <tr className="border-b-2 border-ink bg-tan text-left text-[0.6rem] tracking-widest text-ink-muted uppercase">
+        <tr className="border-b-2 border-ink bg-tan text-left text-[0.6rem] tracking-widest text-ink-muted">
           <th className="p-2.5 font-normal">Desk</th>
           <th className="p-2.5 text-right font-normal">Instruments</th>
           <th className="w-1/3 p-2.5 text-right font-normal">Chance</th>
@@ -59,7 +59,7 @@ function Odds() {
   )
 }
 
-const TRAITS = [
+const traits = [
   {
     name: "Nerve",
     range: "1 – 100",
@@ -81,7 +81,7 @@ export function MintPreview() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h3 className="font-display text-base font-bold">WHAT YOU ROLL FOR</h3>
+        <h3 className="font-display text-base font-bold">what you roll for</h3>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-muted">
           A broker is a desk plus three traits. The desk and the traits are both fixed
           at mint. These five are already on the floor.
@@ -95,7 +95,7 @@ export function MintPreview() {
             <span className="w-full truncate text-center font-display text-[0.6rem] font-bold">
               {b.name}
             </span>
-            <span className="text-[0.55rem] tracking-widest text-ink-muted uppercase">
+            <span className="text-[0.55rem] tracking-widest text-ink-muted">
               {deskLabel(b.desk)}
             </span>
           </li>
@@ -104,7 +104,7 @@ export function MintPreview() {
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div>
-          <h3 className="font-display text-base font-bold">DESK ODDS</h3>
+          <h3 className="font-display text-base font-bold">desk odds</h3>
           <p className="mt-2 mb-3 text-sm leading-relaxed text-ink-muted">
             Weighted by how many instruments a desk carries, so the floor mirrors the
             book. Shallow desks stay reachable.
@@ -115,15 +115,15 @@ export function MintPreview() {
         </div>
 
         <div>
-          <h3 className="font-display text-base font-bold">TRAITS</h3>
+          <h3 className="font-display text-base font-bold">traits</h3>
           <p className="mt-2 mb-3 text-sm leading-relaxed text-ink-muted">
             Every trait drives a mechanic. None are decorative.
           </p>
           <dl className="panel divide-y-2 divide-ink/15">
-            {TRAITS.map((t) => (
+            {traits.map((t) => (
               <div key={t.name} className="p-3">
                 <dt className="flex items-baseline justify-between gap-3">
-                  <span className="text-xs font-bold tracking-widest uppercase">
+                  <span className="text-xs font-bold tracking-widest">
                     {t.name}
                   </span>
                   <span className="num text-xs text-ink-muted">{t.range}</span>

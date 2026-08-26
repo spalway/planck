@@ -3,7 +3,7 @@ import { STEPS } from "@/lib/how-it-works-steps"
 
 export function HowItWorks() {
   return (
-    <Section id="how" label="05" title="HOW IT WORKS">
+    <Section id="how" label="05" title="how it works">
       {/* 2px gaps over an umber ground: the steps read as cells ruled off on
           one sheet, which is what a numbered sequence should look like. */}
       <ol className="panel grid grid-cols-1 gap-0.5 bg-ink md:grid-cols-2 lg:grid-cols-3">

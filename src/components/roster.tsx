@@ -35,7 +35,7 @@ function Chip({
       type="button"
       onClick={onClick}
       className={cn(
-        "border px-3 py-1 text-[0.65rem] tracking-widest uppercase",
+        "border px-3 py-1 text-[0.65rem] tracking-widest",
         active
           ? "border-ink bg-ink text-ground"
           : "border-ink/30 text-ink-muted hover:border-ink hover:text-ink",
@@ -57,7 +57,7 @@ export function Roster({ brokers }: { brokers: readonly Broker[] }) {
   }, [brokers, desk, sort])
 
   return (
-    <Section id="brokers" label="03" title="BROKERS">
+    <Section id="brokers" label="03" title="brokers">
       <div className="mb-6 flex flex-wrap items-center gap-2">
         <Chip active={desk === "all"} onClick={() => setDesk("all")}>
           All
@@ -68,7 +68,7 @@ export function Roster({ brokers }: { brokers: readonly Broker[] }) {
           </Chip>
         ))}
 
-        <span className="ml-auto text-[0.65rem] tracking-widest text-ink-muted uppercase">
+        <span className="ml-auto text-[0.65rem] tracking-widest text-ink-muted">
           Sort
         </span>
         {SORTS.map((s) => (

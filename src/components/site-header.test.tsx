@@ -27,33 +27,40 @@ describe("SiteHeader", () => {
     }
   })
 
+/** Class list as a set, so `bg-ground` never matches `hover:bg-ground/15`. */
+function classes(name: string): string[] {
+  return screen.getByRole("link", { name }).className.split(/\s+/)
+}
+
   it("marks the current page as active", () => {
     header("/brokers")
     // The active page is a filled block. Asserting the fill rather than a
     // text colour, because a tint alone was too easy to miss at this size.
-    expect(screen.getByRole("link", { name: "Brokers" }).className).toContain(
-      "bg-ground",
-    )
+    expect(classes("Brokers")).toContain("bg-ground")
   })
 
   it("does not mark Home active on a sub-route", () => {
     // Without `end`, "/" matches every path and Home never switches off.
     header("/brokers")
-    expect(screen.getByRole("link", { name: "Home" }).className).not.toContain(
-      "bg-ground",
-    )
+    expect(classes("Home")).not.toContain("bg-ground")
   })
 
-  it("sets the nav in the pixel face", () => {
+  it("sets the wordmark in the pixel face and the links in the label face", () => {
     header()
+    // Only the wordmark is pixel type. Links in the same face would read as
+    // a second logotype competing with the first.
+    expect(screen.getByRole("link", { name: "planckbits" }).className).toContain(
+      "pixel-type",
+    )
     for (const name of ["Home", "Brokers"]) {
-      expect(screen.getByRole("link", { name }).className).toContain("pixel-type")
+      expect(classes(name)).toContain("font-bold")
+      expect(classes(name)).not.toContain("pixel-type")
     }
   })
 
   it("offers a live connect action", () => {
     // Was a disabled "Connect · soon" placeholder; wallet connect now works.
     header()
-    expect(screen.getByRole("button", { name: "Connect" })).toBeEnabled()
+    expect(screen.getByRole("button", { name: "connect" })).toBeEnabled()
   })
 })

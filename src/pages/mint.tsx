@@ -42,7 +42,7 @@ function toBroker(m: MintedBroker): Broker {
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-baseline justify-between border-t border-ink/15 py-1.5">
-      <span className="text-[0.65rem] tracking-widest text-ink-muted uppercase">
+      <span className="text-[0.65rem] tracking-widest text-ink-muted">
         {label}
       </span>
       <span className="num text-sm">{value}</span>
@@ -56,7 +56,7 @@ function Minted({ broker }: { broker: Broker }) {
       <BrokerSprite broker={broker} size={120} />
 
       <div className="min-w-0 flex-1">
-        <p className="text-[0.65rem] tracking-widest text-cobalt uppercase">
+        <p className="text-[0.65rem] tracking-widest text-cobalt">
           Hired onto the floor
         </p>
         <h3 className="mt-1 font-display text-lg">{broker.name}</h3>
@@ -90,7 +90,7 @@ export function MintPage() {
   const canMint = holding.status === "known" && holding.holding.holds
 
   return (
-    <Section id="mint" label="06" title="MINT A BROKER">
+    <Section id="mint" label="06" title="mint a broker">
       <p className="mb-6 max-w-2xl text-sm leading-relaxed text-ink-muted">
         Traits roll on mint and cannot be re-rolled. The desk is weighted by how many
         instruments it carries, and surplus coverage on a shallow desk converts to nerve

@@ -25,9 +25,9 @@ const DESK_SWATCH: Record<Broker["desk"], string> = {
 
 export function BrokerWall({ brokers }: { brokers: readonly Broker[] }) {
   return (
-    <Section id="floor" label="01" title="THE FLOOR">
+    <Section id="floor" label="01" title="the floor">
       <div className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2">
-        <span className="text-[0.65rem] tracking-widest text-ink-muted uppercase">
+        <span className="text-[0.65rem] tracking-widest text-ink-muted">
           Tie colour is the desk
         </span>
         {DESKS.map((d) => (
@@ -40,7 +40,7 @@ export function BrokerWall({ brokers }: { brokers: readonly Broker[] }) {
               className="inline-block h-2.5 w-2.5 border border-ink/40"
               style={{ backgroundColor: DESK_SWATCH[d.id] }}
             />
-            <span className="text-[0.65rem] tracking-widest text-ink-muted uppercase">
+            <span className="text-[0.65rem] tracking-widest text-ink-muted">
               {d.label}
             </span>
           </span>

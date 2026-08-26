@@ -19,7 +19,7 @@ export function Hero({ brokers }: { brokers: readonly Broker[] }) {
           className="pixel-type mt-5 text-5xl leading-[1.05] text-ink sm:text-7xl"
           style={{ textShadow: "4px 4px 0 var(--tan)" }}
         >
-          PLANCKBITS
+          planckbits
         </h1>
 
         <p className="mt-7 max-w-xl text-lg leading-relaxed text-ink-muted">

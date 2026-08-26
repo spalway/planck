@@ -17,7 +17,7 @@ function Trait({ label, value, max }: { label: string; value: number; max: numbe
 
   return (
     <div className="flex items-center justify-between gap-2">
-      <span className="w-16 shrink-0 text-[0.6rem] tracking-widest text-ink-muted uppercase">
+      <span className="w-16 shrink-0 text-[0.6rem] tracking-widest text-ink-muted">
         {label}
       </span>
 
@@ -67,7 +67,7 @@ export function BrokerCard({ broker }: { broker: Broker }) {
       </div>
 
       <div className="mt-3 flex items-baseline justify-between border-t-2 border-ink/20 pt-2">
-        <span className="text-[0.6rem] tracking-widest text-ink-muted uppercase">
+        <span className="text-[0.6rem] tracking-widest text-ink-muted">
           Tenure
         </span>
         <span className="num text-xs font-bold">{broker.tenureHours}h</span>

@@ -7,7 +7,7 @@ export function FloorCensus({ brokers }: { brokers: readonly Broker[] }) {
   const covered = new Set(brokers.map((b) => b.desk)).size
 
   return (
-    <Section id="census" label="02" title="THE CENSUS">
+    <Section id="census" label="02" title="the census">
       <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
         <Stat label="Brokers" value={String(brokers.length)} />
         <Stat label="Employed" value={String(employed)} hint="tenure accruing" />
