@@ -30,7 +30,7 @@ export function Section({
         <span className="num tag text-xs">{label}</span>
         <h2 className="font-display text-2xl tracking-tight sm:text-3xl">{title}</h2>
         {/* Fills the rest of the line so the heading reads as a ruled row. */}
-        <span aria-hidden="true" className="h-0.5 flex-1 bg-umber/25" />
+        <span aria-hidden="true" className="h-0.5 flex-1 bg-ink/25" />
       </header>
       {children}
     </section>

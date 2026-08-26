@@ -7,7 +7,8 @@ import { ROUTES } from "@/lib/nav"
 // project root.
 const root = process.cwd()
 const viteConfig = readFileSync(`${root}/vite.config.ts`, "utf8")
-const server = readFileSync(`${root}/server/index.mjs`, "utf8")
+// The static-serving rules live in app.mjs; index.mjs only wires and listens.
+const server = readFileSync(`${root}/server/app.mjs`, "utf8")
 
 /**
  * The build output directory and the server's cache rule are coupled, and both

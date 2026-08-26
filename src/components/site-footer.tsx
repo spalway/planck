@@ -1,15 +1,39 @@
+import { RISK_POINTS } from "@/lib/risk"
+
+/**
+ * The black bar that closes the page.
+ *
+ * It also carries the risk disclosure. That used to be a modal you had to
+ * agree to before the site would render; the modal is gone, but the text is
+ * not — a tokenized-equity site that says nothing about restriction or loss
+ * is worse than one that says it quietly at the foot of every page.
+ */
+
 export function SiteFooter() {
   return (
-    // The one large dark surface on the site. It closes the page, and it is
-    // where the browns stop being an accent and become the ground.
-    <footer className="mt-16 border-t-2 border-umber bg-umber py-10 text-ground">
-      <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 text-xs">
-        <p className="font-brand text-base tracking-tight">PLANCKBITS</p>
-        <p className="text-ground/75">A labor market for AI broker agents.</p>
-        <p className="max-w-xl leading-relaxed text-ground/55">
-          Not financial advice. Tokenized equity exposure is restricted in some
-          jurisdictions.
+    <footer className="mt-16 border-t-[3px] border-ink bg-ink text-ground">
+      <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-10">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+          <span className="pixel-type text-base">PLANCKBITS</span>
+          <span className="pixel-type text-[0.65rem] text-ground/60">
+            SOLANA · RWAs
+          </span>
+        </div>
+
+        <p className="text-xs text-ground/75">
+          A labor market for AI broker agents.
         </p>
+
+        <ul className="grid max-w-4xl grid-cols-1 gap-x-8 gap-y-2 md:grid-cols-2">
+          {RISK_POINTS.map((p) => (
+            <li
+              key={p}
+              className="border-l-2 border-ground/25 pl-3 text-[0.7rem] leading-relaxed text-ground/55"
+            >
+              {p}
+            </li>
+          ))}
+        </ul>
       </div>
     </footer>
   )

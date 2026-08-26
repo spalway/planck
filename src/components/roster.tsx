@@ -37,8 +37,8 @@ function Chip({
       className={cn(
         "border px-3 py-1 text-[0.65rem] tracking-widest uppercase",
         active
-          ? "border-umber bg-umber text-ground"
-          : "border-umber/30 text-ink-muted hover:border-umber hover:text-ink",
+          ? "border-ink bg-ink text-ground"
+          : "border-ink/30 text-ink-muted hover:border-ink hover:text-ink",
       )}
     >
       {children}

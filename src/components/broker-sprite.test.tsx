@@ -1,13 +1,9 @@
 import { render } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
 
-import {
-  BrokerSprite,
-  SPRITE_HAT,
-  SPRITE_ROWS,
-  SPRITE_SIZE,
-} from "@/components/broker-sprite"
+import { BrokerSprite } from "@/components/broker-sprite"
 import type { Broker } from "@/lib/brokers"
+import { SPRITE_HAT, SPRITE_ROWS, SPRITE_SIZE } from "@/lib/sprite-glyphs"
 
 const BROKER: Broker = {
   id: "PB-001",

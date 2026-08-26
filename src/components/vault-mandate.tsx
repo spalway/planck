@@ -57,7 +57,7 @@ export function VaultMandate() {
               {desk.blurb}
             </p>
 
-            <div className="border-t-2 border-umber/20 pt-1">
+            <div className="border-t-2 border-ink/20 pt-1">
               {instrumentsForDesk(desk.id).map((i) => {
                 const quote = prices[i.mint]
                 const change = quote?.priceChange24h ?? null
@@ -65,7 +65,7 @@ export function VaultMandate() {
                 return (
                   <div
                     key={i.mint}
-                    className="flex items-baseline justify-between gap-2 border-t border-umber/10 py-1.5 first:border-t-0"
+                    className="flex items-baseline justify-between gap-2 border-t border-ink/10 py-1.5 first:border-t-0"
                   >
                     <span className="num min-w-0 flex-1 truncate text-xs">
                       {i.symbol}
@@ -91,7 +91,7 @@ export function VaultMandate() {
 
       <div>
         <h3 className="font-display text-base font-bold">THE RULES</h3>
-        <ol className="panel mt-3 grid grid-cols-1 gap-0.5 bg-umber md:grid-cols-3">
+        <ol className="panel mt-3 grid grid-cols-1 gap-0.5 bg-ink md:grid-cols-3">
           {RULES.map((r, i) => (
             <li key={r.head} className="flex min-w-0 flex-col bg-paper p-4">
               <span className="num tag self-start text-[0.55rem]">

@@ -41,7 +41,7 @@ function toBroker(m: MintedBroker): Broker {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-baseline justify-between border-t border-umber/15 py-1.5">
+    <div className="flex items-baseline justify-between border-t border-ink/15 py-1.5">
       <span className="text-[0.65rem] tracking-widest text-ink-muted uppercase">
         {label}
       </span>
@@ -167,7 +167,7 @@ export function MintPage() {
       </div>
 
       {canMint === false && (
-        <div className="mt-10 border-t-2 border-umber/20 pt-8">
+        <div className="mt-10 border-t-2 border-ink/20 pt-8">
           <MintPreview />
         </div>
       )}

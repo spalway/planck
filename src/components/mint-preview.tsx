@@ -29,7 +29,7 @@ function Odds() {
   return (
     <table className="w-full text-sm">
       <thead>
-        <tr className="border-b-2 border-umber bg-tan text-left text-[0.6rem] tracking-widest text-ink-muted uppercase">
+        <tr className="border-b-2 border-ink bg-tan text-left text-[0.6rem] tracking-widest text-ink-muted uppercase">
           <th className="p-2.5 font-normal">Desk</th>
           <th className="p-2.5 text-right font-normal">Instruments</th>
           <th className="w-1/3 p-2.5 text-right font-normal">Chance</th>
@@ -37,14 +37,14 @@ function Odds() {
       </thead>
       <tbody>
         {odds.map((o) => (
-          <tr key={o.desk} className="border-b border-umber/15 last:border-0">
+          <tr key={o.desk} className="border-b border-ink/15 last:border-0">
             <td className="p-2.5 text-xs">{deskLabel(o.desk)}</td>
             <td className="num p-2.5 text-right text-xs">{o.instruments}</td>
             <td className="p-2.5">
               <span className="flex items-center justify-end gap-2">
                 <span
                   aria-hidden="true"
-                  className="h-2 bg-umber"
+                  className="h-2 bg-ink"
                   style={{ width: `${Math.round(o.chance * 100)}%` }}
                 />
                 <span className="num w-9 shrink-0 text-right text-xs font-bold">
@@ -88,7 +88,7 @@ export function MintPreview() {
         </p>
       </div>
 
-      <ul className="panel grid grid-cols-2 gap-0.5 bg-umber sm:grid-cols-5">
+      <ul className="panel grid grid-cols-2 gap-0.5 bg-ink sm:grid-cols-5">
         {SAMPLES.map((b) => (
           <li key={b.id} className="flex flex-col items-center gap-2 bg-paper p-4">
             <BrokerSprite broker={b} size={64} />
@@ -119,7 +119,7 @@ export function MintPreview() {
           <p className="mt-2 mb-3 text-sm leading-relaxed text-ink-muted">
             Every trait drives a mechanic. None are decorative.
           </p>
-          <dl className="panel divide-y-2 divide-umber/15">
+          <dl className="panel divide-y-2 divide-ink/15">
             {TRAITS.map((t) => (
               <div key={t.name} className="p-3">
                 <dt className="flex items-baseline justify-between gap-3">

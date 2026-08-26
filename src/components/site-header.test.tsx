@@ -32,16 +32,23 @@ describe("SiteHeader", () => {
     // The active page is a filled block. Asserting the fill rather than a
     // text colour, because a tint alone was too easy to miss at this size.
     expect(screen.getByRole("link", { name: "Brokers" }).className).toContain(
-      "bg-umber",
+      "bg-ground",
     )
   })
 
   it("does not mark Home active on a sub-route", () => {
     // Without `end`, "/" matches every path and Home never switches off.
     header("/brokers")
-    expect(screen.getByRole("link", { name: "Home" }).className).toContain(
-      "text-ink-muted",
+    expect(screen.getByRole("link", { name: "Home" }).className).not.toContain(
+      "bg-ground",
     )
+  })
+
+  it("sets the nav in the pixel face", () => {
+    header()
+    for (const name of ["Home", "Brokers"]) {
+      expect(screen.getByRole("link", { name }).className).toContain("pixel-type")
+    }
   })
 
   it("offers a live connect action", () => {

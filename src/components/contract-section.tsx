@@ -69,7 +69,7 @@ export function ContractSection() {
         )}
       </div>
 
-      <p className="border-t-2 border-umber/20 px-5 py-3 text-xs leading-relaxed text-ink-muted">
+      <p className="border-t-2 border-ink/20 px-5 py-3 text-xs leading-relaxed text-ink-muted">
         Creator fees on $PLANCK fund the vault, which buys real tokenized assets
         and never sells them. Holding is what opens minting and hiring.
       </p>

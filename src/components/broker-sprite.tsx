@@ -1,5 +1,6 @@
 import type { Broker } from "@/lib/brokers"
 import type { DeskId } from "@/lib/instruments"
+import { SPRITE_HAT, SPRITE_ROWS } from "@/lib/sprite-glyphs"
 
 /**
  * A broker portrait, composed rather than drawn.
@@ -36,31 +37,6 @@ const SHIRT = "#F7F5F0"
 const MOUTH = "#8C5A4A"
 const HEADSET = "#2148E2"
 
-/**
- * 16x16. "." transparent · h hair · s skin · e eye · m mouth
- * c suit · w shirt · t tie (desk colour) · p headset
- */
-const BASE = [
-  "................",
-  ".....hhhhhh.....",
-  "...hhhhhhhhhh...",
-  "..hhhhhhhhhhhh..",
-  "..hhsssssssshh..",
-  "..hssssssssssh..",
-  "..hsseesseessh..",
-  "..hssssssssssh..",
-  "..hsssmmmmsssh..",
-  "...hssssssssh...",
-  "......ssss......",
-  "...ccccwwcccc...",
-  "..ccccwttwcccc..",
-  "..ccccwttwcccc..",
-  "..cccccttccccc..",
-  "..cccccccccccc..",
-]
-
-/** A brimmed hat for high nerve. */
-const HAT = ["....hhhhhhhh....", "...hhhhhhhhhh...", ".hhhhhhhhhhhhhh."]
 
 function setAt(row: string, i: number, ch: string): string {
   return row.slice(0, i) + ch + row.slice(i + 1)
@@ -68,12 +44,12 @@ function setAt(row: string, i: number, ch: string): string {
 
 /** Traits that change the silhouette, so the grid is scannable. */
 function compose(b: Broker): string[] {
-  const rows = [...BASE]
+  const rows = [...SPRITE_ROWS]
 
   if (b.effectiveNerve >= 70) {
-    rows[1] = HAT[0]
-    rows[2] = HAT[1]
-    rows[3] = HAT[2]
+    rows[1] = SPRITE_HAT[0]
+    rows[2] = SPRITE_HAT[1]
+    rows[3] = SPRITE_HAT[2]
   }
 
   if (b.latency <= 30) {
@@ -139,8 +115,3 @@ export function BrokerSprite({ broker, size = 96 }: { broker: Broker; size?: num
     </svg>
   )
 }
-
-/** Exported for tests: every row must be exactly this wide or the art skews. */
-export const SPRITE_SIZE = 16
-export const SPRITE_ROWS = BASE
-export const SPRITE_HAT = HAT

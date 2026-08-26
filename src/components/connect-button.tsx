@@ -35,7 +35,7 @@ function Modal({
       role="dialog"
       aria-modal="true"
       aria-label={title}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-umber/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-4"
       onClick={onClose}
     >
       <div
@@ -70,7 +70,7 @@ function WalletRow({
     <button
       type="button"
       onClick={() => onPick(wallet)}
-      className="flex w-full items-center gap-3 border-2 border-umber px-3 py-2.5 text-left hover:border-cobalt hover:bg-tan hover:text-cobalt"
+      className="flex w-full items-center gap-3 border-2 border-ink px-3 py-2.5 text-left hover:border-cobalt hover:bg-tan hover:text-cobalt"
     >
       {/* Wallet-supplied data URI. Decorative — the name is the label. */}
       <img src={wallet.icon} alt="" className="h-5 w-5 shrink-0" />
@@ -101,7 +101,7 @@ export function ConnectButton() {
         type="button"
         onClick={() => setOpen(true)}
         disabled={connecting}
-        className="num btn shrink-0 px-3 py-1.5 text-xs disabled:cursor-wait"
+        className="num btn btn-invert shrink-0 px-3 py-1.5 text-xs disabled:cursor-wait"
       >
         {label}
       </button>

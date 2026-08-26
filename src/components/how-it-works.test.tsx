@@ -1,7 +1,8 @@
 import { render, screen } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
 
-import { HOW_IT_WORKS_STEPS, HowItWorks } from "@/components/how-it-works"
+import { HowItWorks } from "@/components/how-it-works"
+import { HOW_IT_WORKS_STEPS } from "@/lib/how-it-works-steps"
 
 describe("HowItWorks", () => {
   it("has six steps", () => {

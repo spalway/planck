@@ -33,11 +33,11 @@ export function BrokerWall({ brokers }: { brokers: readonly Broker[] }) {
         {DESKS.map((d) => (
           <span
             key={d.id}
-            className="flex items-center gap-1.5 border-2 border-umber/25 px-1.5 py-0.5"
+            className="flex items-center gap-1.5 border-2 border-ink/25 px-1.5 py-0.5"
           >
             <span
               aria-hidden="true"
-              className="inline-block h-2.5 w-2.5 border border-umber/40"
+              className="inline-block h-2.5 w-2.5 border border-ink/40"
               style={{ backgroundColor: DESK_SWATCH[d.id] }}
             />
             <span className="text-[0.65rem] tracking-widest text-ink-muted uppercase">
@@ -49,7 +49,7 @@ export function BrokerWall({ brokers }: { brokers: readonly Broker[] }) {
 
       {/* The 2px gaps over an umber ground draw the grid lines, so the sheet
           is one framed object rather than 24 outlined boxes. */}
-      <ul className="panel grid grid-cols-3 gap-0.5 bg-umber p-0 sm:grid-cols-4 lg:grid-cols-6">
+      <ul className="panel grid grid-cols-3 gap-0.5 bg-ink p-0 sm:grid-cols-4 lg:grid-cols-6">
         {brokers.map((b) => (
           <li key={b.id} className="min-w-0 bg-paper">
             <Link

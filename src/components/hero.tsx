@@ -10,13 +10,14 @@ export function Hero({ brokers }: { brokers: readonly Broker[] }) {
         <span className="tag text-[0.65rem]">Solana · real-world assets</span>
 
         {/*
-          A hard offset shadow on the logotype, the same 4px the panels use.
-          Pixel type was drawn to be stamped twice like this, and it ties the
-          wordmark to the rest of the chrome instead of leaving it floating.
+          Black, in the pixel face, with a tan offset behind it. The offset is
+          the same 4px the panels cast, so the wordmark sits in the same
+          drawn system — and keeping it tan rather than black leaves the
+          letterforms themselves unambiguously black and the counters open.
         */}
         <h1
-          className="mt-5 font-brand text-5xl leading-[1.05] tracking-tight sm:text-7xl"
-          style={{ textShadow: "4px 4px 0 var(--umber)" }}
+          className="pixel-type mt-5 text-5xl leading-[1.05] text-ink sm:text-7xl"
+          style={{ textShadow: "4px 4px 0 var(--tan)" }}
         >
           PLANCKBITS
         </h1>

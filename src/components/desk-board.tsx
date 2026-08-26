@@ -22,7 +22,7 @@ function Row({
   const change = quote?.priceChange24h ?? null
 
   return (
-    <div className="flex items-baseline justify-between gap-3 border-t border-umber/15 py-2 first:border-t-0">
+    <div className="flex items-baseline justify-between gap-3 border-t border-ink/15 py-2 first:border-t-0">
       {/* truncate only works on a flex/block child with min-w-0; on the
           inline span it did nothing and long names such as "MicroStrategy
           xStock" forced the card wider than a phone viewport. */}
@@ -83,7 +83,7 @@ export function DeskBoard({
                 {desk.blurb}
               </p>
 
-              <div className="mb-3 flex items-baseline justify-between border-y-2 border-umber/20 py-2">
+              <div className="mb-3 flex items-baseline justify-between border-y-2 border-ink/20 py-2">
                 <span
                   data-testid={`desk-brokers-${desk.id}`}
                   className="text-[0.65rem] tracking-widest text-ink-muted uppercase"

@@ -1,7 +1,6 @@
 import * as React from "react"
 import { Route, Routes, useLocation } from "react-router-dom"
 
-import { DisclaimerGate, hasAcceptedGate } from "@/components/disclaimer-gate"
 import { ErrorBoundary } from "@/components/error-boundary"
 import { FundingLine } from "@/components/funding-line"
 import { SiteFooter } from "@/components/site-footer"
@@ -17,7 +16,6 @@ import { NotFoundPage } from "@/pages/not-found"
 import { PLANCK_CA } from "@/lib/vault"
 
 export function App() {
-  const [entered, setEntered] = React.useState(hasAcceptedGate)
   const { pathname } = useLocation()
 
   // Router keeps scroll position across navigations; a new page starts at the top.
@@ -26,7 +24,6 @@ export function App() {
   return (
     <WalletProvider>
       <div className="flex min-h-dvh flex-col">
-        {!entered && <DisclaimerGate onAccept={() => setEntered(true)} />}
         <SiteHeader />
 
         <main className="mx-auto w-full max-w-6xl flex-1 px-4">

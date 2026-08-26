@@ -14,7 +14,8 @@
   --font-sans: "Geist Mono Variable", ui-monospace, monospace;
   /* Section headings: the same monospace, set heavy. */
   --font-display: "Geist Mono Variable", ui-monospace, monospace;
-  /* The logotype keeps the pixel monospace. It is the mark, not body text. */
+  /* The pixel face. The logotype, the nav and anything that should read as
+     drawn on a grid rather than typeset. */
   --font-brand: "Departure Mono", "Geist Mono Variable", ui-monospace, monospace;
   /* Every figure on the site. */
   --font-num: "Geist Mono Variable", ui-monospace, monospace;
@@ -34,29 +35,34 @@
 }
 
 :root {
-  /* Warm bone and dark brown. A printed brokerage ledger left in the sun,
-     not a CRT terminal — the browns are what keep it off the black-and-blue
-     default every crypto site lands on. */
-  --ground: #efe9dc;
-  --ink: #1b1410;
-  --ink-muted: #6d5b48;
+  /* Black on bone.
 
-  /* The structural brown. Every rule, frame and hard shadow is this colour,
-     which is what makes the chrome read as one drawn system. */
-  --umber: #4a3728;
+     Black carries the structure — every outline, every hard shadow, the nav
+     bar and the footer. Bone and tan are the ground and the fills, never the
+     frame. Brown survives as an accent on a few surfaces rather than as the
+     drawing colour it used to be. */
+  --ink: #000000;
+  --ink-muted: #4a4038;
+
+  --ground: #efe9dc;
+  --paper: #fdfaf3;
   /* Fills that need to sit back from paper without going grey. */
   --tan: #ded1ba;
-  /* Second accent, warm, for counts and marks that are not links. */
+
+  /* Kept for warmth in a few places — sunk wells, the paper grid. Structure
+     is black now, so this no longer draws anything. */
+  --umber: #4a3728;
   --rust: #a8481f;
 
   --cobalt: #2148e2;
   --gain: #1b6b3f;
   --loss: #b3352a;
-  --paper: #fdfaf3;
 
   /* One knob for the whole blocky look. Chrome is drawn at 2px so it reads
-     as deliberate weight rather than a hairline the browser rounded off. */
+     as deliberate weight rather than a hairline the browser rounded off;
+     the bars that bound the page get 3px so they read as edges. */
   --stroke: 2px;
+  --stroke-bold: 3px;
 }
 
 body {
@@ -97,42 +103,52 @@ h3 {
   image-rendering: pixelated;
 }
 
+/* The pixel face, set the way it wants to be set: wide and upright. It is
+   drawn on a grid, so tight tracking closes the counters and it turns to
+   mush at small sizes. */
+.pixel-type {
+  font-family: var(--font-brand);
+  letter-spacing: 0.08em;
+  -webkit-font-smoothing: none;
+}
+
 @layer components {
   /*
    * The blocky kit.
    *
-   * Every surface is a rectangle with a thick brown rule and a hard offset
+   * Every surface is a rectangle with a thick black rule and a hard offset
    * shadow — no blur, no radius. The shadow is a second rectangle, which is
    * how a pixel UI would draw depth, and it is the single detail that makes
    * the whole page read as retro rather than as flat minimalism.
    */
 
   .panel {
-    border: var(--stroke) solid var(--umber);
+    border: var(--stroke) solid var(--ink);
     background-color: var(--paper);
-    box-shadow: 4px 4px 0 0 var(--umber);
+    box-shadow: 4px 4px 0 0 var(--ink);
   }
 
   /* For panels that tile against each other, where stacked shadows would
      read as noise rather than as depth. */
   .panel-flat {
-    border: var(--stroke) solid var(--umber);
+    border: var(--stroke) solid var(--ink);
     background-color: var(--paper);
   }
 
   /* Sunk instead of raised: the shadow falls inward. Used for wells that
      hold a value rather than for surfaces you can act on. */
   .panel-sunk {
-    border: var(--stroke) solid var(--umber);
+    border: var(--stroke) solid var(--ink);
     background-color: var(--tan);
-    box-shadow: inset 3px 3px 0 0 rgba(74, 55, 40, 0.18);
+    box-shadow: inset 3px 3px 0 0 rgba(74, 55, 40, 0.28);
   }
 
   .btn {
     display: inline-block;
-    border: var(--stroke) solid var(--umber);
+    border: var(--stroke) solid var(--ink);
     background-color: var(--paper);
-    box-shadow: 3px 3px 0 0 var(--umber);
+    color: var(--ink);
+    box-shadow: 3px 3px 0 0 var(--ink);
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.12em;
@@ -144,14 +160,13 @@ h3 {
   }
 
   .btn:hover:not(:disabled) {
-    border-color: var(--cobalt);
-    color: var(--cobalt);
+    background-color: var(--tan);
   }
 
   /* Travels exactly as far as the shadow is deep, so it lands flush. */
   .btn:active:not(:disabled) {
     transform: translate(3px, 3px);
-    box-shadow: 0 0 0 0 var(--umber);
+    box-shadow: 0 0 0 0 var(--ink);
   }
 
   .btn:disabled {
@@ -161,27 +176,46 @@ h3 {
   }
 
   .btn-primary {
-    background-color: var(--cobalt);
-    color: var(--paper);
+    background-color: var(--ink);
+    color: var(--ground);
   }
 
   .btn-primary:hover:not(:disabled) {
-    background-color: var(--ink);
-    border-color: var(--umber);
-    color: var(--paper);
+    background-color: var(--cobalt);
+    color: var(--ground);
   }
 
   .btn-primary:disabled {
     background-color: var(--tan);
   }
 
+  /* For controls sitting on the black bar, where a black rule and a black
+     shadow would both vanish. Inverted rather than restyled, so it is
+     visibly the same control. */
+  .btn-invert {
+    border-color: var(--ground);
+    background-color: transparent;
+    color: var(--ground);
+    box-shadow: 3px 3px 0 0 rgba(239, 233, 220, 0.4);
+  }
+
+  .btn-invert:hover:not(:disabled) {
+    background-color: var(--ground);
+    color: var(--ink);
+  }
+
+  .btn-invert:active:not(:disabled) {
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 0 rgba(239, 233, 220, 0);
+  }
+
   /* A filled index mark — section numbers, desk labels, the active nav item.
-     Solid umber on bone is the loudest thing the palette does, so it is
+     Solid black on bone is the loudest thing the palette does, so it is
      reserved for labels that index something. */
   .tag {
     display: inline-block;
-    border: var(--stroke) solid var(--umber);
-    background-color: var(--umber);
+    border: var(--stroke) solid var(--ink);
+    background-color: var(--ink);
     color: var(--ground);
     padding: 0.1rem 0.4rem;
     font-weight: 700;
@@ -192,7 +226,7 @@ h3 {
 
   /* The structural divider between sections. */
   .rule {
-    border-top: var(--stroke) solid var(--umber);
+    border-top: var(--stroke) solid var(--ink);
   }
 }
 
@@ -202,7 +236,8 @@ h3 {
     transition: none;
   }
 
-  .btn:active:not(:disabled) {
+  .btn:active:not(:disabled),
+  .btn-invert:active:not(:disabled) {
     transform: none;
   }
 }

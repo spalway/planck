@@ -27,7 +27,7 @@ function Trait({ label, value, max }: { label: string; value: number; max: numbe
         {Array.from({ length: 10 }, (_, i) => (
           <span
             key={i}
-            className={i < filled ? "h-2 flex-1 bg-umber" : "h-2 flex-1 bg-umber/15"}
+            className={i < filled ? "h-2 flex-1 bg-ink" : "h-2 flex-1 bg-ink/15"}
           />
         ))}
       </span>
@@ -60,13 +60,13 @@ export function BrokerCard({ broker }: { broker: Broker }) {
         </div>
       </div>
 
-      <div className="mt-4 flex flex-col gap-2 border-t-2 border-umber/20 pt-3">
+      <div className="mt-4 flex flex-col gap-2 border-t-2 border-ink/20 pt-3">
         <Trait label="Nerve" value={broker.effectiveNerve} max={100} />
         <Trait label="Latency" value={broker.latency} max={100} />
         <Trait label="Coverage" value={broker.coverage} max={9} />
       </div>
 
-      <div className="mt-3 flex items-baseline justify-between border-t-2 border-umber/20 pt-2">
+      <div className="mt-3 flex items-baseline justify-between border-t-2 border-ink/20 pt-2">
         <span className="text-[0.6rem] tracking-widest text-ink-muted uppercase">
           Tenure
         </span>

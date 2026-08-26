@@ -26,6 +26,9 @@ function headers(extra = {}) {
 /** Postgres unique-violation. The caller decides whether that is fatal. */
 export const UNIQUE_VIOLATION = "23505"
 
+/** Postgres foreign-key violation — a hire naming a broker that does not exist. */
+export const FOREIGN_KEY_VIOLATION = "23503"
+
 export async function insertRow(table, row) {
   const res = await fetch(`${URL_BASE}/rest/v1/${table}`, {
     method: "POST",
@@ -62,6 +65,22 @@ export async function countBrokersOwnedBy(wallet) {
   const rows = await selectRows(
     "brokers",
     `select=id&owner_wallet=eq.${encodeURIComponent(wallet)}`
+  )
+  return Array.isArray(rows) ? rows.length : 0
+}
+
+/**
+ * Engagements this wallet currently has running.
+ *
+ * "Open" is closed_at IS NULL, the same predicate the partial unique index
+ * uses. An engagement past its term_end but not yet settled still counts —
+ * settlement is what frees the slot, not the calendar, and counting by date
+ * here would let a wallet exceed the cap in the window between the two.
+ */
+export async function openEngagementsFor(wallet) {
+  const rows = await selectRows(
+    "engagements",
+    `select=id&hirer_wallet=eq.${encodeURIComponent(wallet)}&closed_at=is.null`
   )
   return Array.isArray(rows) ? rows.length : 0
 }
