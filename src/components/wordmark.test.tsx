@@ -6,6 +6,7 @@ import {
   WORDMARK_GLYPHS,
   WORDMARK_TEXT,
   Wordmark,
+  snapHeight,
 } from "@/components/wordmark"
 
 /**
@@ -69,5 +70,41 @@ describe("Wordmark", () => {
 
     const { container } = render(<Wordmark />)
     expect(container.querySelectorAll("rect")).toHaveLength(lit)
+  })
+})
+
+describe("pixel scaling", () => {
+  it("snaps any height to whole pixels per cell", () => {
+    const { H } = WORDMARK_CELL
+    for (const requested of [10, 17, 18, 19, 23, 30, 47, 81]) {
+      expect(snapHeight(requested) % H, `height ${requested}`).toBe(0)
+    }
+  })
+
+  it("never collapses to zero", () => {
+    expect(snapHeight(1)).toBeGreaterThan(0)
+    expect(snapHeight(0)).toBeGreaterThan(0)
+  })
+
+  it("renders on whole pixels even when asked for a fractional scale", () => {
+    // 18px over an 8-row grid is 2.25px per cell — the blur that made the nav
+    // wordmark look softer than the hero.
+    const { container } = render(<Wordmark height={18} />)
+    const svg = container.querySelector("svg")!
+    const { H } = WORDMARK_CELL
+
+    const rendered = Number(svg.getAttribute("height"))
+    expect(rendered % H).toBe(0)
+    expect(Number.isInteger(rendered / H)).toBe(true)
+  })
+
+  it("keeps width an integer multiple too, so columns do not smear", () => {
+    const { container } = render(<Wordmark height={24} />)
+    const svg = container.querySelector("svg")!
+    const [, , cols, rows] = svg.getAttribute("viewBox")!.split(" ").map(Number)
+    const cell = Number(svg.getAttribute("height")) / rows
+
+    expect(Number.isInteger(cell)).toBe(true)
+    expect(Number(svg.getAttribute("width"))).toBe(cell * cols)
   })
 })

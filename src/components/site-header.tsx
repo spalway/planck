@@ -21,7 +21,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 bg-bar text-ground">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-3">
         <NavLink to="/" className="text-ground hover:text-tan" aria-label="planckbits, home">
-          <Wordmark height={18} />
+          <Wordmark height={24} />
         </NavLink>
 
         <nav className="order-3 flex w-full flex-wrap items-center gap-1 py-1 md:order-none md:w-auto md:flex-nowrap md:gap-1.5">

@@ -45,14 +45,30 @@ export const WORDMARK_CELL = { W, H, GAP }
 
 const COLS = TEXT.length * (W + GAP) - GAP
 
+/**
+ * Snap a requested height to a whole number of pixels per cell.
+ *
+ * The grid is H rows tall, so a height that is not a multiple of H puts cell
+ * edges on fractions of a pixel and the browser antialiases them. At 18px the
+ * nav wordmark was 2.25px per cell and rendered visibly softer and unevenly
+ * weighted than the hero, which happened to land on 6px and 10px.
+ *
+ * Pixel art only scales by integers. Rounding here means callers can ask for
+ * any height and still get a crisp mark, rather than having to know the grid.
+ */
+export function snapHeight(requested: number, rows = H): number {
+  return Math.max(1, Math.round(requested / rows)) * rows
+}
+
 export function Wordmark({
-  height = 20,
+  height = 24,
   className,
 }: {
-  /** Rendered height in px. Any value works; integers stay pixel-exact. */
+  /** Rendered height in px. Rounded to the nearest whole pixel per cell. */
   height?: number
   className?: string
 }) {
+  const snapped = snapHeight(height)
   const rects: React.ReactElement[] = []
 
   TEXT.split("").forEach((ch, i) => {
@@ -73,8 +89,8 @@ export function Wordmark({
   return (
     <svg
       viewBox={`0 0 ${COLS} ${H}`}
-      height={height}
-      width={(height * COLS) / H}
+      height={snapped}
+      width={(snapped * COLS) / H}
       role="img"
       aria-label={TEXT}
       shapeRendering="crispEdges"
