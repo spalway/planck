@@ -11,9 +11,10 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "preview": "vite preview",
-    "start": "serve -s dist",
+    "start": "node server/index.mjs",
     "og": "node scripts/make-og.mjs",
-    "standalone": "node scripts/build-standalone.mjs"
+    "standalone": "node scripts/build-standalone.mjs",
+    "serve": "npm run build && npm start"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",
@@ -21,10 +22,10 @@
     "@wallet-standard/app": "^1.1.1",
     "@wallet-standard/base": "^1.1.1",
     "clsx": "^2.1.1",
+    "express": "^5.2.1",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-router-dom": "^7.18.2",
-    "serve": "^14.2.6",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4"
   },

@@ -11,6 +11,7 @@ export const ROUTES = [
   { path: "/", label: "Home" },
   { path: "/assets", label: "Assets" },
   { path: "/brokers", label: "Brokers" },
+  { path: "/mint", label: "Mint" },
   { path: "/holdings", label: "Holdings" },
   { path: "/how-it-works", label: "How It Works" },
 ] as const

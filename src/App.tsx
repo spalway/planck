@@ -12,6 +12,7 @@ import { BrokersPage } from "@/pages/brokers"
 import { HoldingsPage } from "@/pages/holdings"
 import { HomePage } from "@/pages/home"
 import { HowItWorksPage } from "@/pages/how-it-works"
+import { MintPage } from "@/pages/mint"
 import { NotFoundPage } from "@/pages/not-found"
 import { PLANCK_CA } from "@/lib/vault"
 
@@ -40,6 +41,7 @@ export function App() {
               <Route path="/assets" element={<AssetsPage />} />
               <Route path="/brokers" element={<BrokersPage />} />
               <Route path="/holdings" element={<HoldingsPage />} />
+              <Route path="/mint" element={<MintPage />} />
               <Route path="/how-it-works" element={<HowItWorksPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
