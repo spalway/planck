@@ -155,8 +155,13 @@ app.use(
     setHeaders(res, path) {
       // Hashed bundles are immutable; index.html must never be cached or a
       // deploy will not reach anyone still holding the old one.
-      if (path.endsWith("index.html")) res.setHeader("Cache-Control", "no-cache")
-      else if (path.includes("/assets/")) {
+      //
+      // Normalise separators first: express.static hands back native paths, so
+      // a check for "/static/" silently never matched on Windows and every
+      // asset shipped uncached.
+      const p = path.split("\\").join("/")
+      if (p.endsWith("index.html")) res.setHeader("Cache-Control", "no-cache")
+      else if (p.includes("/static/")) {
         res.setHeader("Cache-Control", "public, max-age=31536000, immutable")
       }
     },

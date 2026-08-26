@@ -5,6 +5,11 @@ import { defineConfig } from "vite"
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  build: {
+    // Not "assets": /assets is a page route, and express.static would treat a
+    // real directory of that name as a directory and 301 the page away.
+    assetsDir: "static",
+  },
   resolve: {
     alias: {
       // fileURLToPath, not URL.pathname — the latter yields "/C:/..." on

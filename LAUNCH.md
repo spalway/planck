@@ -1,82 +1,92 @@
 # PLANCKBITS — path to a live site
 
-Status as of 2026-08-23. Architecture: **off-chain v1 on Supabase, Anchor
-program later.** Host: Railway. Vault holdings stay genuinely on-chain and
-auditable; broker bookkeeping is Postgres.
+Architecture: **off-chain v1.** Express server on Railway, Postgres on Supabase,
+Birdeye for holder data, Jupiter for prices. No Anchor program.
+
+Vault holdings stay verifiable against Solana; broker bookkeeping is Postgres.
 
 ---
 
 ## A. Blocked on you
 
-These are inputs I cannot create. Everything else is designed to degrade
-gracefully until they exist.
+Inputs I cannot create. Everything degrades gracefully until they exist — the
+site runs today with none of them set.
 
-| # | Input | Needed for | Notes |
+| # | Input | Env var | Unblocks |
 |---|---|---|---|
-| A1 | **Supabase project URL + anon key** | roster, engagements, price history | Free tier is fine. The anon key is public by design; RLS is the protection. |
-| A2 | **Vault treasury wallet address** | real holdings on `/holdings` | Just a Solana address. Biggest credibility win available, and needs nothing else. |
-| A3 | **$PLANCK contract address** | funding line, hire payments | Pending the tokens.xyz launch. |
-| A4 | **Fee split numbers** | hire flow, step 04 copy | 60/30/10 owner/vault/burn is my placeholder, not a decision. |
-| A5 | **RPC endpoint** | holdings, payment verification | Public mainnet RPC rate-limits and blocks browsers. Helius free tier is enough. |
-| A6 | **Railway account + domain** | deployment | Repo is already configured for it. |
+| A1 | Supabase project | `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` | roster from Postgres, minting |
+| A2 | Birdeye API key | `BIRDEYE_API_KEY` | holder counts, the mint gate |
+| A3 | $PLANCK mint address | `PLANCK_MINT` | everything token-gated |
+| A4 | Vault treasury address | `VAULT_ADDRESS` | real holdings |
+| A5 | Solana RPC (Helius) | `SOLANA_RPC` | holdings, payment verification |
+| A6 | Railway project + domain | — | deployment |
+
+**Only `VITE_`-prefixed vars are public.** Everything else is server-side and
+must never gain that prefix — it would publish the secret in the browser bundle.
+
+### Setting up Supabase (A1)
+
+1. Create a project.
+2. Run `supabase/migrations/0001_init.sql` in the SQL editor.
+3. Copy the project URL and **anon** key into `VITE_SUPABASE_URL` /
+   `VITE_SUPABASE_ANON_KEY`.
+4. Copy the **service role** key into `SUPABASE_SERVICE_ROLE_KEY`. Server only.
+
+The schema grants public `select` and defines no write policy at all, so the
+anon key cannot write. Every insert goes through the server under the service
+role. A client able to insert its own engagement could grant itself a track
+record.
 
 ---
 
 ## B. Done
 
-- Site, 5 pages + 404, live Jupiter prices for 13 verified RWA mints
-- 24 generative pixel brokers, trait-composed
-- Wallet connect (Wallet Standard — Phantom, Solflare, Backpack)
-- Railway build/start config, SPA deep links verified against a real build
-- 146 tests, typecheck and production build clean
-
-## B2. Done this pass, no inputs required
-
-- **Error boundary** — one bad render no longer white-screens the site
-- **Favicon + OG/Twitter meta** — a shared link now previews instead of looking dead
-- **`robots.txt`**
-- **Supabase schema** — full SQL migration with RLS, ready to run against A1
-- **Data-source layer** — roster reads through one module; swapping fixture for
-  Supabase is a single file, not a refactor
-- **Treasury holdings reader** — raw JSON-RPC, env-gated; renders real balances
-  the moment A2 and A5 exist, and says "not deployed" until then
-- **README + deploy runbook**
-- **Spec reconciled** to off-chain v1
+- Five pages plus mint and a 404; landing page leads with the roster
+- 24 generative pixel brokers, 16×16, trait-composed, distinct per broker
+- Live Jupiter prices for 13 verified RWA mints
+- Wallet connect over the Wallet Standard
+- Express server: Birdeye proxy, holder gate, mint endpoint, health check
+- Supabase schema with RLS; data seam so the roster switches source with no
+  component change
+- Error boundary, favicon, OG card, robots.txt, SPA deep links
+- 192 tests, typecheck and production build clean
 
 ---
 
 ## C. Blocked on A, then straightforward
 
-| # | Work | Unblocked by |
+| # | Work | Needs |
 |---|---|---|
-| C1 | Roster served from Supabase instead of the fixture | A1 |
-| C2 | Real vault holdings with cost basis and P&L | A2 + A5 |
-| C3 | Price snapshot cron → track-record charts over time | A1 |
-| C4 | Hire flow: pay $PLANCK, verify the transfer, write the engagement | A1 + A3 + A4 + A5 |
-| C5 | Mint flow: roll traits, persist, assign a desk | A1 |
-| C6 | "My brokers" — owned brokers for the connected wallet | A1 |
-| C7 | Supabase auth / wallet sign-in | A1 (you said later) |
+| C1 | Roster served from Postgres instead of the fixture | A1 |
+| C2 | Real vault holdings with cost basis and P&L | A4 + A5 |
+| C3 | Price snapshot cron → track records over time | A1 |
+| C4 | Hire flow: pay $PLANCK, verify the transfer by signature, write the engagement | A1 + A3 + A5 |
+| C5 | "My brokers" for the connected wallet | A1 |
+| C6 | Holder count surfaced on the floor | A2 + A3 |
 
-**Critical path to a site that does something: A1 → C1 → C5 → C4.**
-**Critical path to a site that is believable: A2 + A5 → C2.** That one is
-independent and much cheaper — a treasury address and an RPC key turn
-`/holdings` from a promise into a verifiable page.
+**Cheapest credibility win: A4 + A5.** A treasury address and an RPC key turn
+`/holdings` from a promise into a page anyone can check against an explorer.
 
 ---
 
 ## D. Pre-launch checklist
 
-- [ ] Point a custom domain at Railway, force HTTPS
-- [ ] Set env vars in Railway (never commit `.env`)
-- [ ] Confirm `/brokers` and other deep links resolve on the deployed host
-- [ ] Re-read the disclaimer against what the site actually does at launch
+- [ ] Run the migration; confirm RLS is on for all four tables
+- [ ] Set every env var in Railway → **Variables**
+- [ ] Redeploy after setting them — `VITE_` vars are baked in at build time
+- [ ] Confirm `/api/health` reports `birdeye: true`, `token: true`
+- [ ] Load `/brokers` directly; a 404 means the SPA fallback broke
+- [ ] Mint once on a holder wallet, once on a non-holder — the second must be refused
 - [ ] Confirm the funding line shows the real CA and still has no price or chart
-- [ ] Check the OG preview renders in a real post before announcing
+- [ ] Check the OG card renders in a real post before announcing
 - [ ] Verify holdings against an explorer — the numbers must match
+- [ ] Re-read the disclaimer against what the site actually does at launch
+
+---
 
 ## E. After launch
 
-- Anchor program takes over the broker layer; Supabase becomes an indexer
+- Anchor program takes over minting and hiring; Supabase becomes an indexer
 - Broker secondary market
 - Public API over vault holdings
 
@@ -84,10 +94,11 @@ independent and much cheaper — a treasury address and an RPC key turn
 
 ## The honesty line
 
-The site claims its numbers are derived, not authored. With Supabase holding
-the broker records that is true of prices and vault holdings, and **not** true
-of engagements and track records — those are rows the firm writes.
+The site claims its numbers are derived, not authored. Under this architecture
+that is **true** of instrument prices and vault holdings — anyone can check them
+against Jupiter and an explorer — and **false** of engagements and track
+records, which are rows the firm writes.
 
-Keep the copy matched to that. "Arithmetic on public data" is fair for
-holdings and P&L. It is not fair for a hire count. When the Anchor program
-lands the claim becomes true everywhere; until then, do not overstate it.
+Keep the copy matched to that. "Arithmetic on public data" is fair for holdings
+and P&L. It is not fair for a hire count. The Anchor program is what makes the
+claim true everywhere; until then, do not overstate it.

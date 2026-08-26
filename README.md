@@ -17,40 +17,64 @@ npm install
 npm run dev      # http://localhost:5190
 ```
 
+For the API routes, run the server alongside it in a second terminal — Vite
+proxies `/api` to port 3000:
+
+```bash
+npm run build && npm start
+```
+
 | Script | Does |
 |---|---|
-| `npm run dev` | dev server |
+| `npm run dev` | Vite dev server |
+| `npm start` | Express server: serves `dist/` and `/api`. What Railway runs |
 | `npm test` | full suite (vitest) |
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run build` | production build to `dist/` |
-| `npm start` | serve `dist/` — what Railway runs |
 | `npm run og` | regenerate `public/og.png` |
+| `npm run standalone` | one self-contained HTML file for sharing a preview |
 
-No environment variables are required. Without them the app runs on local
-fixtures and live Jupiter prices, which is the current state.
+No environment variables are required. Without them the site runs on local
+fixtures and live Jupiter prices, and every token route reports "not launched".
 
 ## Environment
 
-Copy `.env.example` to `.env`. Every var is optional; each one switches a
-subsystem from fixture to real.
+Copy `.env.example` to `.env`.
 
-| Var | Effect when set |
+**Only `VITE_` vars are public** — they are baked into the browser bundle where
+anyone can read them. Everything else is server-side. Never give a secret a
+`VITE_` prefix.
+
+| Var | Side | Effect when set |
+|---|---|---|
+| `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` | client | roster reads from Postgres |
+| `SUPABASE_SERVICE_ROLE_KEY` | server | minting can write rows |
+| `BIRDEYE_API_KEY` | server | holder counts and the mint gate |
+| `PLANCK_MINT` | server | the token everything is gated on |
+| `SOLANA_RPC` | server | chain reads |
+| `VAULT_ADDRESS` | server | whose holdings `/holdings` shows |
+
+## API
+
+Served by `server/index.mjs`. All same-origin; Vite proxies `/api` to it in dev.
+
+| Route | Does |
 |---|---|
-| `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` | roster comes from Postgres instead of the fixture |
-| `VITE_SOLANA_RPC` | vault holdings read from chain |
-| `VITE_VAULT_ADDRESS` | the treasury whose holdings are shown |
+| `GET /api/health` | booleans for what is configured — never the values |
+| `GET /api/token` | holder count and supply. **No price** — the field is dropped, not forwarded |
+| `GET /api/holding?wallet=` | whether a wallet holds $PLANCK |
+| `POST /api/mint` | re-checks the holding, rolls traits server-side, writes the row |
 
-The Supabase **anon** key is public by design and ships in the client bundle;
-row-level security is what protects the data. A **service-role** key must
-never carry a `VITE_` prefix — that would publish it in the browser bundle.
+Unconfigured routes answer `503` with a reason rather than failing, and the UI
+renders that as a state rather than an error.
 
 ## Deploying to Railway
 
 1. New project → deploy from this repo.
-2. Railway reads `railway.json`: build `npm run build`, start `npm start`.
-   `serve -s` handles SPA fallback and reads `PORT` from the environment.
-3. Add env vars under **Variables**. Redeploy after changing them — they are
-   baked into the bundle at build time, not read at runtime.
+2. Railway reads `railway.json`: build `npm run build`, start `npm start`,
+   health check `/api/health`.
+3. Add env vars under **Variables**. Redeploy after changing any `VITE_` one —
+   those are baked in at build time, not read at runtime.
 4. Attach a domain and force HTTPS.
 5. Load a deep link such as `/brokers` directly. A 404 there means the SPA
    fallback is not working.
@@ -58,21 +82,25 @@ never carry a `VITE_` prefix — that would publish it in the browser bundle.
 ## Architecture
 
 ```
-src/lib/         pure data + logic, no React
-  instruments.ts   13 hardcoded RWA mints, 5 desks
-  jupiter-price.ts live prices by mint
-  records.ts       P&L — null-safe, never fabricates a zero
-  brokers.ts       trait rolls, coverage-overflow rule, fixture roster
-  roster-source.ts the one seam between the app and its broker data
-  supabase.ts      minimal PostgREST reader
-  solana-wallets.ts Wallet Standard connect
-src/hooks/       React bindings over the above
-src/components/  presentational, data via props
-src/pages/       one per route
-supabase/        SQL migrations
+server/            holds every secret; the browser never sees one
+  index.mjs          static + /api, SPA fallback
+  birdeye.mjs        holder data. Price fields deliberately dropped
+  brokers.mjs        trait rolling — server-side so it cannot be forged
+  supabase.mjs       writes under the service role
+src/lib/           pure data + logic, no React
+  instruments.ts     13 hardcoded RWA mints, 5 desks
+  jupiter-price.ts   live prices by mint
+  records.ts         P&L — null-safe, never fabricates a zero
+  brokers.ts         trait rolls, coverage-overflow rule, fixture roster
+  roster-source.ts   the one seam between the app and its broker data
+  solana-wallets.ts  Wallet Standard connect
+src/hooks/         React bindings over the above
+src/components/    presentational, data via props
+src/pages/         one per route
+supabase/          SQL migrations
 ```
 
-Three rules the tests enforce:
+Four rules the tests enforce:
 
 1. **Instruments resolve by hardcoded mint, never by ticker.** Every symbol on
    the board has scam duplicates on Solana — `SPYX` at $0, `METAx` cloned on
@@ -81,6 +109,9 @@ Three rules the tests enforce:
    indistinguishable from a real collapse.
 3. **A partially-priced desk reports no total.** Summing only the priced legs
    understates it, which reads as a crash.
+4. **Server and client agree on desk sizes and effective nerve.** They are
+   necessarily duplicated; drift would corrupt the coverage-overflow rule for
+   every broker minted afterwards.
 
 ## What is real today
 
@@ -88,9 +119,10 @@ Three rules the tests enforce:
 |---|---|---|
 | Instrument prices | Jupiter Price v3 | yes |
 | Vault holdings | Solana RPC (pending an address) | yes |
+| Holder status | Birdeye | yes |
 | Broker roster, engagements | fixture now, Supabase next | no |
 
 The site's claim is that its numbers are derived rather than authored. That is
-true of prices and holdings. It is **not** true of broker records while they
-live in Postgres — keep the copy honest about the difference until the Anchor
-program lands.
+true of prices, holdings and holder status. It is **not** true of broker records
+while they live in Postgres — keep the copy honest about the difference until
+the Anchor program lands.
