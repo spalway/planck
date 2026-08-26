@@ -12,30 +12,48 @@ Vault holdings stay verifiable against Solana; broker bookkeeping is Postgres.
 Inputs I cannot create. Everything degrades gracefully until they exist — the
 site runs today with none of them set.
 
-| # | Input | Env var | Unblocks |
-|---|---|---|---|
-| A1 | Supabase project | `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` | roster from Postgres, minting |
-| A2 | Birdeye API key | `BIRDEYE_API_KEY` | holder counts, the mint gate |
-| A3 | $PLANCK mint address | `VITE_PLANCK_MINT` | everything token-gated |
-| A4 | Vault treasury address | `VAULT_ADDRESS` | real holdings |
-| A5 | Solana RPC (Helius) | `SOLANA_RPC` | holdings, payment verification |
-| A6 | Railway project + domain | — | deployment |
+| # | Input | Env var | Unblocks | State |
+|---|---|---|---|---|
+| A1 | Supabase project | `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` | roster from Postgres, minting | **done — needs wiring to Railway** |
+| A2 | Birdeye API key | `BIRDEYE_API_KEY` | holder counts, the mint gate | you |
+| A3 | $PLANCK mint address | `VITE_PLANCK_MINT` | everything token-gated | you |
+| A4 | Railway project + domain | — | deployment | you |
+| A5 | Vault treasury address | `VAULT_ADDRESS` | real holdings | phase 2 — no code reads it |
+| A6 | Solana RPC (Helius) | `SOLANA_RPC` | on-chain holdings | phase 2 — no code reads it |
 
 **Only `VITE_`-prefixed vars are public.** Everything else is server-side and
 must never gain that prefix — it would publish the secret in the browser bundle.
 
-### Setting up Supabase (A1)
+### Supabase (A1) — provisioned
 
-1. Create a project.
-2. Run `supabase/migrations/0001_init.sql` in the SQL editor.
-3. Copy the project URL and **anon** key into `VITE_SUPABASE_URL` /
-   `VITE_SUPABASE_ANON_KEY`.
-4. Copy the **service role** key into `SUPABASE_SERVICE_ROLE_KEY`. Server only.
+| | |
+|---|---|
+| project | `planckbits` |
+| ref | `feutpsjkftlpfatcatap` |
+| region | `us-east-1` |
+| cost | $0/month |
+| `VITE_SUPABASE_URL` | `https://feutpsjkftlpfatcatap.supabase.co` |
+
+Migrations `0001_init` and `0002_seed_roster` are applied. Verified against the
+live database:
+
+- the app's exact query returns the 24 founding brokers
+- an anon `INSERT` is refused with `42501 — violates row-level security policy`
+- zero security advisories
+
+The anon key is public by design and lives in the browser bundle; copy it from
+the dashboard, or from Project Settings → API. The **service role** key is a
+secret, is never printed here, and goes only into Railway.
 
 The schema grants public `select` and defines no write policy at all, so the
 anon key cannot write. Every insert goes through the server under the service
 role. A client able to insert its own engagement could grant itself a track
 record.
+
+**Seed before you switch.** `VITE_SUPABASE_URL` is what flips the roster from
+the local fixture to Postgres. Setting it against an empty `brokers` table
+would empty the floor, the census and every desk count in one deploy — which
+is why `0002_seed_roster.sql` exists and is already applied.
 
 ---
 
