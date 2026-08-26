@@ -17,6 +17,7 @@
     "preview": "vite preview",
     "start": "node server/index.mjs",
     "og": "node scripts/make-og.mjs",
+    "social": "node scripts/make-social.mjs",
     "standalone": "node scripts/build-standalone.mjs",
     "serve": "npm run build && npm start"
   },

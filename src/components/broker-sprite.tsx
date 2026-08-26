@@ -1,6 +1,5 @@
 import type { Broker } from "@/lib/brokers"
-import type { DeskId } from "@/lib/instruments"
-import { SPRITE_HAT, SPRITE_ROWS } from "@/lib/sprite-glyphs"
+import { composeSprite, spritePalette } from "@/lib/sprite-compose"
 
 /**
  * A broker portrait, composed rather than drawn.
@@ -15,78 +14,12 @@ import { SPRITE_HAT, SPRITE_ROWS } from "@/lib/sprite-glyphs"
  * a head, shoulders and a desk-coloured tie, which is what makes the desk
  * legible at a glance across a grid of cards.
  *
- * Skin and hair vary per broker. With one palette all 24 read as the same
- * person duplicated, which undercuts a roster of individuals.
+ * The composition itself lives in lib/sprite-compose.ts, with no React, so
+ * the social-image generator renders the same art rather than a copy of it.
  */
-
-/** The tie carries the desk. It is the one colour that means something. */
-const DESK_COLOR: Record<DeskId, string> = {
-  equities: "#2148E2",
-  index: "#1B7F4B",
-  bullion: "#B8860B",
-  yield: "#6B6459",
-  credit: "#C4362B",
-}
-
-const SKIN = ["#FFDBAC", "#F0C9A4", "#E0AC7E", "#C68642", "#A56B3D", "#8D5524"]
-const HAIR = ["#1B1410", "#3B2A1A", "#6B4A2A", "#8C6239", "#2A2A2E", "#59443A"]
-const SUIT = ["#2B2F38", "#33383F", "#242830", "#3A3F49"]
-
-const INK = "#14120F"
-const SHIRT = "#F7F5F0"
-const MOUTH = "#8C5A4A"
-const HEADSET = "#2148E2"
-
-
-function setAt(row: string, i: number, ch: string): string {
-  return row.slice(0, i) + ch + row.slice(i + 1)
-}
-
-/** Traits that change the silhouette, so the grid is scannable. */
-function compose(b: Broker): string[] {
-  const rows = [...SPRITE_ROWS]
-
-  if (b.effectiveNerve >= 70) {
-    rows[1] = SPRITE_HAT[0]
-    rows[2] = SPRITE_HAT[1]
-    rows[3] = SPRITE_HAT[2]
-  }
-
-  if (b.latency <= 30) {
-    // Earpieces plus a boom mic down the left.
-    rows[5] = setAt(setAt(rows[5], 2, "p"), 13, "p")
-    rows[6] = setAt(setAt(rows[6], 2, "p"), 13, "p")
-    rows[7] = setAt(rows[7], 2, "p")
-    rows[8] = setAt(rows[8], 3, "p")
-  }
-
-  return rows
-}
-
-/** Stable per-broker variation. Math.random would reshuffle faces per render. */
-function hash(id: string): number {
-  let h = 2166136261
-  for (let i = 0; i < id.length; i++) {
-    h ^= id.charCodeAt(i)
-    h = Math.imul(h, 16777619)
-  }
-  return Math.abs(h)
-}
-
 export function BrokerSprite({ broker, size = 96 }: { broker: Broker; size?: number }) {
-  const rows = compose(broker)
-  const h = hash(broker.id)
-
-  const palette: Record<string, string> = {
-    h: HAIR[h % HAIR.length],
-    s: SKIN[(h >> 3) % SKIN.length],
-    c: SUIT[(h >> 6) % SUIT.length],
-    e: INK,
-    m: MOUTH,
-    w: SHIRT,
-    t: DESK_COLOR[broker.desk],
-    p: HEADSET,
-  }
+  const rows = composeSprite(broker)
+  const palette = spritePalette(broker)
 
   return (
     <svg
