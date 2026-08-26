@@ -26,7 +26,7 @@ export function App() {
       <div className="flex min-h-dvh flex-col">
         <SiteHeader />
 
-        <main className="mx-auto w-full max-w-6xl flex-1 px-4">
+        <main className="mx-auto w-full max-w-[88rem] flex-1 px-4">
           {/*
             Keyed by path so navigating away from a crashed page clears the
             error. An error boundary latches until it is remounted, so without

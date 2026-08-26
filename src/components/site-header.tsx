@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils"
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 bg-bar text-ground">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-3">
+      <div className="mx-auto flex max-w-[88rem] flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-3">
         <NavLink to="/" className="text-ground hover:text-tan" aria-label="planckbits, home">
           <Wordmark height={24} />
         </NavLink>

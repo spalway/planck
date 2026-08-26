@@ -73,6 +73,19 @@
  * exactly where it needs splitting: prose and labels go lowercase, data
  * keeps the case it was given.
  */
+/*
+ * Everything is sized in rem, so the root size is one knob for the whole
+ * scale. 15px rather than the browser default 16 makes the site read a
+ * touch denser without changing a single component — type, padding, gaps
+ * and the blocky chrome all come down together and stay in proportion.
+ *
+ * Border widths are px on purpose and deliberately do NOT shrink: a 2px rule
+ * is the look, and scaling it to 1.875px would land it on a half pixel.
+ */
+:root {
+  font-size: 15px;
+}
+
 body { text-transform: lowercase; }
 
 .num,
