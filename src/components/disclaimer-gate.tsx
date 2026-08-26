@@ -39,7 +39,19 @@ export function DisclaimerGate({ onAccept }: { onAccept: () => void }) {
       aria-label="Risk disclaimer"
       className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 p-4"
     >
-      <div className="max-h-[85vh] w-full max-w-xl overflow-y-auto border border-ink/25 bg-paper p-6">
+      <div className="max-h-[85vh] w-full max-w-xl overflow-y-auto border border-ink/25 bg-paper p-6 shadow-[0_24px_60px_-20px_rgba(20,18,15,0.45)]">
+        {/*
+          The wordmark and rule are not decoration. Without them the gate is a
+          white panel on a pale ground, which reads as a broken page rather
+          than a dialog — it was mistaken for exactly that.
+        */}
+        <div className="mb-5 flex items-baseline justify-between gap-4 border-b border-ink/15 pb-4">
+          <span className="font-display text-lg tracking-tight">PLANCKBITS</span>
+          <span className="text-[0.65rem] tracking-widest text-ink-muted uppercase">
+            Solana · RWAs
+          </span>
+        </div>
+
         <h2 className="font-display text-xl">BEFORE YOU ENTER</h2>
 
         <ul className="mt-5 flex flex-col gap-3 text-sm leading-relaxed">
@@ -68,7 +80,7 @@ export function DisclaimerGate({ onAccept }: { onAccept: () => void }) {
           onClick={accept}
           className="mt-6 w-full bg-cobalt py-3 text-sm tracking-widest text-white uppercase disabled:cursor-not-allowed disabled:bg-ink/20"
         >
-          I understand &amp; agree
+          {checked ? "Enter the floor" : "Tick the box to continue"}
         </button>
       </div>
     </div>

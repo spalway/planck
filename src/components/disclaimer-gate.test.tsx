@@ -12,7 +12,7 @@ beforeEach(() => localStorage.clear())
 describe("DisclaimerGate", () => {
   it("keeps the accept button disabled until the box is ticked", () => {
     render(<DisclaimerGate onAccept={() => {}} />)
-    const accept = screen.getByRole("button", { name: /understand/i })
+    const accept = screen.getByRole("button", { name: /enter the floor|tick the box/i })
     expect(accept).toBeDisabled()
 
     fireEvent.click(screen.getByRole("checkbox"))
@@ -24,7 +24,7 @@ describe("DisclaimerGate", () => {
     render(<DisclaimerGate onAccept={onAccept} />)
 
     fireEvent.click(screen.getByRole("checkbox"))
-    fireEvent.click(screen.getByRole("button", { name: /understand/i }))
+    fireEvent.click(screen.getByRole("button", { name: /enter the floor|tick the box/i }))
 
     expect(onAccept).toHaveBeenCalledOnce()
     expect(localStorage.getItem(GATE_STORAGE_KEY)).toBe("1")

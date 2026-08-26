@@ -146,6 +146,62 @@ app.post("/api/mint", express.json({ limit: "1kb" }), async (req, res) => {
   }
 })
 
+/** One engagement runs for an epoch. */
+const TERM_DAYS = 7
+
+/** Concurrent engagements one wallet may hold, so nobody corners the floor. */
+const HIRE_CAP_PER_WALLET = 3
+
+app.post("/api/hire", express.json({ limit: "1kb" }), async (req, res) => {
+  if (!requireConfig(res)) return
+
+  if (!supabaseConfigured()) {
+    return res.status(503).json({ error: "database_not_configured" })
+  }
+
+  const wallet = String(req.body?.wallet ?? "")
+  const brokerId = String(req.body?.brokerId ?? "")
+
+  if (!BASE58.test(wallet)) return res.status(400).json({ error: "invalid_wallet" })
+  if (!/^PB-[A-Z0-9-]{1,32}$/.test(brokerId)) {
+    return res.status(400).json({ error: "invalid_broker" })
+  }
+
+  try {
+    // Re-checked here, never trusted from the client.
+    const holding = await walletHolding(wallet, PLANCK_MINT, BIRDEYE_KEY)
+    if (!holding.holds) return res.status(403).json({ error: "not_holding" })
+
+    const open = await openEngagementsFor(wallet)
+    if (open >= HIRE_CAP_PER_WALLET) {
+      return res.status(409).json({ error: "hire_cap_reached", cap: HIRE_CAP_PER_WALLET })
+    }
+
+    const termEnd = new Date(Date.now() + TERM_DAYS * 86_400_000).toISOString()
+
+    const row = await insertRow("engagements", {
+      broker_id: brokerId,
+      hirer_wallet: wallet,
+      term_end: termEnd,
+    })
+
+    return res.status(201).json(row)
+  } catch (e) {
+    // The partial unique index rejects a second open engagement on one broker.
+    // That is a race two clients can genuinely hit, not a bug — say so.
+    if (e.code === UNIQUE_VIOLATION) {
+      return res.status(409).json({ error: "already_engaged" })
+    }
+    // A missing broker violates the foreign key.
+    if (e.code === FOREIGN_KEY_VIOLATION) {
+      return res.status(404).json({ error: "no_such_broker" })
+    }
+
+    console.warn("[PLANCKBITS] hire failed:", e.message)
+    res.status(502).json({ error: "hire_failed" })
+  }
+})
+
 // An unmatched /api/* must 404 as JSON. Falling through to the SPA would hand
 // a fetch() an HTML page and produce a confusing JSON parse error.
 app.use("/api", (_req, res) => res.status(404).json({ error: "not_found" }))

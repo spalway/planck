@@ -54,11 +54,16 @@ create table engagements (
   term_end      timestamptz not null,
   closed_at     timestamptz,
 
-  fee_planck    numeric(38, 0) not null check (fee_planck > 0),
-
-  -- The on-chain transfer that paid for this engagement. Unique so a single
-  -- payment can never be replayed into two engagements.
-  fee_signature text        not null unique,
+  -- Hiring is gated on HOLDING $PLANCK, not on paying a fee. The vault is
+  -- funded by token creator fees instead, which is a real revenue line and
+  -- needs no per-hire transfer, no signature verification, and no web3
+  -- dependency in the browser.
+  --
+  -- Both columns stay, nullable, for the day a paid tier lands. The unique
+  -- index on fee_signature still stops one payment being replayed into two
+  -- engagements, and ignores the nulls.
+  fee_planck    numeric(38, 0) check (fee_planck is null or fee_planck > 0),
+  fee_signature text unique,
 
   constraint term_is_forward check (term_end > term_start)
 );
