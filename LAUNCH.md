@@ -16,7 +16,7 @@ site runs today with none of them set.
 |---|---|---|---|
 | A1 | Supabase project | `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` | roster from Postgres, minting |
 | A2 | Birdeye API key | `BIRDEYE_API_KEY` | holder counts, the mint gate |
-| A3 | $PLANCK mint address | `PLANCK_MINT` | everything token-gated |
+| A3 | $PLANCK mint address | `VITE_PLANCK_MINT` | everything token-gated |
 | A4 | Vault treasury address | `VAULT_ADDRESS` | real holdings |
 | A5 | Solana RPC (Helius) | `SOLANA_RPC` | holdings, payment verification |
 | A6 | Railway project + domain | — | deployment |

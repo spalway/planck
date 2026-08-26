@@ -5,16 +5,16 @@
  * argues for the mechanism, and a price widget would make it argue for the
  * trade instead.
  */
-export function FundingLine({ ca }: { ca: string | null }) {
+export function FundingLine({ mint }: { mint: string | null }) {
   return (
     <div className="rule py-8">
       <p className="text-sm text-ink-muted">
         The firm is funded by creator fees on $PLANCK. Fees buy real assets the vault
         never sells.
       </p>
-      {ca ? (
+      {mint ? (
         <p className="num panel-sunk mt-3 inline-block px-3 py-1.5 text-xs break-all text-ink">
-          {ca}
+          {mint}
         </p>
       ) : (
         <p className="mt-2 text-xs text-ink-muted">Token not live yet.</p>

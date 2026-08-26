@@ -50,9 +50,15 @@ anyone can read them. Everything else is server-side. Never give a secret a
 | `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` | client | roster reads from Postgres |
 | `SUPABASE_SERVICE_ROLE_KEY` | server | minting can write rows |
 | `BIRDEYE_API_KEY` | server | holder counts and the mint gate |
-| `PLANCK_MINT` | server | the token everything is gated on |
-| `SOLANA_RPC` | server | chain reads |
-| `VAULT_ADDRESS` | server | whose holdings `/holdings` shows |
+| `VITE_PLANCK_MINT` | both | the token everything is gated on |
+
+On Solana the contract address people paste around *is* the mint address, so
+`VITE_PLANCK_MINT` is one variable read by both the browser bundle and the
+server. It is public — the site prints it on purpose — which is why it may
+carry the `VITE_` prefix.
+
+`SOLANA_RPC` and `VAULT_ADDRESS` appear in `.env.example` but no code reads
+them yet. They are Phase 2 and setting them today does nothing.
 
 ## API
 

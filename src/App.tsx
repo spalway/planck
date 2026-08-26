@@ -13,7 +13,7 @@ import { HomePage } from "@/pages/home"
 import { HowItWorksPage } from "@/pages/how-it-works"
 import { MintPage } from "@/pages/mint"
 import { NotFoundPage } from "@/pages/not-found"
-import { PLANCK_CA } from "@/lib/vault"
+import { PLANCK_MINT } from "@/lib/token"
 
 export function App() {
   const { pathname } = useLocation()
@@ -44,7 +44,7 @@ export function App() {
             </Routes>
           </ErrorBoundary>
 
-          <FundingLine ca={PLANCK_CA} />
+          <FundingLine mint={PLANCK_MINT} />
         </main>
 
         <SiteFooter />

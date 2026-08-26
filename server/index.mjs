@@ -36,7 +36,9 @@ const dist = `${root}dist`
 
 const PORT = Number(process.env.PORT) || 3000
 const BIRDEYE_KEY = process.env.BIRDEYE_API_KEY ?? ""
-const PLANCK_MINT = process.env.PLANCK_MINT ?? ""
+// The same variable the browser bundle reads. The address is public, so
+// there is no reason for the server to have its own name for it.
+const PLANCK_MINT = process.env.VITE_PLANCK_MINT ?? process.env.PLANCK_MINT ?? ""
 
 const app = createApp({
   config: { birdeyeKey: BIRDEYE_KEY, planckMint: PLANCK_MINT },
@@ -62,7 +64,7 @@ app.listen(PORT, "0.0.0.0", () => {
   // route to 503 rather than breaking the site, and on a fresh deploy the
   // difference between "unconfigured" and "broken" is the whole diagnosis.
   if (!BIRDEYE_KEY) console.warn("[PLANCKBITS] BIRDEYE_API_KEY unset — token routes return 503")
-  if (!PLANCK_MINT) console.warn("[PLANCKBITS] PLANCK_MINT unset — token routes return 503")
+  if (!PLANCK_MINT) console.warn("[PLANCKBITS] VITE_PLANCK_MINT unset — token routes return 503")
   if (!supabaseConfigured()) {
     console.warn("[PLANCKBITS] Supabase unset — /api/mint and /api/hire return 503")
   }

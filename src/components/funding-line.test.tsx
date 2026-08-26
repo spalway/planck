@@ -7,17 +7,17 @@ const CA = "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6"
 
 describe("FundingLine", () => {
   it("states the CA when there is one", () => {
-    render(<FundingLine ca={CA} />)
+    render(<FundingLine mint={CA} />)
     expect(screen.getByText(/A1KLoBrK/)).toBeInTheDocument()
   })
 
   it("says the token is not live yet when there is no CA", () => {
-    render(<FundingLine ca={null} />)
+    render(<FundingLine mint={null} />)
     expect(screen.getByText(/not live/i)).toBeInTheDocument()
   })
 
   it("shows no price, chart or ticker", () => {
-    const { container } = render(<FundingLine ca={CA} />)
+    const { container } = render(<FundingLine mint={CA} />)
     expect(container.textContent).not.toMatch(/\$\d/)
     expect(container.querySelector("svg")).toBeNull()
   })

@@ -1,5 +1,7 @@
 import * as React from "react"
 
+import { PLANCK_MINT } from "@/lib/token"
+
 /**
  * The contract address, stated plainly and placed high on the page.
  *
@@ -9,8 +11,7 @@ import * as React from "react"
  * for the trade instead. That restraint is deliberate and worth keeping.
  */
 
-/** Set once the tokens.xyz launch has happened. Public by design. */
-const CA = (import.meta.env.VITE_PLANCK_CA as string | undefined) ?? ""
+
 
 function useCopy(): [boolean, (text: string) => void] {
   const [copied, setCopied] = React.useState(false)
@@ -34,7 +35,7 @@ function useCopy(): [boolean, (text: string) => void] {
 
 export function ContractSection() {
   const [copied, copy] = useCopy()
-  const live = CA.length > 0
+  const mint = PLANCK_MINT
 
   return (
     <section id="contract" aria-label="Contract address" className="panel">
@@ -42,14 +43,14 @@ export function ContractSection() {
         <div className="min-w-0">
           <span className="tag text-[0.6rem]">$PLANCK contract</span>
 
-          {live ? (
+          {mint !== null ? (
             // A sunk well: the address is a value to be read and copied, not
             // a surface to act on.
             <p
               data-testid="contract-address"
               className="num panel-sunk mt-2.5 px-3 py-2 text-sm break-all text-ink sm:text-base"
             >
-              {CA}
+              {mint}
             </p>
           ) : (
             <p className="mt-2.5 text-sm text-ink-muted">
@@ -58,10 +59,10 @@ export function ContractSection() {
           )}
         </div>
 
-        {live && (
+        {mint !== null && (
           <button
             type="button"
-            onClick={() => copy(CA)}
+            onClick={() => copy(mint)}
             className="btn shrink-0 px-4 py-2 text-xs"
           >
             {copied ? "Copied" : "Copy"}
