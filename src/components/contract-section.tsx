@@ -1,6 +1,6 @@
 import * as React from "react"
 
-import { PLANCK_MINT } from "@/lib/token"
+import { useSiteConfig } from "@/hooks/use-site-config"
 
 /**
  * The contract address, stated plainly and placed high on the page.
@@ -35,7 +35,7 @@ function useCopy(): [boolean, (text: string) => void] {
 
 export function ContractSection() {
   const [copied, copy] = useCopy()
-  const mint = PLANCK_MINT
+  const { mint } = useSiteConfig()
 
   return (
     <section id="contract" aria-label="Contract address" className="panel">

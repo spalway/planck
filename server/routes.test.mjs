@@ -291,3 +291,71 @@ describe("missing static assets", () => {
     expect(res.status).toBe(200)
   })
 })
+
+describe("the mint is runtime config, not boot config", () => {
+  /** Lets a test change the answer mid-flight, as an UPDATE would. */
+  function withMutableMint(initial) {
+    const box = { mint: initial }
+    const { deps } = build()
+    const app = createApp({
+      config: { birdeyeKey: SECRET },
+      deps: { ...deps, resolveMint: async () => box.mint },
+    })
+    return { app, box }
+  }
+
+  it("serves the address over /api/config", async () => {
+    const { app } = withMutableMint(MINT)
+    const res = await call(app, "GET", "/api/config")
+    expect(res.status).toBe(200)
+    expect(res.body).toEqual({ mint: MINT })
+  })
+
+  it("reports null before launch rather than an empty string", async () => {
+    const { app } = withMutableMint("")
+    const res = await call(app, "GET", "/api/config")
+    expect(res.body).toEqual({ mint: null })
+  })
+
+  it("never lets a proxy cache the contract address", async () => {
+    // A stale address is worse than none — someone would send funds to it.
+    const { createServer } = await import("node:http")
+    const { app } = withMutableMint(MINT)
+    const server = createServer(app)
+    await new Promise((r) => server.listen(0, "127.0.0.1", r))
+    try {
+      const res = await fetch(`http://127.0.0.1:${server.address().port}/api/config`)
+      expect(res.headers.get("cache-control")).toBe("no-store")
+    } finally {
+      await new Promise((r) => server.close(r))
+    }
+  })
+
+  it("goes live mid-flight, with no restart", async () => {
+    // The whole point of moving the mint into Postgres: one UPDATE and the
+    // running server starts answering, instead of 503ing from a value it
+    // captured at boot until someone redeploys.
+    const { app, box } = withMutableMint("")
+
+    expect((await call(app, "GET", "/api/token")).body.error).toBe("token_not_launched")
+    expect((await call(app, "GET", "/api/health")).body.token).toBe(false)
+
+    box.mint = MINT
+
+    expect((await call(app, "GET", "/api/token")).status).toBe(200)
+    expect((await call(app, "GET", "/api/health")).body.token).toBe(true)
+    expect((await call(app, "GET", "/api/config")).body.mint).toBe(MINT)
+  })
+
+  it("passes the freshly resolved mint to Birdeye, not a stale one", async () => {
+    const { deps } = build()
+    const box = { mint: MINT }
+    const app = createApp({
+      config: { birdeyeKey: SECRET },
+      deps: { ...deps, resolveMint: async () => box.mint },
+    })
+
+    await call(app, "GET", `/api/holding?wallet=${WALLET}`)
+    expect(deps.walletHolding).toHaveBeenCalledWith(WALLET, MINT, SECRET)
+  })
+})

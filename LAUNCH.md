@@ -16,7 +16,7 @@ site runs today with none of them set.
 |---|---|---|---|---|
 | A1 | Supabase project | `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` | roster from Postgres, minting | **done — needs wiring to Railway** |
 | A2 | Birdeye API key | `BIRDEYE_API_KEY` | holder counts, the mint gate | you |
-| A3 | $PLANCK mint address | `VITE_PLANCK_MINT` | everything token-gated | you |
+| A3 | $PLANCK mint address | *(SQL, not an env var)* | everything token-gated | you, at launch |
 | A4 | Railway project + domain | — | deployment | you |
 | A5 | Vault treasury address | `VAULT_ADDRESS` | real holdings | phase 2 — no code reads it |
 | A6 | Solana RPC (Helius) | `SOLANA_RPC` | on-chain holdings | phase 2 — no code reads it |
@@ -120,3 +120,33 @@ records, which are rows the firm writes.
 Keep the copy matched to that. "Arithmetic on public data" is fair for holdings
 and P&L. It is not fair for a hire count. The Anchor program is what makes the
 claim true everywhere; until then, do not overstate it.
+
+---
+
+## Launching the token
+
+The mint address is **not** an environment variable any more. It lives in
+Postgres, so going live is one statement and no deploy:
+
+```sql
+update public_config set value = '<MINT ADDRESS>' where key = 'planck_mint';
+```
+
+Every process picks it up within ~15 seconds:
+
+- `/api/config` starts returning the address, and the browser polls it
+- the contract section and the funding line both switch from "not live yet"
+- `/api/token`, `/api/holding`, `/api/mint` and `/api/hire` stop returning
+  `token_not_launched`
+- `/api/health` flips `token` to `true`
+
+To un-launch (a mistake, a wrong address), set it back to `null`. The database
+wins over the environment in both directions, so a `null` here is respected
+even if `VITE_PLANCK_MINT` is still set on the deploy.
+
+Verified against the live project: `token:false` → `token:true` with no
+restart, and `updated_at` stamped by the trigger.
+
+**Never put a secret in `public_config`.** Every row is world-readable by the
+anon key — that is how the browser reads the address. API keys stay in
+Railway's environment.

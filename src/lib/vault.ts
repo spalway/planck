@@ -1,8 +1,8 @@
 /**
  * The vault's book.
  *
- * The mint address moved to lib/token.ts — it was hardcoded null here and
- * silently contradicted the contract section.
+ * The mint address moved to public_config in Postgres — it was hardcoded null
+ * here and silently contradicted the contract section. See hooks/use-site-config.
  *
  * A Phase 1 fixture that is deliberately empty — the firm has not deployed,
  * and the site says so rather than inventing a portfolio. Phase 2 replaces

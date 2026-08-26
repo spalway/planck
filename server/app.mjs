@@ -29,7 +29,7 @@ export const TERM_DAYS = 7
 const MINT_ATTEMPTS = 5
 
 export function createApp({ config = {}, deps, dist = null }) {
-  const { birdeyeKey = "", planckMint = "" } = config
+  const { birdeyeKey = "", xstocksKey = "", xtokensKey = "" } = config
 
   const {
     tokenStats,
@@ -43,6 +43,15 @@ export function createApp({ config = {}, deps, dist = null }) {
     now = () => Date.now(),
     uniqueViolation,
     foreignKeyViolation,
+    /**
+     * The mint address, resolved per request rather than captured at boot.
+     *
+     * It lives in public_config so launching the token is an UPDATE rather
+     * than a redeploy. Reading it here means the server picks up the change
+     * on the same cache tick the browser does, instead of serving 503s from
+     * a value it captured at startup until someone restarts it.
+     */
+    resolveMint = async () => config.planckMint ?? "",
   } = deps
 
   const app = express()
@@ -55,44 +64,72 @@ export function createApp({ config = {}, deps, dist = null }) {
    * or a mint yet, and the frontend renders that as "not live" rather than an
    * error.
    */
-  function requireConfig(res) {
+  async function requireToken(res) {
     if (!birdeyeKey) {
       res.status(503).json({ error: "birdeye_not_configured" })
-      return false
+      return null
     }
-    if (!planckMint) {
+
+    const mint = await resolveMint()
+    if (!mint) {
       res.status(503).json({ error: "token_not_launched" })
-      return false
+      return null
     }
-    return true
+
+    // Returned rather than closed over, so a route physically cannot use a
+    // mint it did not just check.
+    return mint
   }
 
   /** Both write routes need a key, a mint and a database. */
-  function requireWritable(res) {
-    if (!requireConfig(res)) return false
+  async function requireWritable(res) {
+    const mint = await requireToken(res)
+    if (!mint) return null
+
     if (!supabaseConfigured()) {
       res.status(503).json({ error: "database_not_configured" })
-      return false
+      return null
     }
-    return true
+    return mint
   }
 
-  app.get("/api/health", (_req, res) => {
+  app.get("/api/health", async (_req, res) => {
     res.json({
       ok: true,
       // Booleans only. Never report the values themselves.
       birdeye: Boolean(birdeyeKey),
-      token: Boolean(planckMint),
+      token: Boolean(await resolveMint()),
       database: supabaseConfigured(),
       build: dist ? existsSync(dist + "/index.html") : false,
+      // Reported so a deploy can confirm the key arrived. No route calls
+      // these APIs yet — see README. Booleans only, never the values.
+      xstocks: Boolean(xstocksKey),
+      xtokens: Boolean(xtokensKey),
     })
   })
 
+  /**
+   * Public runtime config for the browser.
+   *
+   * The contract address is what a visitor arrives looking for, so it must
+   * never be served stale: no-store here, and the client refetches. The value
+   * itself is cached server-side for a few seconds, which is the real bound
+   * on how long a launch takes to appear.
+   *
+   * Only public values. This response is world-readable by definition.
+   */
+  app.get("/api/config", async (_req, res) => {
+    const mint = await resolveMint()
+    res.setHeader("Cache-Control", "no-store")
+    res.json({ mint: mint || null })
+  })
+
   app.get("/api/token", async (_req, res) => {
-    if (!requireConfig(res)) return
+    const mint = await requireToken(res)
+    if (!mint) return
 
     try {
-      res.json(await tokenStats(planckMint, birdeyeKey))
+      res.json(await tokenStats(mint, birdeyeKey))
     } catch (e) {
       console.warn("[PLANCKBITS] token stats failed:", e.message)
       res.status(502).json({ error: "upstream_failed" })
@@ -100,7 +137,8 @@ export function createApp({ config = {}, deps, dist = null }) {
   })
 
   app.get("/api/holding", async (req, res) => {
-    if (!requireConfig(res)) return
+    const mint = await requireToken(res)
+    if (!mint) return
 
     const wallet = String(req.query.wallet ?? "")
     if (!BASE58.test(wallet)) {
@@ -108,7 +146,7 @@ export function createApp({ config = {}, deps, dist = null }) {
     }
 
     try {
-      res.json(await walletHolding(wallet, planckMint, birdeyeKey))
+      res.json(await walletHolding(wallet, mint, birdeyeKey))
     } catch (e) {
       console.warn("[PLANCKBITS] holding lookup failed:", e.message)
       res.status(502).json({ error: "upstream_failed" })
@@ -116,7 +154,8 @@ export function createApp({ config = {}, deps, dist = null }) {
   })
 
   app.post("/api/mint", express.json({ limit: "1kb" }), async (req, res) => {
-    if (!requireWritable(res)) return
+    const mint = await requireWritable(res)
+    if (!mint) return
 
     const wallet = String(req.body?.wallet ?? "")
     if (!BASE58.test(wallet)) {
@@ -126,7 +165,7 @@ export function createApp({ config = {}, deps, dist = null }) {
     try {
       // The gate. Checked here rather than trusting anything the client said,
       // because the client can say whatever it likes.
-      const holding = await walletHolding(wallet, planckMint, birdeyeKey)
+      const holding = await walletHolding(wallet, mint, birdeyeKey)
       if (!holding.holds) {
         return res.status(403).json({ error: "not_holding" })
       }
@@ -163,7 +202,8 @@ export function createApp({ config = {}, deps, dist = null }) {
   })
 
   app.post("/api/hire", express.json({ limit: "1kb" }), async (req, res) => {
-    if (!requireWritable(res)) return
+    const mint = await requireWritable(res)
+    if (!mint) return
 
     const wallet = String(req.body?.wallet ?? "")
     const brokerId = String(req.body?.brokerId ?? "")
@@ -175,7 +215,7 @@ export function createApp({ config = {}, deps, dist = null }) {
 
     try {
       // Re-checked here, never trusted from the client.
-      const holding = await walletHolding(wallet, planckMint, birdeyeKey)
+      const holding = await walletHolding(wallet, mint, birdeyeKey)
       if (!holding.holds) return res.status(403).json({ error: "not_holding" })
 
       if ((await openEngagementsFor(wallet)) >= HIRE_CAP_PER_WALLET) {

@@ -13,10 +13,11 @@ import { HomePage } from "@/pages/home"
 import { HowItWorksPage } from "@/pages/how-it-works"
 import { MintPage } from "@/pages/mint"
 import { NotFoundPage } from "@/pages/not-found"
-import { PLANCK_MINT } from "@/lib/token"
+import { useSiteConfig } from "@/hooks/use-site-config"
 
 export function App() {
   const { pathname } = useLocation()
+  const { mint } = useSiteConfig()
 
   // Router keeps scroll position across navigations; a new page starts at the top.
   //
@@ -61,7 +62,7 @@ export function App() {
             </Routes>
           </ErrorBoundary>
 
-          <FundingLine mint={PLANCK_MINT} />
+          <FundingLine mint={mint} />
         </main>
 
         <SiteFooter />

@@ -22,6 +22,7 @@ import { fileURLToPath } from "node:url"
 import { createApp } from "./app.mjs"
 import { tokenStats, walletHolding } from "./birdeye.mjs"
 import { rollBroker } from "./brokers.mjs"
+import { configValue } from "./site-config.mjs"
 import {
   FOREIGN_KEY_VIOLATION,
   UNIQUE_VIOLATION,
@@ -36,14 +37,24 @@ const dist = `${root}dist`
 
 const PORT = Number(process.env.PORT) || 3000
 const BIRDEYE_KEY = process.env.BIRDEYE_API_KEY ?? ""
-// The same variable the browser bundle reads. The address is public, so
-// there is no reason for the server to have its own name for it.
-const PLANCK_MINT = process.env.VITE_PLANCK_MINT ?? process.env.PLANCK_MINT ?? ""
+const XSTOCKS_KEY = process.env.XSTOCKS_API_KEY ?? ""
+const XTOKENS_KEY = process.env.XTOKENS_API_KEY ?? ""
+
+/**
+ * The environment is the fallback, not the source.
+ *
+ * public_config.planck_mint is authoritative, so launching the token is an
+ * UPDATE rather than a redeploy. The env var still works — it is what local
+ * development and any deploy without a database use — but the database wins
+ * whenever it has an answer.
+ */
+const ENV_MINT = process.env.VITE_PLANCK_MINT ?? process.env.PLANCK_MINT ?? ""
 
 const app = createApp({
-  config: { birdeyeKey: BIRDEYE_KEY, planckMint: PLANCK_MINT },
+  config: { birdeyeKey: BIRDEYE_KEY, xstocksKey: XSTOCKS_KEY, xtokensKey: XTOKENS_KEY },
   dist,
   deps: {
+    resolveMint: () => configValue("planck_mint", ENV_MINT || null).then((v) => v ?? ""),
     tokenStats,
     walletHolding,
     rollBroker,
@@ -57,15 +68,26 @@ const app = createApp({
   },
 })
 
-app.listen(PORT, "0.0.0.0", () => {
+app.listen(PORT, "0.0.0.0", async () => {
   console.log(`[PLANCKBITS] listening on ${PORT}`)
 
   // Say plainly which capability is missing. Each one degrades a specific
   // route to 503 rather than breaking the site, and on a fresh deploy the
   // difference between "unconfigured" and "broken" is the whole diagnosis.
-  if (!BIRDEYE_KEY) console.warn("[PLANCKBITS] BIRDEYE_API_KEY unset — token routes return 503")
-  if (!PLANCK_MINT) console.warn("[PLANCKBITS] VITE_PLANCK_MINT unset — token routes return 503")
+  if (!BIRDEYE_KEY) {
+    console.warn("[PLANCKBITS] BIRDEYE_API_KEY unset — token routes return 503")
+  }
   if (!supabaseConfigured()) {
     console.warn("[PLANCKBITS] Supabase unset — /api/mint and /api/hire return 503")
+  }
+
+  const mint = await configValue("planck_mint", ENV_MINT || null)
+  if (mint) {
+    console.log("[PLANCKBITS] token is live")
+  } else {
+    console.warn(
+      "[PLANCKBITS] no mint yet — set public_config.planck_mint in Postgres " +
+        "(takes effect within seconds, no redeploy)"
+    )
   }
 })
