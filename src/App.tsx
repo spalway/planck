@@ -19,7 +19,24 @@ export function App() {
   const { pathname } = useLocation()
 
   // Router keeps scroll position across navigations; a new page starts at the top.
-  React.useEffect(() => window.scrollTo(0, 0), [pathname])
+  //
+  // The block body is load-bearing. Written concisely — `() => window.scrollTo(0, 0)`
+  // — the arrow RETURNS whatever scrollTo returns, and React stores an effect's
+  // return value as its cleanup and calls it if it is anything but undefined.
+  // scrollTo returns undefined in a clean page, but this one runs with wallet
+  // extensions injected, and extensions patch scroll methods. A patched
+  // scrollTo returning any value made React call a non-function while
+  // unmounting, which throws during commit and tears down the whole tree.
+  //
+  // This effect keys on pathname, so that was every single navigation: the
+  // page went blank on every click and only a reload brought it back.
+  React.useEffect(() => {
+    try {
+      window.scrollTo(0, 0)
+    } catch {
+      // Scrolling is a nicety. It must never be able to take the page down.
+    }
+  }, [pathname])
 
   return (
     <WalletProvider>
