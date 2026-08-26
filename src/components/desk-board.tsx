@@ -67,7 +67,7 @@ export function DeskBoard({
       <div // grid-cols-1 is not redundant: without it the implicit mobile track is
         // auto-sized and grows past the viewport. min-w-0 on the item defeats
         // the default min-width:auto that stops a grid child from shrinking.
-        className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+        className="grid grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-5"
       >
         {DESKS.map((desk) => {
           const totals = deskTotals(holdings, prices, desk.id)

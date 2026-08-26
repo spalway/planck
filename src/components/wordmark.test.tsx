@@ -23,14 +23,29 @@ describe("Wordmark", () => {
     }
   })
 
-  it("draws every glyph on the same grid", () => {
-    const { W, H } = WORDMARK_CELL
+  it("draws every glyph the same height", () => {
+    const { H } = WORDMARK_CELL
     for (const [ch, rows] of Object.entries(WORDMARK_GLYPHS)) {
       expect(rows, `glyph "${ch}" row count`).toHaveLength(H)
+    }
+  })
+
+  it("keeps each glyph rectangular", () => {
+    // Width varies BETWEEN glyphs — that is the point — but a ragged row
+    // inside one glyph would shift its pixels sideways and skew the letter.
+    for (const [ch, rows] of Object.entries(WORDMARK_GLYPHS)) {
+      const width = rows[0].length
       rows.forEach((row, i) => {
-        expect(row.length, `glyph "${ch}" row ${i}: "${row}"`).toBe(W)
+        expect(row.length, `glyph "${ch}" row ${i}: "${row}"`).toBe(width)
       })
     }
+  })
+
+  it("gives narrow letters narrow cells", () => {
+    // The disjointed look was every glyph padded to a fixed 5 columns, so a
+    // 1px "i" sat in a 4px hole while "a" and "n" nearly touched.
+    expect(WORDMARK_GLYPHS.i[0].length).toBeLessThan(WORDMARK_GLYPHS.a[0].length)
+    expect(WORDMARK_GLYPHS.l[0].length).toBeLessThan(WORDMARK_GLYPHS.n[0].length)
   })
 
   it("uses only on and off cells", () => {

@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom"
 
 import { ConnectButton } from "@/components/connect-button"
 import { Wordmark } from "@/components/wordmark"
+import { XLink } from "@/components/x-link"
 
 import { ROUTES } from "@/lib/nav"
 import { cn } from "@/lib/utils"
@@ -19,7 +20,7 @@ import { cn } from "@/lib/utils"
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 bg-bar text-ground">
-      <div className="mx-auto flex max-w-[88rem] flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-3">
+      <div className="mx-auto flex max-w-[110rem] flex-wrap items-center justify-between gap-x-6 gap-y-2 px-3 py-3">
         <NavLink to="/" className="text-ground hover:text-tan" aria-label="planckbits, home">
           <Wordmark height={24} />
         </NavLink>
@@ -46,7 +47,10 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <ConnectButton />
+        <div className="flex shrink-0 items-center gap-2">
+          <XLink />
+          <ConnectButton />
+        </div>
       </div>
     </header>
   )

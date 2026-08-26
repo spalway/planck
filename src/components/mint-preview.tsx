@@ -88,7 +88,7 @@ export function MintPreview() {
         </p>
       </div>
 
-      <ul className="panel grid grid-cols-2 gap-0.5 bg-ink sm:grid-cols-5">
+      <ul className="panel grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-0.5 bg-ink">
         {SAMPLES.map((b) => (
           <li key={b.id} className="flex flex-col items-center gap-2 bg-paper p-4">
             <BrokerSprite broker={b} size={64} />
@@ -102,7 +102,7 @@ export function MintPreview() {
         ))}
       </ul>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-5">
         <div>
           <h3 className="font-display text-base font-bold">desk odds</h3>
           <p className="mt-2 mb-3 text-sm leading-relaxed text-ink-muted">

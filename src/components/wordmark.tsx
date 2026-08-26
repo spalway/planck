@@ -3,58 +3,71 @@
  *
  * It used to be set in Departure Mono, loaded from a woff2 that never once
  * decoded: the file was truncated by a single byte before it was first
- * committed (core.autocrlf stripped it, prior to *.woff2 being marked binary
- * in .gitattributes), so every browser rejected it with an OTS parsing error
- * and silently fell back to Geist Mono. The wordmark has never actually been
- * pixel type.
+ * committed, so every browser rejected it with an OTS parsing error and fell
+ * back to Geist Mono. Drawing it as rects fixes that permanently — it cannot
+ * fail to decode, costs no font request, and stays crisp at any size.
  *
- * Drawing it as rects fixes that permanently and is the better answer
- * anyway: it is the same technique the broker portraits use, it cannot fail
- * to decode, it costs no font request, and it stays crisp at any size
- * because it is vector underneath.
+ * PROPORTIONAL, not monospaced. The first version padded every glyph to a
+ * fixed 5-column cell, which left "l" and "i" — both 1px stems — floating in
+ * a 4px hole on either side while "a" and "n" sat shoulder to shoulder. The
+ * word read as loose, unevenly spaced fragments. Each glyph now carries its
+ * own width and every pair is separated by exactly GAP, so the rhythm is even
+ * across the whole word.
  *
- * 5x8 cells. Rows 0-1 are the ascender zone, 2-6 the x-height, 7 the
- * descender — so "l", "k", "b" and "t" rise and "p" drops, which is what
- * keeps a lowercase word from reading as a row of blocks.
+ * Vertical metrics, 8 rows: 0-1 ascender, 2-6 x-height, 7 descender. So "l",
+ * "k", "b" and "t" rise and "p" drops, which is what stops a lowercase word
+ * reading as a row of identical blocks.
  */
 
-const W = 5
 const H = 8
+
 /** One blank column between letters, so stems never touch. */
 const GAP = 1
 
+/**
+ * Glyphs, each as tall as H and as wide as it needs to be.
+ *
+ * Stems are 1px everywhere and bowls are 4 wide, so no letter looks heavier
+ * than its neighbours.
+ */
 const GLYPHS: Record<string, string[]> = {
-  p: [".....", ".....", "####.", "#...#", "#...#", "#...#", "####.", "#...."],
-  l: ["..#..", "..#..", "..#..", "..#..", "..#..", "..#..", "..#..", "....."],
-  a: [".....", ".....", ".###.", "....#", ".####", "#...#", ".####", "....."],
-  n: [".....", ".....", "#.##.", "##..#", "#...#", "#...#", "#...#", "....."],
-  c: [".....", ".....", ".###.", "#...#", "#....", "#...#", ".###.", "....."],
-  k: ["#....", "#....", "#...#", "#..#.", "###..", "#..#.", "#...#", "....."],
-  b: ["#....", "#....", "####.", "#...#", "#...#", "#...#", "####.", "....."],
-  i: ["..#..", ".....", "..#..", "..#..", "..#..", "..#..", "..#..", "....."],
-  t: [".#...", ".#...", "####.", ".#...", ".#...", ".#...", "..##.", "....."],
-  s: [".....", ".....", ".####", "#....", ".###.", "....#", "####.", "....."],
+  p: ["....", "....", "###.", "#..#", "#..#", "#..#", "###.", "#..."],
+  l: ["#.", "#.", "#.", "#.", "#.", "#.", "##", ".."],
+  a: ["....", "....", "###.", "...#", "####", "#..#", ".###", "...."],
+  n: ["....", "....", "###.", "#..#", "#..#", "#..#", "#..#", "...."],
+  c: ["....", "....", ".###", "#...", "#...", "#...", ".###", "...."],
+  k: ["#...", "#...", "#..#", "#.#.", "##..", "#.#.", "#..#", "...."],
+  b: ["#...", "#...", "###.", "#..#", "#..#", "#..#", "###.", "...."],
+  i: ["#", ".", "#", "#", "#", "#", "#", "."],
+  t: ["#..", "#..", "###", "#..", "#..", "#..", ".##", "..."],
+  s: ["....", "....", ".###", "#...", ".##.", "...#", "###.", "...."],
 }
 
 const TEXT = "planckbits"
 
-/** Exported so a test can assert every letter in TEXT has a glyph. */
+/** Exported so tests can assert the glyphs stay well formed. */
 export const WORDMARK_TEXT = TEXT
 export const WORDMARK_GLYPHS = GLYPHS
-export const WORDMARK_CELL = { W, H, GAP }
+export const WORDMARK_CELL = { H, GAP }
 
-const COLS = TEXT.length * (W + GAP) - GAP
+/** Width of a glyph, taken from the art itself rather than declared twice. */
+function widthOf(ch: string): number {
+  return GLYPHS[ch]?.[0]?.length ?? 0
+}
+
+const COLS =
+  TEXT.split("").reduce((sum, ch) => sum + widthOf(ch), 0) + GAP * (TEXT.length - 1)
 
 /**
  * Snap a requested height to a whole number of pixels per cell.
  *
  * The grid is H rows tall, so a height that is not a multiple of H puts cell
  * edges on fractions of a pixel and the browser antialiases them. At 18px the
- * nav wordmark was 2.25px per cell and rendered visibly softer and unevenly
- * weighted than the hero, which happened to land on 6px and 10px.
+ * nav wordmark was 2.25px per cell and rendered visibly softer than the hero,
+ * which happened to land on 6px and 10px.
  *
- * Pixel art only scales by integers. Rounding here means callers can ask for
- * any height and still get a crisp mark, rather than having to know the grid.
+ * Pixel art only scales by integers. Rounding here lets callers ask for any
+ * height and still get a crisp mark, without knowing the grid.
  */
 export function snapHeight(requested: number, rows = H): number {
   return Math.max(1, Math.round(requested / rows)) * rows
@@ -71,20 +84,22 @@ export function Wordmark({
   const snapped = snapHeight(height)
   const rects: React.ReactElement[] = []
 
-  TEXT.split("").forEach((ch, i) => {
+  let x0 = 0
+  for (const ch of TEXT) {
     const glyph = GLYPHS[ch]
-    if (!glyph) return
-    const originX = i * (W + GAP)
+    if (!glyph) continue
 
     glyph.forEach((row, y) => {
       row.split("").forEach((cell, x) => {
         if (cell !== "#") return
         rects.push(
-          <rect key={`${i}-${x}-${y}`} x={originX + x} y={y} width={1} height={1} />
+          <rect key={`${x0}-${x}-${y}`} x={x0 + x} y={y} width={1} height={1} />
         )
       })
     })
-  })
+
+    x0 += widthOf(ch) + GAP
+  }
 
   return (
     <svg

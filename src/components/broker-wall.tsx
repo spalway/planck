@@ -49,7 +49,7 @@ export function BrokerWall({ brokers }: { brokers: readonly Broker[] }) {
 
       {/* The 2px gaps over an umber ground draw the grid lines, so the sheet
           is one framed object rather than 24 outlined boxes. */}
-      <ul className="panel grid grid-cols-3 gap-0.5 bg-ink p-0 sm:grid-cols-4 lg:grid-cols-6">
+      <ul className="panel grid grid-cols-[repeat(auto-fill,minmax(6.5rem,1fr))] gap-0.5 bg-ink p-0">
         {brokers.map((b) => (
           <li key={b.id} className="min-w-0 bg-paper">
             <Link

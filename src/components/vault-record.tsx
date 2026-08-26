@@ -25,7 +25,7 @@ export function VaultRecord({ holdings }: { holdings: readonly Holding[] }) {
         </div>
       ) : (
         <>
-          <div className="mb-8 grid grid-cols-2 gap-6 md:grid-cols-4">
+          <div className="mb-8 grid grid-cols-[repeat(auto-fill,minmax(9rem,1fr))] gap-4">
             <Stat label="Cost basis" value={usd(totals.costUsd)} />
             <Stat label="Market value" value={usd(totals.valueUsd)} />
             <Stat

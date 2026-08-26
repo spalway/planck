@@ -8,7 +8,7 @@ export function FloorCensus({ brokers }: { brokers: readonly Broker[] }) {
 
   return (
     <Section id="census" label="02" title="the census">
-      <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(9rem,1fr))] gap-4">
         <Stat label="Brokers" value={String(brokers.length)} />
         <Stat label="Employed" value={String(employed)} hint="tenure accruing" />
         <Stat

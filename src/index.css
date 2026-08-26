@@ -83,7 +83,7 @@
  * is the look, and scaling it to 1.875px would land it on a half pixel.
  */
 :root {
-  font-size: 15px;
+  font-size: 14px;
 }
 
 body { text-transform: lowercase; }

@@ -49,7 +49,7 @@ export function VaultMandate() {
         </p>
       )}
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-5">
         {DESKS.map((desk) => (
           <article key={desk.id} className="panel min-w-0 p-4">
             <h4 className="font-display text-sm font-bold">{desk.label}</h4>
@@ -91,7 +91,7 @@ export function VaultMandate() {
 
       <div>
         <h3 className="font-display text-base font-bold">the rules</h3>
-        <ol className="panel mt-3 grid grid-cols-1 gap-0.5 bg-ink md:grid-cols-3">
+        <ol className="panel mt-3 grid grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-0.5 bg-ink">
           {RULES.map((r, i) => (
             <li key={r.head} className="flex min-w-0 flex-col bg-paper p-4">
               <span className="num tag self-start text-[0.55rem]">
