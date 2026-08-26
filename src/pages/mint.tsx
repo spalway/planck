@@ -1,6 +1,8 @@
 import * as React from "react"
 
 import { BrokerSprite } from "@/components/broker-sprite"
+import { ConnectButton } from "@/components/connect-button"
+import { MintPreview } from "@/components/mint-preview"
 import { Section } from "@/components/primitives"
 import { useWalletContext } from "@/components/wallet-context"
 import { useHolding } from "@/hooks/use-holding"
@@ -85,6 +87,8 @@ export function MintPage() {
     setMinting(false)
   }
 
+  const canMint = holding.status === "known" && holding.holding.holds
+
   return (
     <Section id="mint" label="06" title="MINT A BROKER">
       <p className="mb-6 max-w-2xl text-sm leading-relaxed text-ink-muted">
@@ -95,7 +99,14 @@ export function MintPage() {
 
       <div className="flex flex-col gap-4">
         {holding.status === "disconnected" && (
-          <Panel>Connect a wallet to mint. The button is in the header.</Panel>
+          <div className="panel flex flex-col gap-3 p-6 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm leading-relaxed text-ink-muted">
+              Connect a wallet to check whether you can mint.
+            </p>
+            {/* An inline action rather than "the button is in the header",
+                which asked the reader to go hunting for it. */}
+            <ConnectButton />
+          </div>
         )}
 
         {holding.status === "checking" && <Panel>Checking your wallet…</Panel>}
@@ -154,6 +165,12 @@ export function MintPage() {
           </Panel>
         )}
       </div>
+
+      {canMint === false && (
+        <div className="mt-10 border-t-2 border-umber/20 pt-8">
+          <MintPreview />
+        </div>
+      )}
     </Section>
   )
 }

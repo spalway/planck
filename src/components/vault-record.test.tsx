@@ -25,6 +25,27 @@ describe("VaultRecord", () => {
     expect(await screen.findByText(/has not deployed/i)).toBeInTheDocument()
   })
 
+  it("shows the mandate while the book is empty", async () => {
+    // Saying only "nothing to show" left the page at ~500px of content, so
+    // most of it was empty background and a visitor could not tell what the
+    // vault would ever hold.
+    mockFetchPrices.mockResolvedValue({})
+    render(<VaultRecord holdings={[]} />)
+
+    expect(await screen.findByText(/the mandate/i)).toBeInTheDocument()
+    expect(screen.getByText(/never sells/i)).toBeInTheDocument()
+    // The instruments themselves, not a description of them.
+    expect(screen.getByText("NVDAx")).toBeInTheDocument()
+    expect(screen.getByText("PAXG")).toBeInTheDocument()
+  })
+
+  it("does not repeat the mandate once the vault holds something", async () => {
+    mockFetchPrices.mockResolvedValue({})
+    render(<VaultRecord holdings={HOLDINGS} />)
+    await screen.findByText("NVDAx")
+    expect(screen.queryByText(/the mandate/i)).not.toBeInTheDocument()
+  })
+
   it("renders a holding row with its live value and gain", async () => {
     mockFetchPrices.mockResolvedValue({
       [NVDAX]: {

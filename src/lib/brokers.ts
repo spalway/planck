@@ -100,18 +100,43 @@ function mulberry32(seed: number): () => number {
  * six on INDEX (two), which reads backwards — the deepest desk looked
  * abandoned. Weighting by depth makes the floor mirror the book.
  */
-function weightedDesk(rand: () => number): DeskId {
+export type DeskOdds = {
+  desk: DeskId
+  instruments: number
+  /** Probability in 0..1 that a mint lands on this desk. */
+  chance: number
+}
+
+/**
+ * The desk distribution a mint rolls against.
+ *
+ * Exported so the mint page can state the odds it actually uses. A hand-
+ * written table on the page would drift silently the first time an
+ * instrument is added to a desk, and the site would then be quoting odds
+ * that are not the ones being rolled.
+ */
+export function deskRollOdds(): DeskOdds[] {
   // sqrt, not raw depth: raw proportional weighting put 13 of 24 brokers on
   // EQUITIES and left YIELD and CREDIT with one each. The square root keeps
   // the ordering while giving the shallow desks a real presence.
   const weights = DESKS.map((d) => Math.sqrt(instrumentsForDesk(d.id).length))
   const total = weights.reduce((a, b) => a + b, 0)
-  let n = rand() * total
-  for (let i = 0; i < DESKS.length; i++) {
-    n -= weights[i]
-    if (n <= 0) return DESKS[i].id
+
+  return DESKS.map((d, i) => ({
+    desk: d.id,
+    instruments: instrumentsForDesk(d.id).length,
+    chance: weights[i] / total,
+  }))
+}
+
+function weightedDesk(rand: () => number): DeskId {
+  const odds = deskRollOdds()
+  let n = rand()
+  for (const o of odds) {
+    n -= o.chance
+    if (n <= 0) return o.desk
   }
-  return DESKS[DESKS.length - 1].id
+  return odds[odds.length - 1].desk
 }
 
 /** Deterministic Fisher-Yates, so the shuffle is stable across loads. */

@@ -1,4 +1,5 @@
 import { Section, Stat } from "@/components/primitives"
+import { VaultMandate } from "@/components/vault-mandate"
 import { usePrices } from "@/hooks/use-prices"
 import { EMPTY, pct, usd } from "@/lib/format"
 import { ALL_MINTS, instrumentByMint } from "@/lib/instruments"
@@ -13,11 +14,15 @@ export function VaultRecord({ holdings }: { holdings: readonly Holding[] }) {
   return (
     <Section id="holdings" label="04" title="HOLDINGS">
       {holdings.length === 0 ? (
-        <p className="panel p-6 text-sm leading-relaxed text-ink-muted">
-          The vault has not deployed yet. Nothing has been bought, so there is nothing
-          to show. Holdings appear here — with cost basis and live value — the moment
-          the first broker is hired.
-        </p>
+        <div className="flex flex-col gap-10">
+          <p className="panel p-6 text-sm leading-relaxed text-ink-muted">
+            The vault has not deployed yet. Nothing has been bought, so there is
+            nothing to show. Holdings appear here — with cost basis and live value —
+            the moment the first broker is hired.
+          </p>
+
+          <VaultMandate />
+        </div>
       ) : (
         <>
           <div className="mb-8 grid grid-cols-2 gap-6 md:grid-cols-4">

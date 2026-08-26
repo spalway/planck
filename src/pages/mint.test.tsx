@@ -38,9 +38,27 @@ const HOLDER: HoldingState = {
 }
 
 describe("MintPage", () => {
-  it("asks for a wallet when none is connected", () => {
+  it("asks for a wallet when none is connected, and offers the action", () => {
     setup({ status: "disconnected" }, null)
-    expect(screen.getByText(/connect a wallet to mint/i)).toBeInTheDocument()
+    expect(screen.getByText(/connect a wallet/i)).toBeInTheDocument()
+    // The prompt used to say the button was "in the header" and offer
+    // nothing; a visitor had to go looking. The action lives with the ask.
+    expect(screen.getByRole("button", { name: /connect/i })).toBeInTheDocument()
+  })
+
+  it("explains what a mint rolls for when the visitor cannot mint", () => {
+    // /mint was a heading, a paragraph and one box — most of the page was
+    // empty background, and nobody without a wallet learned anything.
+    setup({ status: "disconnected" }, null)
+    expect(screen.getByText(/what you roll for/i)).toBeInTheDocument()
+    expect(screen.getByText(/desk odds/i)).toBeInTheDocument()
+  })
+
+  it("drops the explainer once minting is actually open", () => {
+    // The action is the point for a confirmed holder; the explainer would
+    // only push the button down the page.
+    setup(HOLDER)
+    expect(screen.queryByText(/what you roll for/i)).not.toBeInTheDocument()
   })
 
   it("says the token has not launched rather than showing an error", () => {
