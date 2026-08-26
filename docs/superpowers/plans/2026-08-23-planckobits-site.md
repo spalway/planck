@@ -1,14 +1,14 @@
-# PLANCKOBITS Site + Live Feeds — Implementation Plan (Phase 1)
+# PLANCKBITS Site + Live Feeds — Implementation Plan (Phase 1)
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Ship the complete PLANCKOBITS landing site with a live desk board driven by real Jupiter prices for 13 verified Solana RWA mints, with mint/hire rendered in a pre-launch state.
+**Goal:** Ship the complete PLANCKBITS landing site with a live desk board driven by real Jupiter prices for 13 verified Solana RWA mints, with mint/hire rendered in a pre-launch state.
 
 **Architecture:** A pure-data core (`instruments.ts`), a thin network client (`jupiter-price.ts`), pure computation (`records.ts`, `brokers.ts`), one hook bridging network to React (`use-prices.ts`), and presentational components that receive data as props. All P&L math is testable without network or wallet. Jupiter is called directly from the browser — it sends permissive CORS, so no proxy is needed.
 
 **Tech Stack:** Vite 8, React 19, TypeScript ~6, Tailwind v4 (CSS-first via `@theme inline`), shadcn v4 (`base-nova` style), Vitest + Testing Library, Jupiter Price API v3.
 
-**Spec:** `docs/superpowers/specs/2026-08-23-planckobits-design.md`
+**Spec:** `docs/superpowers/specs/2026-08-23-planckbits-design.md`
 
 **Out of scope (Phase 2, separate plan):** Anchor program, wallet connect, on-chain reads, mint/hire transactions.
 
@@ -19,7 +19,7 @@
 - **The token stays lowkey.** One funding line and the contract address. No price display, no chart, no ticker widget anywhere.
 - **Pixel art is illustration only.** All UI structure uses real 1px borders and SVG. Zero box-drawing characters in interface chrome.
 - **Light mode only.** No `.dark` variant, no `next-themes`.
-- **Code style (match `new_projects/airock`):** double quotes, no semicolons, named exports only, kebab-case filenames, `/** */` doc comments explaining *why*, `console.warn("[PLANCKOBITS] ...")` for recoverable failures, network functions take `signal?: AbortSignal` and return `null` on failure rather than throwing.
+- **Code style (match `new_projects/airock`):** double quotes, no semicolons, named exports only, kebab-case filenames, `/** */` doc comments explaining *why*, `console.warn("[PLANCKBITS] ...")` for recoverable failures, network functions take `signal?: AbortSignal` and return `null` on failure rather than throwing.
 - **Palette (exact):** `--ground #F4F1EA`, `--ink #14120F`, `--ink-muted #6B6459`, `--cobalt #2148E2`, `--gain #1B7F4B`, `--loss #C4362B`, `--paper #FFFFFF`.
 - **Commit after every task.** Conventional commit prefixes (`feat:`, `test:`, `chore:`).
 
@@ -41,7 +41,7 @@
 
 ```json
 {
-  "name": "planckobits",
+  "name": "planckbits",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -308,7 +308,7 @@ Expected: PASS, 2 tests. (This one passes immediately — it verifies the harnes
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PLANCKOBITS</title>
+    <title>PLANCKBITS</title>
     <meta
       name="description"
       content="A labor market for AI broker agents holding real-world assets on Solana."
@@ -343,7 +343,7 @@ createRoot(document.getElementById("root")!).render(
 export function App() {
   return (
     <main className="mx-auto max-w-5xl px-4 py-10">
-      <h1 className="font-display text-3xl">PLANCKOBITS</h1>
+      <h1 className="font-display text-3xl">PLANCKBITS</h1>
     </main>
   )
 }
@@ -859,7 +859,7 @@ export async function fetchPrices(
     return out
   } catch (e) {
     if ((e as Error).name !== "AbortError") {
-      console.warn("[PLANCKOBITS] Jupiter price fetch failed:", e)
+      console.warn("[PLANCKBITS] Jupiter price fetch failed:", e)
     }
     return null
   }
@@ -1906,7 +1906,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-ink/15 bg-ground/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-4 py-3">
         <a href="#top" className="font-display text-lg tracking-tight">
-          PLANCKOBITS
+          PLANCKBITS
         </a>
         <nav className="hidden items-center gap-6 md:flex">
           {NAV.map((n) => (
@@ -1939,7 +1939,7 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-ink/15 py-10">
       <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 text-xs text-ink-muted">
-        <p>PLANCKOBITS — a labor market for AI broker agents.</p>
+        <p>PLANCKBITS — a labor market for AI broker agents.</p>
         <p>
           Not financial advice. Tokenized equity exposure is restricted in some
           jurisdictions.
@@ -1966,7 +1966,7 @@ export function App() {
     <div id="top">
       <SiteHeader />
       <main className="mx-auto max-w-6xl px-4">
-        <p className="py-20 font-display text-4xl">PLANCKOBITS</p>
+        <p className="py-20 font-display text-4xl">PLANCKBITS</p>
       </main>
       <SiteFooter />
     </div>
@@ -1996,7 +1996,7 @@ git commit -m "feat: add layout primitives, pixel display font and page shell"
 
 **Interfaces:**
 - Consumes: nothing
-- Produces: `<DisclaimerGate onAccept />`, `const GATE_STORAGE_KEY = "planckobits.disclaimer.v1"`, `function hasAcceptedGate(): boolean`
+- Produces: `<DisclaimerGate onAccept />`, `const GATE_STORAGE_KEY = "planckbits.disclaimer.v1"`, `function hasAcceptedGate(): boolean`
 
 - [ ] **Step 1: Write the failing test**
 
@@ -2064,7 +2064,7 @@ Expected: FAIL — cannot resolve `@/components/disclaimer-gate`.
 ```tsx
 import * as React from "react"
 
-export const GATE_STORAGE_KEY = "planckobits.disclaimer.v1"
+export const GATE_STORAGE_KEY = "planckbits.disclaimer.v1"
 
 export function hasAcceptedGate(): boolean {
   try {
@@ -2077,7 +2077,7 @@ export function hasAcceptedGate(): boolean {
 }
 
 const POINTS = [
-  "PLANCKOBITS is experimental software. Contracts are unaudited and may fail.",
+  "PLANCKBITS is experimental software. Contracts are unaudited and may fail.",
   "Nothing here is financial advice. Nothing here is an offer to buy or sell a security.",
   "Hiring fees are spent and are not refundable. The vault does not sell its holdings.",
   "Tokenized equity exposure is restricted in some jurisdictions, including the United States. Complying with the law where you live is your responsibility.",
@@ -2162,7 +2162,7 @@ export function App() {
       {!entered && <DisclaimerGate onAccept={() => setEntered(true)} />}
       <SiteHeader />
       <main className="mx-auto max-w-6xl px-4">
-        <p className="py-20 font-display text-4xl">PLANCKOBITS</p>
+        <p className="py-20 font-display text-4xl">PLANCKBITS</p>
       </main>
       <SiteFooter />
     </div>
@@ -2277,7 +2277,7 @@ export function Hero() {
       </p>
 
       <h1 className="mt-5 font-display text-5xl leading-[1.05] tracking-tight sm:text-7xl">
-        PLANCKOBITS
+        PLANCKBITS
       </h1>
 
       <p className="mt-6 max-w-2xl text-lg leading-relaxed text-ink-muted">
@@ -2287,7 +2287,7 @@ export function Hero() {
       </p>
 
       <p className="mt-4 max-w-2xl text-sm text-ink-muted">
-        A <span className="text-ink">planckobit</span> is the smallest bit of a real
+        A <span className="text-ink">planckbit</span> is the smallest bit of a real
         thing you can own. It is what the firm counts in.
       </p>
     </section>
@@ -2547,7 +2547,7 @@ Expected: PASS, 8 tests.
 
 - [ ] **Step 6: Verify against the real feed**
 
-Start the dev server with the preview tool. Confirm real prices render for all 13 instruments — NVDAx, TSLAx and SPYx in the hundreds; USDY and syrupUSDC near $1.14–1.18; PAXG in the thousands. Check the browser console for `[PLANCKOBITS]` warnings and the network panel for a single `lite-api.jup.ag/price/v3` request carrying all 13 mints in one `ids` param.
+Start the dev server with the preview tool. Confirm real prices render for all 13 instruments — NVDAx, TSLAx and SPYx in the hundreds; USDY and syrupUSDC near $1.14–1.18; PAXG in the thousands. Check the browser console for `[PLANCKBITS]` warnings and the network panel for a single `lite-api.jup.ag/price/v3` request carrying all 13 mints in one `ids` param.
 
 - [ ] **Step 7: Commit**
 
@@ -3324,7 +3324,7 @@ Then start the dev server with the preview tool and check, in order:
 3. The roster filters and sorts; sprites differ across desks.
 4. The record section states the vault has not deployed.
 5. The funding line shows no price, chart, or ticker.
-6. Console is free of `[PLANCKOBITS]` warnings and React errors.
+6. Console is free of `[PLANCKBITS]` warnings and React errors.
 7. At the mobile preset the page does not scroll horizontally.
 
 - [ ] **Step 8: Commit**

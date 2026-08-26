@@ -1,6 +1,6 @@
 import * as React from "react"
 
-export const GATE_STORAGE_KEY = "planckobits.disclaimer.v1"
+export const GATE_STORAGE_KEY = "planckbits.disclaimer.v1"
 
 export function hasAcceptedGate(): boolean {
   try {
@@ -13,7 +13,7 @@ export function hasAcceptedGate(): boolean {
 }
 
 const POINTS = [
-  "PLANCKOBITS is experimental software. Contracts are unaudited and may fail.",
+  "PLANCKBITS is experimental software. Contracts are unaudited and may fail.",
   "Nothing here is financial advice. Nothing here is an offer to buy or sell a security.",
   "Hiring fees are spent and are not refundable. The vault does not sell its holdings.",
   "Tokenized equity exposure is restricted in some jurisdictions, including the United States. Complying with the law where you live is your responsibility.",

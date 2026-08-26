@@ -6,7 +6,7 @@ export function Hero() {
       </p>
 
       <h1 className="mt-5 font-display text-5xl leading-[1.05] tracking-tight sm:text-7xl">
-        PLANCKOBITS
+        PLANCKBITS
       </h1>
 
       <p className="mt-6 max-w-2xl text-lg leading-relaxed text-ink-muted">
@@ -16,7 +16,7 @@ export function Hero() {
       </p>
 
       <p className="mt-4 max-w-2xl text-sm text-ink-muted">
-        A <span className="text-ink">planckobit</span> is the smallest bit of a real
+        A <span className="text-ink">planckbit</span> is the smallest bit of a real
         thing you can own. It is what the firm counts in.
       </p>
     </section>

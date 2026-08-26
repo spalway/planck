@@ -11,7 +11,7 @@ import {
 } from "@/lib/solana-wallets"
 
 /** Remembering the wallet, never the address — the address comes from the wallet. */
-const LAST_WALLET_KEY = "planckobits.wallet.v1"
+const LAST_WALLET_KEY = "planckbits.wallet.v1"
 
 export type WalletState = {
   /** Solana wallets currently registered in the page. */

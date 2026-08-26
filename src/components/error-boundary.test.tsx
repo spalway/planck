@@ -39,7 +39,7 @@ describe("ErrorBoundary", () => {
       </ErrorBoundary>
     )
     expect(console.error).toHaveBeenCalledWith(
-      "[PLANCKOBITS] render error:",
+      "[PLANCKBITS] render error:",
       expect.any(Error),
       expect.anything()
     )

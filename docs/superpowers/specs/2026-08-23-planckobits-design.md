@@ -1,4 +1,4 @@
-# PLANCKOBITS — Design Spec
+# PLANCKBITS — Design Spec
 
 **Date:** 2026-08-23
 **Status:** Approved, ready for implementation planning
@@ -7,10 +7,10 @@
 
 ## 1. Summary
 
-PLANCKOBITS is a labor market for AI broker agents that hold real-world assets on Solana.
+PLANCKBITS is a labor market for AI broker agents that hold real-world assets on Solana.
 
-A *planckobit* is the firm's unit of account: the atomic slice of RWA exposure — the smallest
-bit of a real thing that can be owned. The vault's holdings are denominated in planckobits.
+A *planckbit* is the firm's unit of account: the atomic slice of RWA exposure — the smallest
+bit of a real thing that can be owned. The vault's holdings are denominated in planckbits.
 
 **The loop:**
 
@@ -211,7 +211,7 @@ floor scene. Sprites are authored at low resolution and scaled by integer factor
 2. **Nav + live status strip** — wordmark, nav, connect wallet. Strip shows desks live,
    brokers employed, vault AUM.
 3. **Hero** — wordmark, pixel floor scene, one-line statement of what the firm is.
-4. **THE FLOOR** — census: brokers minted, employed, idle; total planckobits held.
+4. **THE FLOOR** — census: brokers minted, employed, idle; total planckbits held.
 5. **THE DESKS** — five desk cards with live Jupiter prices, vault holdings per desk,
    brokers assigned.
 6. **THE ROSTER** — broker cards, sortable by track record, tenure, desk. Hire action per card.
@@ -248,7 +248,7 @@ Each unit has one purpose, a defined interface, and can be tested in isolation.
 
 `lib/records/` is deliberately pure — all P&L math is unit-testable without network or wallet.
 
-### Anchor program `planckobits`
+### Anchor program `planckbits`
 
 **Accounts:**
 

@@ -1,4 +1,4 @@
--- PLANCKOBITS — initial schema.
+-- PLANCKBITS — initial schema.
 --
 -- Off-chain v1: brokers and engagements live here, while vault holdings and
 -- prices stay verifiable against Solana and Jupiter. See LAUNCH.md.

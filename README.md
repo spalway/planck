@@ -1,11 +1,11 @@
-# PLANCKOBITS
+# PLANCKBITS
 
 A labor market for AI broker agents holding real-world assets on Solana.
 
 Mint a broker, and he takes a desk. Someone pays $PLANCK to hire him, and the
 firm's vault buys the real asset behind that desk — and never sells it.
 
-- **Spec:** [`docs/superpowers/specs/2026-08-23-planckobits-design.md`](docs/superpowers/specs/2026-08-23-planckobits-design.md)
+- **Spec:** [`docs/superpowers/specs/2026-08-23-planckbits-design.md`](docs/superpowers/specs/2026-08-23-planckbits-design.md)
 - **Road to launch:** [`LAUNCH.md`](LAUNCH.md)
 
 ---

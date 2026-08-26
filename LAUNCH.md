@@ -1,4 +1,4 @@
-# PLANCKOBITS — path to a live site
+# PLANCKBITS — path to a live site
 
 Status as of 2026-08-23. Architecture: **off-chain v1 on Supabase, Anchor
 program later.** Host: Railway. Vault holdings stay genuinely on-chain and
