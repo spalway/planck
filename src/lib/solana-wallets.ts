@@ -86,12 +86,54 @@ export async function disconnectWallet(w: Wallet): Promise<void> {
 }
 
 /** Subscribe to account changes. Returns an unsubscribe, or a no-op. */
+const NOOP = () => {}
+
+/**
+ * Coerce whatever a wallet handed back into something safe to call.
+ *
+ * The Wallet Standard says `on()` returns an unsubscribe function, but that
+ * is a promise made by a browser extension we do not ship and cannot review.
+ * The TypeScript type is only as true as the extension chooses to be.
+ *
+ * This mattered: the raw return value was handed straight to React as an
+ * effect cleanup. An extension returning undefined, or an object, made React
+ * throw "is not a function" while unmounting — and because that happens
+ * during the commit phase, React tore down the entire tree rather than just
+ * that component. Every client-side navigation unmounts something, so the
+ * result was a blank page on every nav that only a reload could clear.
+ *
+ * Unsubscribing is also wrapped: a cleanup that throws does the same damage
+ * as one that is missing, and there is nothing useful to do about a wallet
+ * that fails to let go of a listener.
+ */
+function asUnsubscribe(value: unknown): () => void {
+  if (typeof value !== "function") return NOOP
+
+  return () => {
+    try {
+      ;(value as () => void)()
+    } catch {
+      // A wallet that cannot unsubscribe cleanly is not worth crashing over.
+    }
+  }
+}
+
 export function onWalletChange(w: Wallet, cb: () => void): () => void {
   const f = feature<EventsFeature>(w, EVENTS)
-  if (!f) return () => {}
+  if (!f) return NOOP
   try {
-    return f.on("change", cb)
+    return asUnsubscribe(f.on("change", cb))
   } catch {
-    return () => {}
+    return NOOP
   }
+}
+
+/**
+ * The same guard for the wallet registry.
+ *
+ * getWallets() is provided by whichever extension won the race to define it,
+ * so its `on()` deserves exactly as little trust as a wallet's own.
+ */
+export function asRegistryUnsubscribe(value: unknown): () => void {
+  return asUnsubscribe(value)
 }

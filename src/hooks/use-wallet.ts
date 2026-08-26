@@ -3,6 +3,7 @@ import type { Wallet } from "@wallet-standard/base"
 import * as React from "react"
 
 import {
+  asRegistryUnsubscribe,
   connectWallet,
   disconnectWallet,
   onWalletChange,
@@ -63,8 +64,10 @@ export function useWallet(): WalletState {
     const sync = () => setWallets(solanaWallets(registry.get()))
 
     sync()
-    const offRegister = registry.on("register", sync)
-    const offUnregister = registry.on("unregister", sync)
+    // Guarded: whichever extension defined getWallets() decides what on()
+    // returns, and a non-function here crashed React during unmount.
+    const offRegister = asRegistryUnsubscribe(registry.on("register", sync))
+    const offUnregister = asRegistryUnsubscribe(registry.on("unregister", sync))
 
     return () => {
       offRegister()

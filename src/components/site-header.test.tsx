@@ -45,16 +45,13 @@ function classes(name: string): string[] {
     expect(classes("Home")).not.toContain("bg-ground")
   })
 
-  it("sets the wordmark in the pixel face and the links in the label face", () => {
+  it("draws the wordmark and sets the links in the label face", () => {
     header()
-    // Only the wordmark is pixel type. Links in the same face would read as
-    // a second logotype competing with the first.
-    expect(screen.getByRole("link", { name: "planckbits" }).className).toContain(
-      "pixel-type",
-    )
+    // The wordmark is an SVG, not type — the pixel woff2 it used to rely on
+    // never decoded in any browser. It is reachable by its accessible name.
+    expect(screen.getByRole("img", { name: /planckbits/i })).toBeInTheDocument()
     for (const name of ["Home", "Brokers"]) {
       expect(classes(name)).toContain("font-bold")
-      expect(classes(name)).not.toContain("pixel-type")
     }
   })
 

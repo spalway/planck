@@ -17,17 +17,24 @@ const INK = "#14120F"
 const MUTED = "#6B6459"
 const COBALT = "#2148E2"
 
-/** The wordmark is drawn with the real font, embedded so rendering is stable. */
-const font = readFileSync(`${root}public/fonts/DepartureMono-Regular.woff2`)
+/**
+ * Embedded so rendering is stable wherever this runs.
+ *
+ * This used to embed Geist Mono from public/fonts. That file was
+ * truncated by one byte and never decoded in any renderer, so the card had
+ * been silently falling back to a system font. Geist Mono comes from
+ * node_modules and is the same face the site sets everything else in.
+ */
+const font = readFileSync(`${root}node_modules/@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2`)
 const fontData = `data:font/woff2;base64,${font.toString("base64")}`
 
-const DESKS = ["EQUITIES", "INDEX", "BULLION", "YIELD", "CREDIT"]
+const DESKS = ["equities", "index", "bullion", "yield", "credit"]
 
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <defs>
     <style>
-      @font-face { font-family: "Departure Mono"; src: url("${fontData}") format("woff2"); }
-      .mono { font-family: "Departure Mono", monospace; }
+      @font-face { font-family: "Geist Mono"; src: url("${fontData}") format("woff2"); }
+      .mono { font-family: "Geist Mono", monospace; }
     </style>
   </defs>
 
@@ -35,11 +42,11 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" v
   <rect x="0" y="0" width="1200" height="6" fill="${COBALT}"/>
 
   <text class="mono" x="80" y="150" font-size="26" fill="${MUTED}" letter-spacing="8">
-    SOLANA · REAL-WORLD ASSETS
+    solana · real-world assets
   </text>
 
   <text class="mono" x="80" y="270" font-size="104" fill="${INK}" letter-spacing="-2">
-    PLANCKBITS
+    planckbits
   </text>
 
   <text class="mono" x="80" y="345" font-size="30" fill="${MUTED}">
@@ -61,7 +68,8 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" v
   </text>
 </svg>`
 
-writeFileSync(`${root}public/og.svg`, svg.replace(fontData, "/fonts/DepartureMono-Regular.woff2"))
+// The checked-in copy points at nothing embeddable; it is a preview only.
+writeFileSync(`${root}public/og.svg`, svg.replace(fontData, ""))
 
 const png = await sharp(Buffer.from(svg)).png().toBuffer()
 writeFileSync(`${root}public/og.png`, png)

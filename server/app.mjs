@@ -241,7 +241,16 @@ export function createApp({ config = {}, deps, dist = null }) {
      * is how a stale index.html ends up pointing at a bundle the last deploy
      * deleted, which renders as a blank page until a hard refresh.
      */
-    app.get(/.*/, (_req, res) => {
+    app.get(/.*/, (req, res) => {
+      // A request that names a file and reached here means express.static did
+      // not find it. Serving the SPA would answer with an HTML page under a
+      // 200, and the browser would then try to parse that page as a font, a
+      // stylesheet or a script — which surfaces as a decode error pointing at
+      // the asset rather than as the missing file it actually is.
+      if (/\.[a-z0-9]+$/i.test(req.path)) {
+        return res.status(404).type("text/plain").send("not found")
+      }
+
       res.setHeader("Cache-Control", "no-cache")
       res.sendFile(dist + "/index.html")
     })

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom"
 
 import { BrokerShowcase } from "@/components/broker-showcase"
+import { Wordmark } from "@/components/wordmark"
 import type { Broker } from "@/lib/brokers"
 
 export function Hero({ brokers }: { brokers: readonly Broker[] }) {
@@ -10,16 +11,24 @@ export function Hero({ brokers }: { brokers: readonly Broker[] }) {
         <span className="tag text-[0.65rem]">Solana · real-world assets</span>
 
         {/*
-          Black, in the pixel face, with a tan offset behind it. The offset is
-          the same 4px the panels cast, so the wordmark sits in the same
-          drawn system — and keeping it tan rather than black leaves the
-          letterforms themselves unambiguously black and the counters open.
+          The splash is the drawn wordmark, not type. It was set in Departure
+          Mono, whose woff2 never decoded in any browser — so this rendered in
+          Geist Mono the entire time and was never pixel at all.
+
+          Two copies rather than a text-shadow: an SVG cannot take one, and
+          stacking a tan copy 4px behind gives the same offset the panels
+          cast, in the same direction, which is what ties the mark to the
+          chrome. aria-hidden on the shadow so it is announced once.
         */}
-        <h1
-          className="pixel-type mt-5 text-5xl leading-[1.05] text-ink sm:text-7xl"
-          style={{ textShadow: "4px 4px 0 var(--tan)" }}
-        >
-          planckbits
+        <h1 className="relative mt-5 h-12 sm:h-20">
+          <span aria-hidden="true" className="absolute top-1 left-1 text-tan">
+            <Wordmark height={48} className="sm:hidden" />
+            <Wordmark height={80} className="hidden sm:block" />
+          </span>
+          <span className="absolute top-0 left-0 text-ink">
+            <Wordmark height={48} className="sm:hidden" />
+            <Wordmark height={80} className="hidden sm:block" />
+          </span>
         </h1>
 
         <p className="mt-7 max-w-xl text-lg leading-relaxed text-ink-muted">

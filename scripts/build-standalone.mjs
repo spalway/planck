@@ -30,22 +30,6 @@ execSync("npx vite build --config vite.standalone.config.ts --outDir dist-standa
 const htmlPath = `${out}/index.html`
 let html = readFileSync(htmlPath, "utf8")
 
-const font = readFileSync(`${root}public/fonts/DepartureMono-Regular.woff2`)
-const fontUri = `data:font/woff2;base64,${font.toString("base64")}`
-
-// Match the optional leading "./" too. Vite emits a relative url(./fonts/...)
-// in the built CSS, so replacing only "/fonts/..." left a stray dot and
-// produced url(.data:font/woff2;...) — which the browser rejects, silently
-// falling the wordmark back to system monospace.
-const before = html.length
-html = html.replaceAll(/\.?\/fonts\/DepartureMono-Regular\.woff2/g, fontUri)
-
-if (html.length === before) {
-  throw new Error("font url not found in built HTML — inlining silently did nothing")
-}
-if (html.includes(".data:font")) {
-  throw new Error("malformed font data URI — a path prefix survived the replace")
-}
 
 // The favicon and OG image are separate files that will not exist alongside a
 // lone HTML page. Drop the tags rather than ship broken references.

@@ -2,6 +2,7 @@ import type { Wallet, WalletAccount } from "@wallet-standard/base"
 import { describe, expect, it, vi } from "vitest"
 
 import {
+  asRegistryUnsubscribe,
   connectWallet,
   disconnectWallet,
   isSolanaWallet,
@@ -143,11 +144,81 @@ describe("onWalletChange", () => {
   it("subscribes and returns the unsubscribe", () => {
     const off = vi.fn()
     const w = fakeWallet({ "standard:events": { on: () => off } })
-    expect(onWalletChange(w, () => {})).toBe(off)
+    // Behaviour, not identity: the returned cleanup wraps the wallet's own
+    // so a throwing unsubscribe cannot take the page down with it.
+    onWalletChange(w, () => {})()
+    expect(off).toHaveBeenCalledTimes(1)
   })
 
   it("returns a safe no-op when events are unsupported", () => {
     const w = stripFeature(fakeWallet(), "standard:events")
     expect(() => onWalletChange(w, () => {})()).not.toThrow()
+  })
+})
+
+/**
+ * A wallet extension is untrusted code that we did not ship.
+ *
+ * The Wallet Standard types promise `on()` returns an unsubscribe function.
+ * An extension is free to break that promise, and one did: the raw value was
+ * handed to React as an effect cleanup, so a non-function made React throw
+ * "is not a function" during the commit phase and tear down the whole tree.
+ * Every client-side navigation unmounts something, so the site went blank on
+ * every nav until a reload.
+ */
+describe("onWalletChange survives a badly behaved wallet", () => {
+  function walletReturning(value: unknown): Wallet {
+    return {
+      name: "Rogue",
+      version: "1.0.0",
+      icon: "data:,",
+      chains: ["solana:mainnet"],
+      accounts: [],
+      features: {
+        "standard:events": { on: () => value },
+      },
+    } as unknown as Wallet
+  }
+
+  for (const [label, value] of [
+    ["undefined", undefined],
+    ["null", null],
+    ["an object", { unsubscribe: () => {} }],
+    ["a string", "ok"],
+    ["a number", 1],
+  ] as const) {
+    it(`returns a callable cleanup when on() returns ${label}`, () => {
+      const off = onWalletChange(walletReturning(value), () => {})
+      expect(typeof off).toBe("function")
+      // The crash was React calling this. It must never throw.
+      expect(() => off()).not.toThrow()
+    })
+  }
+
+  it("still uses a real unsubscribe when the wallet provides one", () => {
+    const unsub = vi.fn()
+    const off = onWalletChange(walletReturning(unsub), () => {})
+    off()
+    expect(unsub).toHaveBeenCalledTimes(1)
+  })
+
+  it("swallows an unsubscribe that throws", () => {
+    // A cleanup that throws does the same damage as one that is missing.
+    const off = onWalletChange(
+      walletReturning(() => {
+        throw new Error("wallet exploded")
+      }),
+      () => {}
+    )
+    expect(() => off()).not.toThrow()
+  })
+
+  it("guards the registry unsubscribe the same way", () => {
+    expect(() => asRegistryUnsubscribe(undefined)()).not.toThrow()
+    expect(() => asRegistryUnsubscribe({})()).not.toThrow()
+
+    const real = vi.fn()
+    asRegistryUnsubscribe(real)()
+    expect(real).toHaveBeenCalledTimes(1)
   })
 })

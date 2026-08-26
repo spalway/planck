@@ -262,3 +262,32 @@ describe("unmatched api routes", () => {
     expect(res.body).toEqual({ error: "not_found" })
   })
 })
+
+describe("missing static assets", () => {
+  // The static branch only exists when the app is given a dist, so these
+  // build one rather than depending on a prior 'npm run build'.
+  async function withDist() {
+    const { mkdtempSync, writeFileSync } = await import("node:fs")
+    const { tmpdir } = await import("node:os")
+    const { join } = await import("node:path")
+
+    const dir = mkdtempSync(join(tmpdir(), "planckbits-"))
+    writeFileSync(join(dir, "index.html"), "<!doctype html><div id=root></div>")
+
+    const { deps } = build()
+    return createApp({ config: { birdeyeKey: SECRET, planckMint: MINT }, deps, dist: dir })
+  }
+
+  it("404s a missing file instead of serving the SPA under a 200", async () => {
+    // A deleted font kept returning index.html with a 200, so the browser
+    // parsed an HTML page as a font and reported a decode error that pointed
+    // at the asset rather than at the missing file.
+    const res = await call(await withDist(), "GET", "/fonts/gone.woff2")
+    expect(res.status).toBe(404)
+  })
+
+  it("still serves the SPA for a real page route", async () => {
+    const res = await call(await withDist(), "GET", "/how-it-works")
+    expect(res.status).toBe(200)
+  })
+})

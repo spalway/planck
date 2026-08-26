@@ -1,22 +1,14 @@
 @import "tailwindcss";
 @import "@fontsource-variable/geist-mono";
 
-@font-face {
-  font-family: "Departure Mono";
-  src: url("/fonts/DepartureMono-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-display: swap;
-}
-
 @theme inline {
   /* The whole site is monospace. Geist Mono is variable, so headers get a
      real bold rather than a synthesised one. */
   --font-sans: "Geist Mono Variable", ui-monospace, monospace;
   /* Section headings: the same monospace, set heavy. */
   --font-display: "Geist Mono Variable", ui-monospace, monospace;
-  /* The pixel face. The logotype, the nav and anything that should read as
-     drawn on a grid rather than typeset. */
-  --font-brand: "Departure Mono", "Geist Mono Variable", ui-monospace, monospace;
+  /* No pixel FACE any more — the logotype is drawn as SVG in
+     components/wordmark.tsx. See the note there. */
   /* Every figure on the site. */
   --font-num: "Geist Mono Variable", ui-monospace, monospace;
   /* Addresses and mints. */
@@ -123,15 +115,6 @@ h4 {
 /* Sprites are authored small and scaled by integer factors only. */
 .pixel {
   image-rendering: pixelated;
-}
-
-/* The pixel face, set the way it wants to be set: wide and upright. It is
-   drawn on a grid, so tight tracking closes the counters and it turns to
-   mush at small sizes. */
-.pixel-type {
-  font-family: var(--font-brand);
-  letter-spacing: 0.08em;
-  -webkit-font-smoothing: none;
 }
 
 @layer components {
