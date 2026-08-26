@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",
+    "@fontsource-variable/geist-mono": "^5.3.0",
     "@tailwindcss/vite": "^4",
     "@wallet-standard/app": "^1.1.1",
     "@wallet-standard/base": "^1.1.1",

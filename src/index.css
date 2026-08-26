@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
 
 @font-face {
   font-family: "Departure Mono";
@@ -9,15 +9,17 @@
 }
 
 @theme inline {
-  /* Prose only. The one non-pixel face on the page. */
-  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
-  /* Wordmark and section headings. Departure Mono arrives in Task 8; until
-     then these fall through to the system monospace, which is expected. */
-  --font-display: "Departure Mono", ui-monospace, monospace;
+  /* The whole site is monospace. Geist Mono is variable, so headers get a
+     real bold rather than a synthesised one. */
+  --font-sans: "Geist Mono Variable", ui-monospace, monospace;
+  /* Section headings: the same monospace, set bold. */
+  --font-display: "Geist Mono Variable", ui-monospace, monospace;
+  /* The logotype keeps the pixel monospace. It is the mark, not body text. */
+  --font-brand: "Departure Mono", "Geist Mono Variable", ui-monospace, monospace;
   /* Every figure on the site. */
-  --font-num: "Departure Mono", ui-monospace, monospace;
-  /* Addresses and mints, where character width must be fixed. */
-  --font-mono: "Departure Mono", ui-monospace, monospace;
+  --font-num: "Geist Mono Variable", ui-monospace, monospace;
+  /* Addresses and mints. */
+  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
 
   --color-ground: var(--ground);
   --color-ink: var(--ink);
@@ -44,6 +46,11 @@ body {
   color: var(--ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+}
+
+/* Headings share the body face and are separated by weight, not family. */
+h1, h2, h3 {
+  font-weight: 700;
 }
 
 /* Every number on the site aligns in columns. */

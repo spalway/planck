@@ -9,7 +9,7 @@ export function Hero({ brokers }: { brokers: readonly Broker[] }) {
           Solana · real-world assets
         </p>
 
-        <h1 className="mt-5 font-display text-5xl leading-[1.05] tracking-tight sm:text-7xl">
+        <h1 className="mt-5 font-brand text-5xl leading-[1.05] tracking-tight sm:text-7xl">
           PLANCKBITS
         </h1>
 

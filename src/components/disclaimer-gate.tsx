@@ -46,7 +46,7 @@ export function DisclaimerGate({ onAccept }: { onAccept: () => void }) {
           than a dialog — it was mistaken for exactly that.
         */}
         <div className="mb-5 flex items-baseline justify-between gap-4 border-b border-ink/15 pb-4">
-          <span className="font-display text-lg tracking-tight">PLANCKBITS</span>
+          <span className="font-brand text-lg tracking-tight">PLANCKBITS</span>
           <span className="text-[0.65rem] tracking-widest text-ink-muted uppercase">
             Solana · RWAs
           </span>
