@@ -4,6 +4,12 @@
  * Takes only an inscribe signature: pulls the transaction, finds the memo,
  * decodes the base64 and writes the PNG. Nothing is passed in by hand, which
  * is the point — if this works, the image really is in the transaction.
+ *
+ *   node program/recover.mjs <signature> [out.png] [--devnet]
+ *
+ * Note what this script does NOT import: the roster, the sprite composer, the
+ * palette. It is the check anyone can run against us, so it has to work with
+ * no knowledge of how the portrait was made.
  */
 
 import { Connection, PublicKey } from "@solana/web3.js"
@@ -11,10 +17,18 @@ import { createHash } from "node:crypto"
 import { writeFileSync } from "node:fs"
 
 const MEMO_ID = new PublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr")
-const sig = process.argv[2]
-const out = process.argv[3] ?? "recovered.png"
+const args = process.argv.slice(2).filter((a) => !a.startsWith("--"))
+const sig = args[0]
+const out = args[1] ?? "recovered.png"
+if (!sig) throw new Error("usage: node program/recover.mjs <signature> [out.png] [--devnet]")
 
-const connection = new Connection(process.env.RPC ?? "http://127.0.0.1:8899", "confirmed")
+const RPC =
+  process.argv.find((a) => a.startsWith("--rpc="))?.slice(6) ??
+  (process.argv.includes("--devnet") ? "https://api.devnet.solana.com" : null) ??
+  process.env.RPC ??
+  "http://127.0.0.1:8899"
+
+const connection = new Connection(RPC, "confirmed")
 const tx = await connection.getTransaction(sig, {
   commitment: "confirmed",
   maxSupportedTransactionVersion: 0,

@@ -10,3 +10,6 @@ dist-standalone/
 program/target/
 program/test-ledger/
 program/.anchor/
+
+# Bundled at run time by program/client.mjs.
+program/.portrait-bundle.mjs
