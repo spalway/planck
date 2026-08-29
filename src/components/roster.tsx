@@ -1,6 +1,7 @@
 import * as React from "react"
 
 import { BrokerCard } from "@/components/broker-card"
+import { EmptyFloor } from "@/components/empty-floor"
 import { Section } from "@/components/primitives"
 import type { Broker } from "@/lib/brokers"
 import { DESKS, type DeskId } from "@/lib/instruments"
@@ -55,6 +56,20 @@ export function Roster({ brokers }: { brokers: readonly Broker[] }) {
       desk === "all" ? [...brokers] : brokers.filter((b) => b.desk === desk)
     return filtered.sort((a, b) => compare(a, b, sort))
   }, [brokers, desk, sort])
+
+  // Below every hook, not above useMemo: an early return there is a
+  // conditional hook call, and the hook count would change the moment the
+  // roster went from empty to loaded.
+  //
+  // Distinct from "no brokers on this desk": nobody is on any desk, so the
+  // filter and sort chips have nothing to act on and would just be furniture.
+  if (brokers.length === 0) {
+    return (
+      <Section id="brokers" label="03" title="brokers">
+        <EmptyFloor />
+      </Section>
+    )
+  }
 
   return (
     <Section id="brokers" label="03" title="brokers">

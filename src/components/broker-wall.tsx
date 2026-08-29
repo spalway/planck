@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom"
 
 import { BrokerSprite } from "@/components/broker-sprite"
+import { EmptyFloor } from "@/components/empty-floor"
 import { Section } from "@/components/primitives"
 import type { Broker } from "@/lib/brokers"
 import { DESKS } from "@/lib/instruments"
@@ -24,6 +25,16 @@ const DESK_SWATCH: Record<Broker["desk"], string> = {
 }
 
 export function BrokerWall({ brokers }: { brokers: readonly Broker[] }) {
+  // Nobody on the floor: the legend teaches a code that nothing is using, and
+  // the grid would be a slab of ground colour. Show the empty floor instead.
+  if (brokers.length === 0) {
+    return (
+      <Section id="floor" label="01" title="the floor">
+        <EmptyFloor />
+      </Section>
+    )
+  }
+
   return (
     <Section id="floor" label="01" title="the floor">
       <div className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2">
