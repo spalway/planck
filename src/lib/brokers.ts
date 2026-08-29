@@ -12,6 +12,7 @@
  */
 
 import { DESKS, instrumentsForDesk, type DeskId } from "@/lib/instruments"
+import { TIERS, rollTier, type TierId } from "@/lib/sprite-tiers"
 
 export type BrokerTraits = {
   desk: DeskId
@@ -21,6 +22,12 @@ export type BrokerTraits = {
   latency: number
   /** Instruments held simultaneously. Surplus converts to nerve. */
   coverage: number
+  /**
+   * Scarcity band. COSMETIC — it drives fur, ground and garment palette and
+   * nothing else. effectiveNerve must never read it, or a rare-looking broker
+   * would also be a better one and the stats would stop meaning anything.
+   */
+  tier: TierId
 }
 
 export type Broker = BrokerTraits & {
@@ -34,7 +41,18 @@ const MAX_NERVE = 100
 const ROSTER_SIZE = 24
 const MIN_PER_DESK = 3
 
-export function effectiveNerve(t: BrokerTraits): number {
+/**
+ * Takes only the three fields it reads, not the whole trait set.
+ *
+ * That is deliberate. TIER is cosmetic, and a signature that cannot see it
+ * cannot accidentally start pricing it in — the rule is enforced by the type
+ * rather than by a comment someone edits past.
+ */
+export function effectiveNerve(t: {
+  desk: DeskId
+  nerve: number
+  coverage: number
+}): number {
   const deskSize = instrumentsForDesk(t.desk).length
   const surplus = Math.max(0, t.coverage - deskSize)
   return Math.min(MAX_NERVE, t.nerve + surplus)
@@ -66,6 +84,7 @@ export function rollBroker(id: string, rand: () => number): Broker {
     nerve: roll(rand, 1, MAX_NERVE),
     latency: roll(rand, 1, 100),
     coverage: roll(rand, 1, 9),
+    tier: rollTier(rand),
   }
 
   return {
@@ -167,6 +186,7 @@ function buildRoster(): Broker[] {
       nerve: roll(rand, 1, MAX_NERVE),
       latency: roll(rand, 1, 100),
       coverage: roll(rand, 1, 9),
+      tier: rollTier(rand),
     }
 
     // Roughly a third of the floor is idle. With every broker employed the
@@ -205,10 +225,34 @@ function buildRoster(): Broker[] {
         nerve: v.nerve,
         latency: v.latency,
         coverage: v.coverage,
+        tier: v.tier,
       }
       out[victim] = { ...v, ...traits, effectiveNerve: effectiveNerve(traits) }
     }
   }
+
+  // Hold the founding floor to the declared odds.
+  //
+  // The seed rolled two LEGENDARY brokers into 24 — 8% of the floor against
+  // declared odds of 0.5%. Nobody owns these; they are the house's own. But a
+  // visitor counts what is on the wall before they mint, and a floor showing
+  // two legendaries advertises scarcity sixteen times more generous than the
+  // mint offers. That is a lie told with a fixture.
+  //
+  // Same reasoning as MIN_PER_DESK above: weighted rolling is still random,
+  // and an unrepresentative sample reads as the rule rather than the draw.
+  // Surplus is demoted to COMMON, deterministically, lowest id first.
+  //
+  // Note the consequence, which is the point: no LEGENDARY exists until
+  // somebody mints one.
+  for (const tier of TIERS) {
+    const cap = Math.round(tier.odds * ROSTER_SIZE)
+    const held = out.filter((b) => b.tier === tier.id)
+    for (const b of held.slice(cap)) {
+      out[out.indexOf(b)] = { ...b, tier: "common" }
+    }
+  }
+
   return out
 }
 

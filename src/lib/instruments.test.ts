@@ -5,6 +5,7 @@ import {
   DESKS,
   INSTRUMENTS,
   instrumentByMint,
+  instrumentsForBroker,
   instrumentsForDesk,
 } from "@/lib/instruments"
 
@@ -80,5 +81,48 @@ describe("instrumentsForDesk", () => {
     const y = instrumentsForDesk("yield")
     expect(y).toHaveLength(1)
     expect(y[0].symbol).toBe("USDY")
+  })
+})
+
+describe("instrumentsForBroker", () => {
+  const BROKER = {
+    id: "PB-001",
+    desk: "equities" as const,
+    coverage: 3,
+  }
+
+  it("assigns exactly coverage instruments when the desk is deep enough", () => {
+    expect(instrumentsForBroker(BROKER)).toHaveLength(3)
+  })
+
+  it("caps at the desk size — a YIELD broker cannot cover nine of one thing", () => {
+    // This is the coverage-overflow rule made visible. Surplus already
+    // converts to nerve; the card must not claim instruments that do not exist.
+    expect(instrumentsForBroker({ ...BROKER, desk: "yield", coverage: 9 })).toHaveLength(1)
+  })
+
+  it("only ever assigns instruments from the broker's own desk", () => {
+    for (const d of DESKS) {
+      for (const inst of instrumentsForBroker({ ...BROKER, desk: d.id, coverage: 9 })) {
+        expect(inst.desk, `${d.id} got ${inst.symbol}`).toBe(d.id)
+      }
+    }
+  })
+
+  it("is deterministic for the same broker", () => {
+    expect(instrumentsForBroker(BROKER).map((i) => i.mint)).toEqual(
+      instrumentsForBroker(BROKER).map((i) => i.mint)
+    )
+  })
+
+  it("gives different brokers different books", () => {
+    const a = instrumentsForBroker(BROKER).map((i) => i.mint).join()
+    const b = instrumentsForBroker({ ...BROKER, id: "PB-019" }).map((i) => i.mint).join()
+    expect(a).not.toBe(b)
+  })
+
+  it("never repeats an instrument within one broker", () => {
+    const mints = instrumentsForBroker({ ...BROKER, coverage: 7 }).map((i) => i.mint)
+    expect(new Set(mints).size).toBe(mints.length)
   })
 })

@@ -91,3 +91,38 @@ export function instrumentByMint(mint: string): Instrument | undefined {
 export function instrumentsForDesk(desk: DeskId): Instrument[] {
   return INSTRUMENTS.filter((i) => i.desk === desk)
 }
+
+/**
+ * The instruments a broker actually carries.
+ *
+ * This is COVERAGE made concrete. The trait was an abstract number for a
+ * while, and the card showed "coverage 5" with nothing behind it. A broker
+ * holds min(coverage, deskSize) instruments off his own desk, so the surplus
+ * that converts to nerve is visibly the surplus rather than a silent rule.
+ *
+ * Deterministic from the broker id: the same broker always carries the same
+ * book, on the site and in the social image.
+ *
+ * The Broker import is type-only, so this does not create a cycle with
+ * brokers.ts at runtime.
+ */
+export function instrumentsForBroker(b: BrokerLike): Instrument[] {
+  const pool = instrumentsForDesk(b.desk)
+  const want = Math.min(Math.max(1, b.coverage), pool.length)
+
+  // FNV-1a over the id, then a rotation. Slicing from a hashed offset keeps
+  // the book stable and gives different brokers different starting points.
+  let h = 2166136261
+  for (let i = 0; i < b.id.length; i++) {
+    h ^= b.id.charCodeAt(i)
+    h = Math.imul(h, 16777619)
+  }
+  const start = Math.abs(h) % pool.length
+
+  const out: Instrument[] = []
+  for (let i = 0; i < want; i++) out.push(pool[(start + i) % pool.length])
+  return out
+}
+
+/** Just enough of a Broker to pick a book, so instruments.ts imports nothing. */
+type BrokerLike = { id: string; desk: DeskId; coverage: number }

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 
 import { ROSTER, effectiveNerve, rollBroker } from "@/lib/brokers"
 import { DESKS, instrumentsForDesk } from "@/lib/instruments"
+import { TIERS } from "@/lib/sprite-tiers"
 
 /** Deterministic stand-in for Math.random, cycling a fixed sequence. */
 function seeded(values: number[]) {
@@ -12,21 +13,21 @@ function seeded(values: number[]) {
 describe("effectiveNerve", () => {
   it("leaves nerve alone when coverage fits the desk", () => {
     // equities holds 7 instruments, so coverage 3 is fully usable.
-    expect(effectiveNerve({ desk: "equities", nerve: 40, latency: 10, coverage: 3 })).toBe(40)
+    expect(effectiveNerve({ desk: "equities", nerve: 40, coverage: 3 })).toBe(40)
   })
 
   it("converts surplus coverage into nerve on a single-instrument desk", () => {
     // yield holds 1 instrument, so 4 of the 5 coverage points are surplus.
-    expect(effectiveNerve({ desk: "yield", nerve: 40, latency: 10, coverage: 5 })).toBe(44)
+    expect(effectiveNerve({ desk: "yield", nerve: 40, coverage: 5 })).toBe(44)
   })
 
   it("caps effective nerve at 100", () => {
-    expect(effectiveNerve({ desk: "credit", nerve: 98, latency: 10, coverage: 9 })).toBe(100)
+    expect(effectiveNerve({ desk: "credit", nerve: 98, coverage: 9 })).toBe(100)
   })
 
   it("adds nothing when coverage exactly equals the desk size", () => {
     const n = instrumentsForDesk("bullion").length
-    expect(effectiveNerve({ desk: "bullion", nerve: 50, latency: 10, coverage: n })).toBe(50)
+    expect(effectiveNerve({ desk: "bullion", nerve: 50, coverage: n })).toBe(50)
   })
 })
 
@@ -91,7 +92,6 @@ describe("ROSTER", () => {
         effectiveNerve({
           desk: b.desk,
           nerve: b.nerve,
-          latency: b.latency,
           coverage: b.coverage,
         })
       )
@@ -116,5 +116,38 @@ describe("ROSTER", () => {
     // roll inverted this and made the flagship desk look abandoned.
     const count = (d: string) => ROSTER.filter((b) => b.desk === d).length
     expect(count("equities")).toBeGreaterThan(count("index"))
+  })
+})
+
+describe("roster tiers", () => {
+  it("gives every broker a valid tier", () => {
+    const ids = new Set(TIERS.map((t) => t.id))
+    for (const b of ROSTER) expect(ids.has(b.tier), `${b.id} tier ${b.tier}`).toBe(true)
+  })
+
+  it("does not let tier touch the stats", () => {
+    // Tier is cosmetic. If it ever correlates with nerve, the site is lying.
+    for (const b of ROSTER) {
+      expect(b.effectiveNerve).toBeGreaterThanOrEqual(b.nerve)
+      expect(b.effectiveNerve).toBeLessThanOrEqual(100)
+    }
+  })
+})
+
+describe("founding floor scarcity", () => {
+  it("never shows more of a tier than the declared odds would give", () => {
+    // A fixture showing two legendaries advertises scarcity sixteen times
+    // more generous than the mint offers. Counting the wall is the first
+    // thing a visitor does.
+    for (const t of TIERS) {
+      const held = ROSTER.filter((b) => b.tier === t.id).length
+      const cap = Math.round(t.odds * ROSTER.length)
+      if (t.id === "common") continue // common absorbs every demotion
+      expect(held, `${t.id}: ${held} of ${ROSTER.length}, cap ${cap}`).toBeLessThanOrEqual(cap)
+    }
+  })
+
+  it("has no legendary until somebody mints one", () => {
+    expect(ROSTER.filter((b) => b.tier === "legendary")).toHaveLength(0)
   })
 })
