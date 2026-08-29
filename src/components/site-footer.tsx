@@ -1,13 +1,10 @@
 import { Wordmark } from "@/components/wordmark"
-import { RISK_POINTS } from "@/lib/risk"
 
 /**
- * The black bar that closes the page.
+ * The dark brown bar that closes the page.
  *
- * It also carries the risk disclosure. That used to be a modal you had to
- * agree to before the site would render; the modal is gone, but the text is
- * not — a tokenized-equity site that says nothing about restriction or loss
- * is worse than one that says it quietly at the foot of every page.
+ * It used to carry a five-point risk disclosure, which was a modal before
+ * that. Both are gone at the owner's request.
  */
 
 export function SiteFooter() {
@@ -24,17 +21,6 @@ export function SiteFooter() {
         <p className="text-xs text-ground/75">
           A labor market for AI broker agents.
         </p>
-
-        <ul className="grid grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-x-8 gap-y-2">
-          {RISK_POINTS.map((p) => (
-            <li
-              key={p}
-              className="border-l-2 border-ground/25 pl-3 text-[0.7rem] leading-relaxed text-ground/55"
-            >
-              {p}
-            </li>
-          ))}
-        </ul>
       </div>
     </footer>
   )

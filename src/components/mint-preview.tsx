@@ -88,9 +88,21 @@ export function MintPreview() {
         </p>
       </div>
 
-      <ul className="panel grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-0.5 bg-ink">
+      {/*
+        Five cards that end where the fifth ends, centred.
+
+        This was one panel with a filled grid ground behind it. Five is an
+        awkward count for an auto-fill grid — whatever the column count, some
+        row ends short, and the leftover cell was a block of the ground colour
+        sitting in the open. There is no container fill now: each card carries
+        its own border and they wrap and centre as a row.
+      */}
+      <ul className="mx-auto flex flex-wrap justify-center gap-2">
         {SAMPLES.map((b) => (
-          <li key={b.id} className="flex flex-col items-center gap-2 bg-paper p-4">
+          <li
+            key={b.id}
+            className="panel-flat flex w-[7.5rem] min-w-0 flex-col items-center gap-2 p-4"
+          >
             <BrokerSprite broker={b} size={64} />
             <span className="w-full truncate text-center font-display text-[0.6rem] font-bold">
               {b.name}
@@ -102,24 +114,27 @@ export function MintPreview() {
         ))}
       </ul>
 
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-5">
-        <div>
+      {/* items-stretch plus flex-1 on each panel, so the two end on the same
+          line however many rows the tables happen to take. Sizing them by
+          content left one hanging below the other. */}
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] items-stretch gap-5">
+        <div className="flex flex-col">
           <h3 className="font-display text-base font-bold">desk odds</h3>
           <p className="mt-2 mb-3 text-sm leading-relaxed text-ink-muted">
             Weighted by how many instruments a desk carries, so the floor mirrors the
-            book. Shallow desks stay reachable.
+            book.
           </p>
-          <div className="panel overflow-x-auto">
+          <div className="panel flex-1 overflow-x-auto">
             <Odds />
           </div>
         </div>
 
-        <div>
+        <div className="flex flex-col">
           <h3 className="font-display text-base font-bold">traits</h3>
           <p className="mt-2 mb-3 text-sm leading-relaxed text-ink-muted">
             Every trait drives a mechanic. None are decorative.
           </p>
-          <dl className="panel divide-y-2 divide-ink/15">
+          <dl className="panel flex-1 divide-y-2 divide-ink/15">
             {traits.map((t) => (
               <div key={t.name} className="p-3">
                 <dt className="flex items-baseline justify-between gap-3">

@@ -28,6 +28,10 @@ const RULES = [
     head: "Basis is stamped",
     body: "Cost is recorded at purchase. Every return on this site is live price against that number — arithmetic on public data, not a claim we make.",
   },
+  {
+    head: "One desk at a time",
+    body: "A hire buys into that broker's desk and no other. The vault cannot rotate into whatever is working — the floor decides what it owns, not us.",
+  },
 ]
 
 export function VaultMandate() {
@@ -91,7 +95,11 @@ export function VaultMandate() {
 
       <div>
         <h3 className="font-display text-base font-bold">the rules</h3>
-        <ol className="panel mt-3 grid grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-0.5 bg-ink">
+        {/* Four rules, not three: at this column width the grid resolves to
+            two across, and an odd count left one cell showing nothing but the
+            grid ground. Brown rather than black for the same reason as the
+            floor. */}
+        <ol className="panel mt-3 grid grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-0.5 bg-bar">
           {RULES.map((r, i) => (
             <li key={r.head} className="flex min-w-0 flex-col bg-paper p-4">
               <span className="num tag self-start text-[0.55rem]">

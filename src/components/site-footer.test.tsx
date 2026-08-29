@@ -2,31 +2,27 @@ import { render, screen } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
 
 import { SiteFooter } from "@/components/site-footer"
-import { RISK_POINTS } from "@/lib/risk"
 
 /**
- * The blocking risk modal was removed at the owner's request. These exist so
- * the disclosure itself is not quietly lost along with it — the modal was
- * the delivery mechanism, not the obligation.
+ * The footer used to carry a five-point risk disclosure, and these tests
+ * existed to stop it being quietly lost. It has now been removed deliberately
+ * at the owner's request, so the tests assert the opposite: the footer is the
+ * wordmark and one line, and nothing has crept back into it.
  */
 describe("SiteFooter", () => {
-  it("carries the risk disclosure on every page", () => {
+  it("is the wordmark and one line", () => {
     render(<SiteFooter />)
-    for (const point of RISK_POINTS) {
-      expect(screen.getByText(point)).toBeInTheDocument()
-    }
+    expect(screen.getByRole("img", { name: /stockbits/i })).toBeInTheDocument()
+    expect(
+      screen.getByText(/a labor market for ai broker agents/i)
+    ).toBeInTheDocument()
   })
 
-  it("still says the two things that are not optional", () => {
+  it("no longer carries the risk disclosure", () => {
     render(<SiteFooter />)
-    // Jurisdictional restriction and "not financial advice" are the two the
-    // site cannot go without, whatever else gets edited.
-    expect(screen.getByText(/restricted in some jurisdictions/i)).toBeInTheDocument()
-    expect(screen.getByText(/nothing here is financial advice/i)).toBeInTheDocument()
-  })
-
-  it("claims no equity or ownership for the token", () => {
-    render(<SiteFooter />)
-    expect(screen.getByText(/no equity, no ownership/i)).toBeInTheDocument()
+    expect(screen.queryByText(/restricted in some jurisdictions/i)).toBeNull()
+    expect(screen.queryByText(/nothing here is financial advice/i)).toBeNull()
+    expect(screen.queryByText(/no equity, no ownership/i)).toBeNull()
+    expect(screen.queryByText(/unaudited/i)).toBeNull()
   })
 })
