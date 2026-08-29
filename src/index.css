@@ -140,6 +140,27 @@ h4 {
    * the whole page read as retro rather than as flat minimalism.
    */
 
+  /*
+   * The page column.
+   *
+   * One rule for the header, the content and the footer, so the three can
+   * never drift out of alignment — they used to each carry their own
+   * max-w-[110rem], which was 1540px and read as a wall of content stretched
+   * edge to edge on any real monitor.
+   *
+   * 50rem is 700px at the 14px root. Narrow on purpose: it puts roughly 370px
+   * of margin on either side of a 1440 screen, so the site reads as a compact
+   * centred column rather than a full-bleed dashboard. That leaves 660px of
+   * content, which the auto-fill grids resolve to two 20rem cards across and
+   * three 13rem cards across.
+   */
+  .shell {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 50rem;
+    padding-inline: 1.25rem;
+  }
+
   .panel {
     border: var(--stroke) solid var(--ink);
     background-color: var(--paper);

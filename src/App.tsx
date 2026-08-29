@@ -44,7 +44,7 @@ export function App() {
       <div className="flex min-h-dvh flex-col">
         <SiteHeader />
 
-        <main className="mx-auto w-full max-w-[110rem] flex-1 px-3">
+        <main className="shell flex-1">
           {/*
             Keyed by path so navigating away from a crashed page clears the
             error. An error boundary latches until it is remounted, so without

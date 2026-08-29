@@ -46,7 +46,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" v
   </text>
 
   <text class="mono" x="80" y="270" font-size="104" fill="${INK}" letter-spacing="-2">
-    apebits
+    stockbits
   </text>
 
   <text class="mono" x="80" y="345" font-size="30" fill="${MUTED}">

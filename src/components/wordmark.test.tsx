@@ -43,9 +43,20 @@ describe("Wordmark", () => {
 
   it("gives narrow letters narrow cells", () => {
     // The disjointed look was every glyph padded to a fixed 5 columns, so a
-    // 1px "i" sat in a 4px hole while "a" and "e" nearly touched.
-    expect(WORDMARK_GLYPHS.i[0].length).toBeLessThan(WORDMARK_GLYPHS.a[0].length)
+    // 1px "i" sat in a 4px hole while the round letters nearly touched.
+    expect(WORDMARK_GLYPHS.i[0].length).toBeLessThan(WORDMARK_GLYPHS.o[0].length)
     expect(WORDMARK_GLYPHS.t[0].length).toBeLessThan(WORDMARK_GLYPHS.b[0].length)
+  })
+
+  it("uses every row it declares", () => {
+    // The descender row went when the name lost its "p". A row no glyph
+    // touches is a blank strip inside the mark's own box, which makes it sit
+    // high against anything aligned to it.
+    const { H } = WORDMARK_CELL
+    for (let y = 0; y < H; y++) {
+      const touched = Object.values(WORDMARK_GLYPHS).some((g) => g[y].includes("#"))
+      expect(touched, `row ${y} is empty in every glyph`).toBe(true)
+    }
   })
 
   it("carries a glyph for every letter in the word, and no others", () => {
@@ -74,12 +85,24 @@ describe("Wordmark", () => {
   })
 
   it("keeps its aspect ratio at any height", () => {
-    const { container } = render(<Wordmark height={40} />)
+    // Derived from the grid, not a literal: this asserted 40px, which only
+    // passed while the grid happened to be 8 rows tall.
+    const { H } = WORDMARK_CELL
+    const asked = H * 5
+    const { container } = render(<Wordmark height={asked} />)
     const svg = container.querySelector("svg")!
     const [, , cols, rows] = svg.getAttribute("viewBox")!.split(" ").map(Number)
 
-    expect(Number(svg.getAttribute("height"))).toBe(40)
-    expect(Number(svg.getAttribute("width"))).toBeCloseTo((40 * cols) / rows, 5)
+    expect(Number(svg.getAttribute("height"))).toBe(asked)
+    expect(Number(svg.getAttribute("width"))).toBeCloseTo((asked * cols) / rows, 5)
+  })
+
+  it("snaps an awkward height to a whole number of pixels per cell", () => {
+    // A fractional cell is what made the nav mark render visibly softer than
+    // the hero. Pixel art only scales by integers.
+    const { H } = WORDMARK_CELL
+    const { container } = render(<Wordmark height={H * 5 + 3} />)
+    expect(Number(container.querySelector("svg")!.getAttribute("height")) % H).toBe(0)
   })
 
   it("inherits colour rather than hardcoding one", () => {

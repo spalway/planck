@@ -21,7 +21,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
-    console.error("[APEBITS] render error:", error, info.componentStack)
+    console.error("[STOCKBITS] render error:", error, info.componentStack)
   }
 
   render() {

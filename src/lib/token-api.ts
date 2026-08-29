@@ -54,7 +54,7 @@ async function get<T>(path: string, signal?: AbortSignal): Promise<ApiResult<T>>
     return { ok: true, data: (await res.json()) as T }
   } catch (e) {
     if ((e as Error).name !== "AbortError") {
-      console.warn(`[APEBITS] ${path} failed:`, e)
+      console.warn(`[STOCKBITS] ${path} failed:`, e)
     }
     return { ok: false, reason: "unavailable" }
   }
@@ -125,7 +125,7 @@ export async function mintBroker(wallet: string): Promise<MintResult> {
 
     return { ok: false, reason: "unavailable" }
   } catch (e) {
-    console.warn("[APEBITS] mint request failed:", e)
+    console.warn("[STOCKBITS] mint request failed:", e)
     return { ok: false, reason: "unavailable" }
   }
 }

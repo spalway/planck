@@ -71,7 +71,7 @@ export async function fetchPrices(
     return out
   } catch (e) {
     if ((e as Error).name !== "AbortError") {
-      console.warn("[APEBITS] Jupiter price fetch failed:", e)
+      console.warn("[STOCKBITS] Jupiter price fetch failed:", e)
     }
     return null
   }

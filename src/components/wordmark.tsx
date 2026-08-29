@@ -14,12 +14,18 @@
  * own width and every pair is separated by exactly GAP, so the rhythm is even
  * across the whole word.
  *
- * Vertical metrics, 8 rows: 0-1 ascender, 2-6 x-height, 7 descender. So "l",
- * "k", "b" and "t" rise and "p" drops, which is what stops a lowercase word
+ * Vertical metrics, 7 rows: 0-1 ascender, 2-6 x-height. So "t", "k" and "b"
+ * rise above "s", "o", "c" and "i", which is what stops a lowercase word
  * reading as a row of identical blocks.
+ *
+ * There was an eighth row for descenders, used only by the "p" of the old
+ * name. No letter in "stockbits" drops below the baseline, and keeping the
+ * row would leave the mark sitting high inside its own box with a blank
+ * eighth of a line underneath it. Reinstate it if the name ever grows a
+ * descender.
  */
 
-const H = 8
+const H = 7
 
 /** One blank column between letters, so stems never touch. */
 const GAP = 1
@@ -31,16 +37,16 @@ const GAP = 1
  * than its neighbours.
  */
 const GLYPHS: Record<string, string[]> = {
-  a: ["....", "....", "###.", "...#", "####", "#..#", ".###", "...."],
-  p: ["....", "....", "###.", "#..#", "#..#", "#..#", "###.", "#..."],
-  e: ["....", "....", ".##.", "#..#", "####", "#...", ".###", "...."],
-  b: ["#...", "#...", "###.", "#..#", "#..#", "#..#", "###.", "...."],
-  i: ["#", ".", "#", "#", "#", "#", "#", "."],
-  t: ["#..", "#..", "###", "#..", "#..", "#..", ".##", "..."],
-  s: ["....", "....", ".###", "#...", ".##.", "...#", "###.", "...."],
+  s: ["....", "....", ".###", "#...", ".##.", "...#", "###."],
+  t: ["#..", "#..", "###", "#..", "#..", "#..", ".##"],
+  o: ["....", "....", ".##.", "#..#", "#..#", "#..#", ".##."],
+  c: ["....", "....", ".###", "#...", "#...", "#...", ".###"],
+  k: ["#...", "#...", "#..#", "#.#.", "##..", "#.#.", "#..#"],
+  b: ["#...", "#...", "###.", "#..#", "#..#", "#..#", "###."],
+  i: ["#", ".", "#", "#", "#", "#", "#"],
 }
 
-const TEXT = "apebits"
+const TEXT = "stockbits"
 
 /** Exported so tests can assert the glyphs stay well formed. */
 export const WORDMARK_TEXT = TEXT

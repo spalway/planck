@@ -7,7 +7,7 @@
  */
 
 export const RISK_POINTS = [
-  "APEBITS is experimental software. Contracts are unaudited and may fail.",
+  "STOCKBITS is experimental software. Contracts are unaudited and may fail.",
   "Nothing here is financial advice, and nothing here is an offer to buy or sell a security.",
   "The vault does not sell its holdings. Nothing you spend is refundable.",
   "Tokenized equity exposure is restricted in some jurisdictions, including the United States. Complying with the law where you live is your responsibility.",

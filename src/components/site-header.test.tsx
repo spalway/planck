@@ -49,7 +49,7 @@ function classes(name: string): string[] {
     header()
     // The wordmark is an SVG, not type — the pixel woff2 it used to rely on
     // never decoded in any browser. It is reachable by its accessible name.
-    expect(screen.getByRole("img", { name: /apebits/i })).toBeInTheDocument()
+    expect(screen.getByRole("img", { name: /stockbits/i })).toBeInTheDocument()
     for (const name of ["Home", "Brokers"]) {
       expect(classes(name)).toContain("font-bold")
     }

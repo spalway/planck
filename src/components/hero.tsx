@@ -4,9 +4,18 @@ import { BrokerShowcase } from "@/components/broker-showcase"
 import { Wordmark } from "@/components/wordmark"
 import type { Broker } from "@/lib/brokers"
 
+/**
+ * One column, not two.
+ *
+ * This was `md:grid-cols-[1fr_auto]` with the portrait beside the text, which
+ * worked while the page ran the full width of the screen. The page is a 700px
+ * column now, and that split left the text side 370px wide — narrower than
+ * the 468px wordmark, so the logotype was cut off mid-word on every desktop.
+ * Stacking gives the mark the whole column.
+ */
 export function Hero({ brokers }: { brokers: readonly Broker[] }) {
   return (
-    <section className="grid items-center gap-10 py-14 md:grid-cols-[1fr_auto] md:gap-16 md:py-20">
+    <section className="flex flex-col gap-10 py-14 md:py-20">
       <div>
         <span className="tag text-[0.65rem]">Solana · real-world assets</span>
 
@@ -20,14 +29,14 @@ export function Hero({ brokers }: { brokers: readonly Broker[] }) {
           cast, in the same direction, which is what ties the mark to the
           chrome. aria-hidden on the shadow so it is announced once.
         */}
-        <h1 className="relative mt-5 h-12 sm:h-20">
+        <h1 className="relative mt-5 h-[49px] sm:h-[84px]">
           <span aria-hidden="true" className="absolute top-1 left-1 text-tan">
-            <Wordmark height={48} className="sm:hidden" />
-            <Wordmark height={80} className="hidden sm:block" />
+            <Wordmark height={49} className="sm:hidden" />
+            <Wordmark height={84} className="hidden sm:block" />
           </span>
           <span className="absolute top-0 left-0 text-ink">
-            <Wordmark height={48} className="sm:hidden" />
-            <Wordmark height={80} className="hidden sm:block" />
+            <Wordmark height={49} className="sm:hidden" />
+            <Wordmark height={84} className="hidden sm:block" />
           </span>
         </h1>
 
@@ -38,7 +47,7 @@ export function Hero({ brokers }: { brokers: readonly Broker[] }) {
         </p>
 
         <p className="mt-4 max-w-xl text-sm text-ink-muted">
-          An <span className="text-ink">apebit</span> is the smallest bit of a real
+          A <span className="text-ink">stockbit</span> is the smallest bit of a real
           thing you can own. It is what the firm counts in.
         </p>
 
@@ -52,7 +61,11 @@ export function Hero({ brokers }: { brokers: readonly Broker[] }) {
         </div>
       </div>
 
-      <BrokerShowcase brokers={brokers} />
+      {/* Capped, or the showcase stretches to the full column and the 168px
+          portrait floats in the middle of a very wide, very short card. */}
+      <div className="w-full max-w-[17rem]">
+        <BrokerShowcase brokers={brokers} />
+      </div>
     </section>
   )
 }
