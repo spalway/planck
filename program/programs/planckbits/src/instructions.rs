@@ -1,11 +1,11 @@
-pub mod burn_ape;
+pub mod burn_planck;
 pub mod initialize;
 pub mod inscribe;
 pub mod mint_broker;
-pub mod set_ape_mint;
+pub mod set_planck_mint;
 
-pub use burn_ape::*;
+pub use burn_planck::*;
 pub use initialize::*;
 pub use inscribe::*;
 pub use mint_broker::*;
-pub use set_ape_mint::*;
+pub use set_planck_mint::*;

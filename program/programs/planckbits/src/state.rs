@@ -6,12 +6,12 @@ use anchor_lang::prelude::*;
 pub struct Config {
     pub authority: Pubkey,
     /// `Pubkey::default()` until the token launches. Nothing burns before then.
-    pub ape_mint: Pubkey,
+    pub planck_mint: Pubkey,
     /// `h`, in lamports.
     pub mint_price: u64,
     /// `f` — brokers hired. The burn is `h * f`, so this is the whole story.
     pub minted: u64,
-    /// Cumulative $APE destroyed, in base units.
+    /// Cumulative $PLANCK destroyed, in base units.
     pub burned: u64,
     /// Cumulative lamports taken in mint fees.
     pub collected: u64,

@@ -4,7 +4,7 @@ use anchor_lang::solana_program::program::invoke;
 use anchor_lang::solana_program::system_instruction;
 
 use crate::constants::*;
-use crate::error::ApeError;
+use crate::error::PlanckError;
 use crate::state::{Broker, Config};
 
 #[derive(Accounts)]
@@ -46,8 +46,8 @@ pub struct MintBroker<'info> {
 fn newest_slot_hash(sysvar: &UncheckedAccount) -> Result<[u8; 32]> {
     let data = sysvar
         .try_borrow_data()
-        .map_err(|_| error!(ApeError::SlotHashUnavailable))?;
-    require!(data.len() >= 48, ApeError::SlotHashUnavailable);
+        .map_err(|_| error!(PlanckError::SlotHashUnavailable))?;
+    require!(data.len() >= 48, PlanckError::SlotHashUnavailable);
 
     let mut out = [0u8; 32];
     out.copy_from_slice(&data[16..48]);

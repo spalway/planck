@@ -29,7 +29,7 @@ pub struct Initialize<'info> {
 pub fn handle_initialize(ctx: Context<Initialize>, mint_price: Option<u64>) -> Result<()> {
     let config = &mut ctx.accounts.config;
     config.authority = ctx.accounts.authority.key();
-    config.ape_mint = Pubkey::default();
+    config.planck_mint = Pubkey::default();
     config.mint_price = mint_price.unwrap_or(DEFAULT_MINT_PRICE);
     config.minted = 0;
     config.burned = 0;
@@ -38,6 +38,6 @@ pub fn handle_initialize(ctx: Context<Initialize>, mint_price: Option<u64>) -> R
     config.treasury_bump = ctx.bumps.treasury;
     config.vault_bump = 0;
 
-    msg!("apebits open. h = {} lamports", config.mint_price);
+    msg!("planckbits open. h = {} lamports", config.mint_price);
     Ok(())
 }

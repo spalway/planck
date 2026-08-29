@@ -1,5 +1,5 @@
 [package]
-name = "apebits"
+name = "planckbits"
 version = "0.1.0"
 description = "A labor market for AI broker agents holding real-world assets"
 edition.workspace = true
@@ -7,7 +7,7 @@ rust-version.workspace = true
 
 [lib]
 crate-type = ["cdylib", "lib"]
-name = "apebits"
+name = "planckbits"
 
 [features]
 default = []

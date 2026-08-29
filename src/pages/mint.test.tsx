@@ -78,7 +78,7 @@ describe("MintPage", () => {
       status: "known",
       holding: { wallet: WALLET, mint: "m", holds: false, amount: 0 },
     })
-    expect(screen.getByText(/holds no \$APE/i)).toBeInTheDocument()
+    expect(screen.getByText(/holds no \$PLANCK/i)).toBeInTheDocument()
     expect(screen.queryByRole("button", { name: /mint a broker/i })).not.toBeInTheDocument()
   })
 

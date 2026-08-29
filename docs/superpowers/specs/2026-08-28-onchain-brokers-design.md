@@ -1,8 +1,8 @@
-# APEBITS — On-Chain Brokers, Chimp Roster, Deflationary Burn
+# PLANCKBITS — On-Chain Brokers, Chimp Roster, Deflationary Burn
 
 **Date:** 2026-08-28
 **Status:** Awaiting review
-**Supersedes parts of:** [`2026-08-23-apebits-design.md`](2026-08-23-apebits-design.md)
+**Supersedes parts of:** [`2026-08-23-planckbits-design.md`](2026-08-23-planckbits-design.md)
 
 ---
 
@@ -16,7 +16,7 @@ Three changes, one spec, because they are coupled through a byte budget.
    rendered PFP rides along *inside the mint transaction* as a base64 PNG in an
    SPL Memo, and the program stores its hash.
 3. **The mint is paid and deflationary.** 0.1 ◎ per broker, swept into a
-   buyback that burns $APE supply.
+   buyback that burns $PLANCK supply.
 
 They are one spec because Solana's 1,232-byte transaction limit decides the
 sprite size, and the sprite size decides what the program can carry.
@@ -40,7 +40,7 @@ state, and the burn is `E = hf` with a checkable `h`.
 | D6 | **One mint per wallet**, enforced by PDA seeds | A database uniqueness check |
 | D7 | Traits rolled **on chain from the slot hash** | Server-signed rolls; commit-reveal |
 | D8 | **Keeper swaps, program burns permissionlessly** | Full Jupiter CPI crank — deferred to v2 |
-| D9 | Delete the `chipperton` Supabase project; apebits keeps its own | Migrating apebits into it |
+| D9 | Delete the `chipperton` Supabase project; planckbits keeps its own | Migrating planckbits into it |
 
 ---
 
@@ -168,8 +168,8 @@ Broker    PDA ["broker", owner]        ~96 B   rent ≈ 0.0016 ◎
   minted_at: i64 · bump: u8
 
 Treasury  PDA ["treasury"]             SOL only, holds mint fees
-BurnVault PDA ["burn_vault"]           $APE ATA, authority = program
-Config    PDA ["config"]               ape_mint, price, authority, counters
+BurnVault PDA ["burn_vault"]           $PLANCK ATA, authority = program
+Config    PDA ["config"]               planck_mint, price, authority, counters
 ```
 
 **One mint per wallet is free.** Seeding Broker on `owner` means a second mint
@@ -227,7 +227,7 @@ Permissionless. Anyone may call it; it burns the entire BurnVault balance via
 `invoke_signed` with the program's seeds and emits an event with the amount and
 the running total.
 
-The keeper does the SOL → $APE swap as an ordinary Jupiter transaction and
+The keeper does the SOL → $PLANCK swap as an ordinary Jupiter transaction and
 sends the proceeds to BurnVault. **The swap leg is operated; the burn leg is
 on-chain, permissionless and public.** Site copy must draw that line exactly.
 
@@ -251,7 +251,7 @@ can check it against the chain.
 
 Two things stop it reading as bolted on:
 
-1. **The vocabulary was already there.** The site says an apebit is "the
+1. **The vocabulary was already there.** The site says a planckbit is "the
    smallest bit of a real thing you can own." That is a quantum.
 2. **The burn is genuinely quantized.** The crank fires only on whole multiples
    of `h`, so the burn curve is a **staircase, not a line** — which is what
@@ -270,7 +270,7 @@ reason, rendered as a state rather than an error.
 | Use | Call |
 |---|---|
 | RWA token logos for the 13 mints | DAS `getAssetBatch`, cached server-side, never hotlinked |
-| Vault holdings, $APE supply for the burn counter | standard RPC |
+| Vault holdings, $PLANCK supply for the burn counter | standard RPC |
 | Holder count | **stays on Birdeye** — not a standard RPC call |
 
 Fills `SOLANA_RPC`, which currently sits unread in `.env.example`.
@@ -297,14 +297,14 @@ renders as `—`, never `$0`.
 ## 9. Data model
 
 **Delete the `chipperton` project** (`rqpxxubpfwnxcwqbluxo`). Irreversible —
-confirm the ref before running. apebits keeps `feutpsjkftlpfatcatap`.
+confirm the ref before running. planckbits keeps `feutpsjkftlpfatcatap`.
 
 Migration `0004_onchain_brokers.sql`:
 
 - `brokers`: add `tier`, `fur`, `headwear`, `eyewear`, `mouth`, `image_hash`,
   `mint_signature`, and a **unique** constraint on `owner_wallet` — mirrors the
   PDA constraint
-- new `burns`: `signature` PK, `ape_burned` (base units), `sol_spent`
+- new `burns`: `signature` PK, `planck_burned` (base units), `sol_spent`
   (lamports), `burned_at` — one row per on-chain `burn` event
 - new `instrument_metadata`: `mint` PK, `image_url`, `fetched_at` — the Helius cache
 - re-seed the 24 founding brokers as chimps with tiers
@@ -337,7 +337,7 @@ Extending the existing 192-test suite:
 |---|---|---|
 | B1 | Helius API key | RWA logos, vault, supply |
 | B2 | Keeper wallet + funding | the swap leg |
-| B3 | $APE mint address | burn, hire gate |
+| B3 | $PLANCK mint address | burn, hire gate |
 | B4 | Devnet SOL | deploy |
 | B5 | Confirm chipperton deletion | §9 |
 

@@ -49,8 +49,8 @@ describe("Wordmark", () => {
   })
 
   it("carries a glyph for every letter in the word, and no others", () => {
-    // Renaming the site is where this breaks: a missing glyph renders as a
-    // hole, and a leftover one is dead art nobody notices.
+    // Renaming the site is exactly where this breaks: a missing glyph renders
+    // as a hole, and a leftover one is dead art nobody notices.
     const used = new Set(WORDMARK_TEXT.split(""))
     for (const ch of used) {
       expect(WORDMARK_GLYPHS[ch], `no glyph for "${ch}"`).toBeDefined()

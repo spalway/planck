@@ -1,5 +1,5 @@
 /**
- * The APEBITS app, separated from the process that runs it.
+ * The PLANCKBITS app, separated from the process that runs it.
  *
  * Every dependency that touches the network, the database or the clock is
  * injected. That is not ceremony: the hire route shipped with two undefined
@@ -51,7 +51,7 @@ export function createApp({ config = {}, deps, dist = null }) {
      * on the same cache tick the browser does, instead of serving 503s from
      * a value it captured at startup until someone restarts it.
      */
-    resolveMint = async () => config.apeMint ?? "",
+    resolveMint = async () => config.planckMint ?? "",
   } = deps
 
   const app = express()
@@ -131,7 +131,7 @@ export function createApp({ config = {}, deps, dist = null }) {
     try {
       res.json(await tokenStats(mint, birdeyeKey))
     } catch (e) {
-      console.warn("[APEBITS] token stats failed:", e.message)
+      console.warn("[PLANCKBITS] token stats failed:", e.message)
       res.status(502).json({ error: "upstream_failed" })
     }
   })
@@ -148,7 +148,7 @@ export function createApp({ config = {}, deps, dist = null }) {
     try {
       res.json(await walletHolding(wallet, mint, birdeyeKey))
     } catch (e) {
-      console.warn("[APEBITS] holding lookup failed:", e.message)
+      console.warn("[PLANCKBITS] holding lookup failed:", e.message)
       res.status(502).json({ error: "upstream_failed" })
     }
   })
@@ -193,10 +193,10 @@ export function createApp({ config = {}, deps, dist = null }) {
         }
       }
 
-      console.warn("[APEBITS] mint exhausted attempts — name pool may be full")
+      console.warn("[PLANCKBITS] mint exhausted attempts — name pool may be full")
       res.status(503).json({ error: "name_pool_exhausted" })
     } catch (e) {
-      console.warn("[APEBITS] mint failed:", e.message)
+      console.warn("[PLANCKBITS] mint failed:", e.message)
       res.status(502).json({ error: "mint_failed" })
     }
   })
@@ -244,7 +244,7 @@ export function createApp({ config = {}, deps, dist = null }) {
         return res.status(404).json({ error: "no_such_broker" })
       }
 
-      console.warn("[APEBITS] hire failed:", e.message)
+      console.warn("[PLANCKBITS] hire failed:", e.message)
       res.status(502).json({ error: "hire_failed" })
     }
   })

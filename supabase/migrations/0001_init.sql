@@ -1,4 +1,4 @@
--- APEBITS — initial schema.
+-- PLANCKBITS — initial schema.
 --
 -- Off-chain v1: brokers and engagements live here, while vault holdings and
 -- prices stay verifiable against Solana and Jupiter. See LAUNCH.md.
@@ -54,7 +54,7 @@ create table engagements (
   term_end      timestamptz not null,
   closed_at     timestamptz,
 
-  -- Hiring is gated on HOLDING $APE, not on paying a fee. The vault is
+  -- Hiring is gated on HOLDING $PLANCK, not on paying a fee. The vault is
   -- funded by token creator fees instead, which is a real revenue line and
   -- needs no per-hire transfer, no signature verification, and no web3
   -- dependency in the browser.
@@ -62,7 +62,7 @@ create table engagements (
   -- Both columns stay, nullable, for the day a paid tier lands. The unique
   -- index on fee_signature still stops one payment being replayed into two
   -- engagements, and ignores the nulls.
-  fee_ape    numeric(38, 0) check (fee_ape is null or fee_ape > 0),
+  fee_planck    numeric(38, 0) check (fee_planck is null or fee_planck > 0),
   fee_signature text unique,
 
   constraint term_is_forward check (term_end > term_start)

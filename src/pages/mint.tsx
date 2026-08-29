@@ -14,7 +14,7 @@ import { mintBroker, type MintResult, type MintedBroker } from "@/lib/token-api"
 /**
  * Mint a broker.
  *
- * Gated on holding $APE, which is the token's only job in the product. The
+ * Gated on holding $PLANCK, which is the token's only job in the product. The
  * gate is enforced server-side; this page only decides what to say about it.
  */
 
@@ -115,7 +115,7 @@ export function MintPage() {
 
         {holding.status === "unavailable" && holding.reason === "not_launched" && (
           <Panel>
-            $APE has not launched yet, so there is nothing to hold and nothing to
+            $PLANCK has not launched yet, so there is nothing to hold and nothing to
             mint. This page opens when the token does.
           </Panel>
         )}
@@ -129,7 +129,7 @@ export function MintPage() {
 
         {holding.status === "known" && !holding.holding.holds && (
           <Panel>
-            This wallet holds no $APE. Minting is open to holders; the contract
+            This wallet holds no $PLANCK. Minting is open to holders; the contract
             address is at the foot of every page.
           </Panel>
         )}
@@ -141,7 +141,7 @@ export function MintPage() {
               <span className="num text-ink">
                 {holding.holding.amount.toLocaleString("en-US")}
               </span>{" "}
-              $APE. You may mint.
+              $PLANCK. You may mint.
             </Panel>
 
             <button
@@ -162,7 +162,7 @@ export function MintPage() {
             {result.reason === "mint_cap_reached"
               ? `This wallet has already minted the maximum of ${result.cap ?? 5} brokers.`
               : result.reason === "not_holding"
-                ? "That wallet no longer holds $APE."
+                ? "That wallet no longer holds $PLANCK."
                 : "The mint did not go through. Nothing was charged — try again."}
           </Panel>
         )}

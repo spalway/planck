@@ -10,7 +10,7 @@
  */
 
 /** The account, without the @. Change here and both the label and href follow. */
-export const X_HANDLE = "apebitsfun"
+export const X_HANDLE = "planckbitsfun"
 
 export const X_URL = `https://x.com/${X_HANDLE}`
 

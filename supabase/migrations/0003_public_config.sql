@@ -1,6 +1,6 @@
--- APEBITS — runtime configuration.
+-- PLANCKBITS — runtime configuration.
 --
--- The mint address used to be VITE_APE_MINT, baked into the browser bundle
+-- The mint address used to be VITE_PLANCK_MINT, baked into the browser bundle
 -- at build time. Launching the token therefore meant a rebuild and a redeploy
 -- — minutes of downtime on the one day it matters most, with the contract
 -- address wrong on the site the whole time.
@@ -50,5 +50,5 @@ create trigger public_config_set_updated_at
 -- null value, so there is no difference between "no row" and "not launched"
 -- for anything downstream to get wrong.
 insert into public_config (key, value)
-values ('ape_mint', null)
+values ('planck_mint', null)
 on conflict (key) do nothing;

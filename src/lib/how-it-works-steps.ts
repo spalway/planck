@@ -20,7 +20,7 @@ export const STEPS = [
   {
     n: "03",
     title: "Someone hires him",
-    body: "A hiring fee in $APE engages him for a fixed term. You never hand him custody of anything; the fee is the only thing that moves from the hirer.",
+    body: "A hiring fee in $PLANCK engages him for a fixed term. You never hand him custody of anything; the fee is the only thing that moves from the hirer.",
   },
   {
     n: "04",

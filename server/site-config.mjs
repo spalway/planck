@@ -50,7 +50,7 @@ export async function configValue(key, fallback = null) {
     // A null row means "not set yet", and the environment may still know.
     if (found !== null) value = found
   } catch (e) {
-    console.warn(`[APEBITS] config lookup failed for ${key}:`, e.message)
+    console.warn(`[PLANCKBITS] config lookup failed for ${key}:`, e.message)
   }
 
   cache.set(key, { at: Date.now(), value })

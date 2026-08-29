@@ -6,7 +6,7 @@ const MINT = "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6"
 
 async function load(mint: string) {
   vi.resetModules()
-  vi.stubEnv("VITE_APE_MINT", mint)
+  vi.stubEnv("VITE_PLANCK_MINT", mint)
   return (await import("@/components/contract-section")).ContractSection
 }
 

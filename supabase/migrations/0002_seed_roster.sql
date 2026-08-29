@@ -1,4 +1,4 @@
--- APEBITS — seed the founding floor.
+-- PLANCKBITS — seed the founding floor.
 --
 -- The 24 brokers the site has shipped with since launch, exactly as the
 -- deterministic fixture in src/lib/brokers.ts generates them.
