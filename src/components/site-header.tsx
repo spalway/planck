@@ -20,7 +20,16 @@ import { cn } from "@/lib/utils"
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 bg-bar text-ground">
-      <div className="shell flex flex-wrap items-center justify-between gap-x-6 gap-y-2 py-3">
+      {/*
+        Deliberately NOT the .shell column.
+
+        The bar runs the full width of the screen, so pinning its contents to
+        the 700px content column left the X link and the connect button
+        stranded in the middle with a wide empty stretch of brown either side.
+        The bar's own contents use the full width and sit against its edges;
+        only the page content below is columnar.
+      */}
+      <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 px-5 py-3">
         <NavLink to="/" className="text-ground hover:text-tan" aria-label="stockbits, home">
           <Wordmark height={21} />
         </NavLink>

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom"
 
 import { BrokerShowcase } from "@/components/broker-showcase"
+import { ContractSection } from "@/components/contract-section"
 import { Wordmark } from "@/components/wordmark"
 import type { Broker } from "@/lib/brokers"
 
@@ -51,7 +52,13 @@ export function Hero({ brokers }: { brokers: readonly Broker[] }) {
           thing you can own. It is what the firm counts in.
         </p>
 
-        <div className="mt-8 flex flex-wrap gap-3">
+        {/* The address comes before the buttons: it is what most visitors
+            arrive looking for, and it used to sit below the whole hero. */}
+        <div className="mt-8">
+          <ContractSection />
+        </div>
+
+        <div className="mt-6 flex flex-wrap gap-3">
           <Link to="/mint" className="btn btn-primary px-5 py-2.5 text-xs">
             Mint a broker
           </Link>
@@ -62,8 +69,9 @@ export function Hero({ brokers }: { brokers: readonly Broker[] }) {
       </div>
 
       {/* Capped, or the showcase stretches to the full column and the 168px
-          portrait floats in the middle of a very wide, very short card. */}
-      <div className="w-full max-w-[17rem]">
+          portrait floats in the middle of a very wide, very short card.
+          Centred in the column rather than left-aligned under the copy. */}
+      <div className="mx-auto w-full max-w-[17rem]">
         <BrokerShowcase brokers={brokers} />
       </div>
     </section>

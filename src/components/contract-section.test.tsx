@@ -50,10 +50,14 @@ describe("ContractSection", () => {
     )
   })
 
-  it("states what the fees do", async () => {
+  it("labels the address with the ticker and says nothing else", async () => {
+    // The section used to carry a line explaining what the fees do. It was
+    // removed on purpose: the address is the whole of the token's presence
+    // here, and the mechanism is argued for elsewhere on the page.
     const C = await load(MINT)
     render(<C />)
-    expect(screen.getByText(/creator fees/i)).toBeInTheDocument()
+    expect(screen.getByText(/\$SBIT contract/i)).toBeInTheDocument()
+    expect(screen.queryByText(/creator fees/i)).not.toBeInTheDocument()
   })
 
   it("shows no price, chart or ticker", async () => {

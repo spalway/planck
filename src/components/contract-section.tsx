@@ -5,10 +5,13 @@ import { useSiteConfig } from "@/hooks/use-site-config"
 /**
  * The contract address, stated plainly and placed high on the page.
  *
- * This is the whole of the token's presence on the site: an address, and one
- * line on what the fees do. No price, no chart, no market cap, no ticker —
- * the site argues for the mechanism, and a price widget would make it argue
- * for the trade instead. That restraint is deliberate and worth keeping.
+ * This is the whole of the token's presence on the site: an address, and
+ * nothing else. No price, no chart, no market cap — the site argues for the
+ * mechanism, and a price widget would make it argue for the trade instead.
+ * That restraint is deliberate and worth keeping.
+ *
+ * It sits inside the hero now, directly above the two calls to action, so a
+ * visitor meets the address before the buttons rather than after them.
  */
 
 
@@ -41,7 +44,7 @@ export function ContractSection() {
     <section id="contract" aria-label="Contract address" className="panel">
       <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
         <div className="min-w-0">
-          <span className="tag text-[0.6rem]">$PLANCK contract</span>
+          <span className="tag text-[0.6rem]">$SBIT contract</span>
 
           {mint !== null ? (
             // A sunk well: the address is a value to be read and copied, not
@@ -69,11 +72,6 @@ export function ContractSection() {
           </button>
         )}
       </div>
-
-      <p className="border-t-2 border-ink/20 px-5 py-3 text-xs leading-relaxed text-ink-muted">
-        Creator fees on $PLANCK fund the vault, which buys real tokenized assets
-        and never sells them. Holding is what opens minting and hiring.
-      </p>
     </section>
   )
 }
