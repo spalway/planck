@@ -19,7 +19,7 @@ import type { Broker } from "@/lib/brokers"
 export function WithRoster({
   children,
 }: {
-  children: (brokers: Broker[]) => React.ReactNode
+  children: (brokers: Broker[], failed: boolean) => React.ReactNode
 }) {
   const { brokers, status } = useRoster()
 
@@ -31,18 +31,8 @@ export function WithRoster({
     )
   }
 
-  return (
-    <>
-      {status === "error" && (
-        <p
-          role="status"
-          className="mt-6 border-2 border-loss bg-loss/10 px-3 py-2 text-sm font-bold text-loss"
-        >
-          The floor could not be loaded just now, so it is shown empty. That is
-          our problem, not yours — try again shortly.
-        </p>
-      )}
-      {children(brokers)}
-    </>
-  )
+  // No banner. A red bar across the top of the page made a recoverable
+  // outage look like a fault in the whole site; the floor itself says it
+  // cannot be read, which is where someone is already looking.
+  return <>{children(brokers, status === "error")}</>
 }

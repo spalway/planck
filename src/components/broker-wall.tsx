@@ -24,13 +24,19 @@ const DESK_SWATCH: Record<Broker["desk"], string> = {
   credit: "#B3352A",
 }
 
-export function BrokerWall({ brokers }: { brokers: readonly Broker[] }) {
+export function BrokerWall({
+  brokers,
+  failed = false,
+}: {
+  brokers: readonly Broker[]
+  failed?: boolean
+}) {
   // Nobody on the floor: the legend teaches a code that nothing is using, and
   // the grid would be a slab of ground colour. Show the empty floor instead.
   if (brokers.length === 0) {
     return (
       <Section id="floor" label="01" title="the floor">
-        <EmptyFloor />
+        <EmptyFloor failed={failed} />
       </Section>
     )
   }

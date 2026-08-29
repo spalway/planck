@@ -47,7 +47,13 @@ function Chip({
   )
 }
 
-export function Roster({ brokers }: { brokers: readonly Broker[] }) {
+export function Roster({
+  brokers,
+  failed = false,
+}: {
+  brokers: readonly Broker[]
+  failed?: boolean
+}) {
   const [sort, setSort] = React.useState<SortKey>("tenure")
   const [desk, setDesk] = React.useState<DeskId | "all">("all")
 
@@ -66,7 +72,7 @@ export function Roster({ brokers }: { brokers: readonly Broker[] }) {
   if (brokers.length === 0) {
     return (
       <Section id="brokers" label="03" title="brokers">
-        <EmptyFloor />
+        <EmptyFloor failed={failed} />
       </Section>
     )
   }
