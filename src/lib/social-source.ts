@@ -8,7 +8,12 @@
  */
 
 export { ROSTER } from "@/lib/brokers"
-export { composeSprite, spritePalette, DESK_COLOR } from "@/lib/sprite-compose"
+export {
+  composeSprite,
+  spriteGround,
+  spritePalette,
+  DESK_COLOR,
+} from "@/lib/sprite-compose"
 export { INSTRUMENTS, DESKS } from "@/lib/instruments"
 // The banner sets the logotype in the same drawn glyphs the site uses, rather
 // than typesetting the word in Geist Mono and hoping it looks related.

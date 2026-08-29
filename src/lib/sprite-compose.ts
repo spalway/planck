@@ -1,18 +1,30 @@
 /**
  * Broker portrait composition, without React.
  *
- * Split out of broker-sprite.tsx so the social-image generator can render the
- * exact same art the site renders. Duplicating the palettes and the hat/
- * headset rules into a script would drift the day a trait threshold changes,
- * and the profile picture would quietly stop matching the roster.
+ * Split from the component so the social-image generator renders the exact
+ * art the site renders. Duplicating palettes into a script would drift the
+ * day a threshold moves, and the profile picture would quietly stop matching
+ * the roster.
  *
- * Pure functions over a broker, so both a component and a node script can use
- * them.
+ * Pure functions over a broker, so a component, a node script and the mint
+ * transaction all produce identical pixels — which matters, because the
+ * program stores a hash of them.
  */
 
 import type { Broker } from "@/lib/brokers"
 import type { DeskId } from "@/lib/instruments"
-import { SPRITE_HAT, SPRITE_ROWS } from "@/lib/sprite-glyphs"
+import { BASE_ROWS, fromGrid, toGrid } from "@/lib/sprite-base"
+import {
+  EYEWEAR,
+  GARMENT,
+  HEADWEAR,
+  MOUTH,
+  type EyewearId,
+  type GarmentId,
+  type HeadwearId,
+  type MouthId,
+} from "@/lib/sprite-layers"
+import { tierById } from "@/lib/sprite-tiers"
 
 /** The tie carries the desk. It is the one colour that means something. */
 export const DESK_COLOR: Record<DeskId, string> = {
@@ -23,45 +35,38 @@ export const DESK_COLOR: Record<DeskId, string> = {
   credit: "#C4362B",
 }
 
-const SKIN = ["#FFDBAC", "#F0C9A4", "#E0AC7E", "#C68642", "#A56B3D", "#8D5524"]
-const HAIR = ["#1B1410", "#3B2A1A", "#6B4A2A", "#8C6239", "#2A2A2E", "#59443A"]
-const SUIT = ["#2B2F38", "#33383F", "#242830", "#3A3F49"]
+/**
+ * The occupation behind each desk, read off the instruments it carries.
+ *
+ * EQUITIES is NVDA, TSLA, META, GOOGL — a tech analyst, so a hoodie. BULLION
+ * is allocated gold, so a vault keeper in coveralls. The outfit is
+ * information: it is how the desk stays readable at roster size.
+ */
+const DESK_GARMENT: Record<DeskId, GarmentId> = {
+  equities: "hoodie",
+  index: "jacket",
+  bullion: "coveralls",
+  yield: "shirtsleeves",
+  credit: "suit",
+}
 
-const INK = "#14120F"
-const SHIRT = "#F7F5F0"
-const MOUTH = "#8C5A4A"
-const HEADSET = "#2148E2"
+const DESK_HAT: Record<DeskId, HeadwearId> = {
+  equities: "beanie",
+  index: "cap",
+  bullion: "hardhat",
+  yield: "visor",
+  credit: "fedora",
+}
 
-/** A hat at this nerve or above. */
-export const HAT_AT = 70
+/** A third accessory erases the face at 24px. */
+export const MAX_ACCESSORIES = 2
 
+/** A hat at this effective nerve or above. */
+export const HAT_AT = 60
 /** A headset at this latency or below. */
 export const HEADSET_AT = 30
-
-function setAt(row: string, i: number, ch: string): string {
-  return row.slice(0, i) + ch + row.slice(i + 1)
-}
-
-/** Traits that change the silhouette, so the grid is scannable. */
-export function composeSprite(b: Broker): string[] {
-  const rows = [...SPRITE_ROWS]
-
-  if (b.effectiveNerve >= HAT_AT) {
-    rows[1] = SPRITE_HAT[0]
-    rows[2] = SPRITE_HAT[1]
-    rows[3] = SPRITE_HAT[2]
-  }
-
-  if (b.latency <= HEADSET_AT) {
-    // Earpieces plus a boom mic down the left.
-    rows[5] = setAt(setAt(rows[5], 2, "p"), 13, "p")
-    rows[6] = setAt(setAt(rows[6], 2, "p"), 13, "p")
-    rows[7] = setAt(rows[7], 2, "p")
-    rows[8] = setAt(rows[8], 3, "p")
-  }
-
-  return rows
-}
+/** Shades at this latency or above. */
+export const SHADES_AT = 80
 
 /** Stable per-broker variation. Math.random would reshuffle faces per render. */
 export function spriteHash(id: string): number {
@@ -73,18 +78,100 @@ export function spriteHash(id: string): number {
   return Math.abs(h)
 }
 
+/**
+ * Which accessories a broker wears.
+ *
+ * Each stat proposes one. If all three propose, the least extreme stat loses
+ * — the portrait shows what is remarkable about him, not an inventory. At
+ * 24px a third accessory does not read as detail, it reads as a smudge.
+ */
+export function brokerLayers(b: Broker): {
+  headwear: HeadwearId
+  eyewear: EyewearId
+  mouth: MouthId
+  garment: GarmentId
+} {
+  let headwear: HeadwearId = b.effectiveNerve >= HAT_AT ? DESK_HAT[b.desk] : "none"
+  let eyewear: EyewearId =
+    b.latency <= HEADSET_AT ? "headset" : b.latency >= SHADES_AT ? "shades" : "none"
+  let mouth: MouthId =
+    b.coverage >= 7
+      ? "cigar"
+      : b.coverage >= 4
+        ? "cigarette"
+        : b.coverage >= 2
+          ? "pen"
+          : "none"
+
+  const worn = [headwear, eyewear, mouth].filter((x) => x !== "none").length
+  if (worn > MAX_ACCESSORIES) {
+    // Distance from the middle of each stat's range, normalised to 0..100.
+    const strength = {
+      headwear: b.effectiveNerve,
+      eyewear: Math.abs(b.latency - 50) * 2,
+      mouth: (b.coverage / 9) * 100,
+    }
+    const weakest = (["mouth", "eyewear", "headwear"] as const).reduce((a, k) =>
+      strength[k] < strength[a] ? k : a
+    )
+    if (weakest === "headwear") headwear = "none"
+    else if (weakest === "eyewear") eyewear = "none"
+    else mouth = "none"
+  }
+
+  return { headwear, eyewear, mouth, garment: DESK_GARMENT[b.desk] }
+}
+
+/** Traits that change the silhouette, so the grid is scannable. */
+export function composeSprite(b: Broker): string[] {
+  const { headwear, eyewear, mouth, garment } = brokerLayers(b)
+
+  const worn = [headwear, eyewear, mouth].filter((x) => x !== "none")
+  if (worn.length > MAX_ACCESSORIES) {
+    throw new Error(`${b.id} wears ${worn.join(", ")} — the face is gone`)
+  }
+
+  const g = toGrid(BASE_ROWS)
+  GARMENT[garment](g)
+  EYEWEAR[eyewear](g)
+  HEADWEAR[headwear](g)
+  MOUTH[mouth](g)
+  return fromGrid(g)
+}
+
+/** The flat ground behind the portrait. Carries the tier. */
+export function spriteGround(b: Broker): string {
+  const tier = tierById(b.tier)
+  return tier.grounds[spriteHash(b.id) % tier.grounds.length]
+}
+
 /** Glyph character to colour, for one broker. */
 export function spritePalette(b: Broker): Record<string, string> {
+  const tier = tierById(b.tier)
   const h = spriteHash(b.id)
+  const [fur, shadow] = tier.furs[(h >> 3) % tier.furs.length]
+  const desk = DESK_COLOR[b.desk]
 
   return {
-    h: HAIR[h % HAIR.length],
-    s: SKIN[(h >> 3) % SKIN.length],
-    c: SUIT[(h >> 6) % SUIT.length],
-    e: INK,
-    m: MOUTH,
-    w: SHIRT,
-    t: DESK_COLOR[b.desk],
-    p: HEADSET,
+    o: tier.dark ? "#05070a" : "#14120f",
+    f: fur,
+    d: shadow,
+    m: tier.muzzle,
+    e: "#fdfaf3",
+    p: "#14120f",
+    n: shadow,
+    b: tier.dark ? "#1c2029" : "#3b2a1d",
+    c: tier.dark ? "#e8f4f8" : "#fdfaf3",
+    T: desk,
+    H: tier.dark ? "#2a3038" : "#4a3728",
+    // The hat accent is a shade of the hat, NOT the desk colour. Painting the
+    // band with the desk put that colour on the hat and the tie at once, and
+    // a beanie with a cobalt fold read as a sweatband rather than a beanie.
+    // The desk is the tie, and only the tie.
+    G: tier.dark ? "#171b21" : "#2f2119",
+    S: "#14120f",
+    L: tier.dark ? "#0b3a42" : "#241f1b",
+    K: "#f4f1ea",
+    R: "#ff5b1a",
   }
 }

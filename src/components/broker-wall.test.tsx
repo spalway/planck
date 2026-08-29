@@ -6,7 +6,8 @@ import { BrokerWall } from "@/components/broker-wall"
 import type { Broker } from "@/lib/brokers"
 
 function broker(id: string, name: string, desk: Broker["desk"]): Broker {
-  return { id, name, desk, nerve: 40, latency: 50, coverage: 2, effectiveNerve: 40, tenureHours: 5 }
+  return { id, name, desk, nerve: 40, latency: 50, coverage: 2, tier: "common",
+ effectiveNerve: 40, tenureHours: 5 }
 }
 
 const BROKERS = [

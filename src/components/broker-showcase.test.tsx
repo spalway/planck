@@ -7,7 +7,8 @@ import type { Broker } from "@/lib/brokers"
 function broker(id: string, name: string, over: Partial<Broker> = {}): Broker {
   return {
     id, name, desk: "equities", nerve: 40, latency: 50,
-    coverage: 2, effectiveNerve: 40, tenureHours: 10, ...over,
+    coverage: 2, tier: "common",
+ effectiveNerve: 40, tenureHours: 10, ...over,
   }
 }
 
