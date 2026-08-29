@@ -9,9 +9,24 @@ lives on the Windows side — hence `--keypair=`.
 
 ## The loop
 
+First a validator and the program on it, from WSL. `setsid` matters: started
+any other way it dies the moment the `wsl` bridge command returns.
+
+```bash
+setsid nohup solana-test-validator --reset --quiet --ledger ~/test-ledger > ~/validator.log 2>&1 < /dev/null &
+```
+
+```bash
+cd ~/dev/planckbits && solana airdrop 10 --url http://127.0.0.1:8899 && solana program deploy target/deploy/planckbits.so --program-id target/deploy/planckbits-keypair.json --url http://127.0.0.1:8899
+```
+
+Then, from the project root on the Windows side:
+
 ```bash
 npm run chain:local -- --keypair='//wsl$/Ubuntu/home/skizp/.config/solana/id.json'
 ```
+
+Stop it afterwards with `pkill -f solana-test-validator`.
 
 It mints a broker from a fresh wallet, reads back the traits **the chain
 rolled**, renders the portrait from those traits, puts it in an SPL Memo,
