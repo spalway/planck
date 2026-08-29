@@ -103,7 +103,7 @@ export function MintPage() {
         {holding.status === "disconnected" && (
           <div className="panel flex flex-col gap-3 p-6 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm leading-relaxed text-ink-muted">
-              Connect a wallet to check whether you can mint.
+              Connect wallet to mint.
             </p>
             {/* An inline action rather than "the button is in the header",
                 which asked the reader to go hunting for it. */}

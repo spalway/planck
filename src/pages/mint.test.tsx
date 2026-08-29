@@ -40,7 +40,7 @@ const HOLDER: HoldingState = {
 describe("MintPage", () => {
   it("asks for a wallet when none is connected, and offers the action", () => {
     setup({ status: "disconnected" }, null)
-    expect(screen.getByText(/connect a wallet/i)).toBeInTheDocument()
+    expect(screen.getByText(/connect wallet to mint/i)).toBeInTheDocument()
     // The prompt used to say the button was "in the header" and offer
     // nothing; a visitor had to go looking. The action lives with the ask.
     expect(screen.getByRole("button", { name: /connect/i })).toBeInTheDocument()
