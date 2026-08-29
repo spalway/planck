@@ -58,7 +58,7 @@ export function Hero({ brokers }: { brokers: readonly Broker[] }) {
           <ContractSection />
         </div>
 
-        <div className="mt-6 flex flex-wrap gap-3">
+        <div className="mt-6 flex flex-wrap justify-center gap-3">
           <Link to="/mint" className="btn btn-primary px-5 py-2.5 text-xs">
             Mint a broker
           </Link>

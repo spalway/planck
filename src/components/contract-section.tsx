@@ -41,22 +41,28 @@ export function ContractSection() {
   const { mint } = useSiteConfig()
 
   return (
-    <section id="contract" aria-label="Contract address" className="panel">
+    <section
+      id="contract"
+      aria-label="Contract address"
+      className="panel bg-bar text-ground"
+    >
       <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
         <div className="min-w-0">
-          <span className="tag text-[0.6rem]">$SBIT contract</span>
+          <span className="tag tag-invert text-[0.6rem]">$SBIT contract</span>
 
           {mint !== null ? (
             // A sunk well: the address is a value to be read and copied, not
-            // a surface to act on.
+            // a surface to act on. Dark rather than tan, because a bone well
+            // on a brown card is the brightest thing in the hero and pulls
+            // the eye off the wordmark.
             <p
               data-testid="contract-address"
-              className="num panel-sunk mt-2.5 px-3 py-2 text-sm break-all text-ink sm:text-base"
+              className="num mt-2.5 border-2 border-ground/35 bg-black/25 px-3 py-2 text-sm break-all text-ground sm:text-base"
             >
               {mint}
             </p>
           ) : (
-            <p className="mt-2.5 text-sm text-ink-muted">
+            <p className="mt-2.5 text-sm text-ground/70">
               Not live yet — the address appears here the moment it launches.
             </p>
           )}
@@ -66,7 +72,7 @@ export function ContractSection() {
           <button
             type="button"
             onClick={() => copy(mint)}
-            className="btn shrink-0 px-4 py-2 text-xs"
+            className="btn btn-invert shrink-0 px-4 py-2 text-xs"
           >
             {copied ? "Copied" : "Copy"}
           </button>

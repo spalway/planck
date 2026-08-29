@@ -214,8 +214,11 @@ h4 {
     box-shadow: 2px 2px 0 0 var(--ink-muted);
   }
 
+  /* Dark brown, not black. The bar and the footer are already brown, so the
+     primary action reads as part of the same object rather than as the one
+     pure-black fill floating in the middle of the page. */
   .btn-primary {
-    background-color: var(--ink);
+    background-color: var(--bar);
     color: var(--ground);
   }
 
@@ -265,6 +268,14 @@ h4 {
     letter-spacing: 0.12em;
     text-transform: lowercase;
     line-height: 1.4;
+  }
+
+  /* The same mark on a dark brown surface, where black on brown is too close
+     in value to register as a filled block at all. */
+  .tag-invert {
+    border-color: var(--ground);
+    background-color: var(--ground);
+    color: var(--bar);
   }
 
   /* The structural divider between sections. */

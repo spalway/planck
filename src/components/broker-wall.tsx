@@ -47,9 +47,14 @@ export function BrokerWall({ brokers }: { brokers: readonly Broker[] }) {
         ))}
       </div>
 
-      {/* The 2px gaps over an umber ground draw the grid lines, so the sheet
-          is one framed object rather than 24 outlined boxes. */}
-      <ul className="panel grid grid-cols-[repeat(auto-fill,minmax(6.5rem,1fr))] gap-0.5 bg-ink p-0">
+      {/* The gaps over a dark brown ground draw the grid lines, so the sheet
+          is one framed object rather than 24 outlined boxes.
+
+          Brown rather than black. The last row rarely fills, so the ground is
+          not just hairlines between cells — it is a solid block of whatever
+          colour this is, sitting in the open at the end of the grid. Black
+          read as a hole in the page. */}
+      <ul className="panel grid grid-cols-[repeat(auto-fill,minmax(6.5rem,1fr))] gap-0.5 bg-bar p-0">
         {brokers.map((b) => (
           <li key={b.id} className="min-w-0 bg-paper">
             <Link
