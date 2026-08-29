@@ -1,0 +1,39 @@
+[package]
+name = "planckbits"
+version = "0.1.0"
+description = "A labor market for AI broker agents holding real-world assets"
+edition.workspace = true
+rust-version.workspace = true
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "planckbits"
+
+[features]
+default = []
+cpi = ["no-entrypoint"]
+no-entrypoint = []
+no-log-ix-name = []
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
+anchor-debug = []
+custom-heap = []
+custom-panic = []
+
+[dependencies]
+anchor-lang = "1.1.2"
+anchor-spl = "1.1.2"
+# Anchor 1.x replaced the monolithic solana-program crate with smaller
+# ones; these carry what used to live under solana_program::.
+solana-sha256-hasher = "3.1.0"
+solana-instructions-sysvar = "3.0.1"
+
+[dev-dependencies]
+litesvm = "0.10.0"
+solana-message = "3.0.1"
+solana-transaction = "3.0.2"
+solana-signer = "3.0.0"
+solana-keypair = "3.0.1"
+solana-sha256-hasher = "3.1.0"
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(target_os, values("solana"))'] }

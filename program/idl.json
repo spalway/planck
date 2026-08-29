@@ -1,0 +1,730 @@
+{
+  "address": "2SCL1yBjXxnhqTUrF1MrEtxmLFZJaxoqCeCPUi5mijFt",
+  "metadata": {
+    "name": "planckbits",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "A labor market for AI broker agents holding real-world assets"
+  },
+  "instructions": [
+    {
+      "name": "burn_planck",
+      "discriminator": [
+        8,
+        73,
+        235,
+        51,
+        18,
+        57,
+        1,
+        16
+      ],
+      "accounts": [
+        {
+          "name": "cranker",
+          "docs": [
+            "Permissionless: anyone may fire the crank. Whoever calls it pays the",
+            "fee and gets nothing, which is fine — the point is that destroying",
+            "supply needs nobody's permission."
+          ],
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "planck_mint",
+          "writable": true
+        },
+        {
+          "name": "vault_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  117,
+                  114,
+                  110,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "burn_vault",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "treasury",
+          "docs": [
+            "Holds mint fees. A bare SOL account owned by the program, so it needs",
+            "no data and no rent beyond the minimum."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "mint_price",
+          "type": {
+            "option": "u64"
+          }
+        }
+      ]
+    },
+    {
+      "name": "inscribe",
+      "discriminator": [
+        150,
+        44,
+        41,
+        0,
+        67,
+        14,
+        73,
+        12
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "broker"
+          ]
+        },
+        {
+          "name": "broker",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  114,
+                  111,
+                  107,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "instructions",
+          "address": "Sysvar1nstructions1111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "mint_broker",
+      "discriminator": [
+        113,
+        121,
+        73,
+        49,
+        38,
+        130,
+        56,
+        244
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "broker",
+          "docs": [
+            "Seeded on the owner. A second mint from the same wallet fails because",
+            "the account already exists — one per wallet is a fact about the address",
+            "space, not a check."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  114,
+                  111,
+                  107,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "treasury",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "slot_hashes",
+          "address": "SysvarS1otHashes111111111111111111111111111"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "set_planck_mint",
+      "discriminator": [
+        229,
+        30,
+        176,
+        162,
+        112,
+        152,
+        62,
+        125
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "mint",
+          "type": "pubkey"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Broker",
+      "discriminator": [
+        242,
+        246,
+        23,
+        145,
+        57,
+        89,
+        181,
+        129
+      ]
+    },
+    {
+      "name": "Config",
+      "discriminator": [
+        155,
+        12,
+        170,
+        224,
+        30,
+        250,
+        204,
+        130
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "BrokerInscribed",
+      "discriminator": [
+        253,
+        62,
+        254,
+        150,
+        226,
+        122,
+        185,
+        236
+      ]
+    },
+    {
+      "name": "BrokerMinted",
+      "discriminator": [
+        183,
+        31,
+        235,
+        153,
+        109,
+        124,
+        207,
+        122
+      ]
+    },
+    {
+      "name": "SupplyBurned",
+      "discriminator": [
+        108,
+        170,
+        216,
+        154,
+        144,
+        221,
+        63,
+        252
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "AlreadyMinted",
+      "msg": "this wallet has already minted a broker"
+    },
+    {
+      "code": 6001,
+      "name": "AlreadyInscribed",
+      "msg": "this broker already carries a portrait; it cannot be replaced"
+    },
+    {
+      "code": 6002,
+      "name": "MemoMissing",
+      "msg": "no SPL Memo instruction was found in this transaction"
+    },
+    {
+      "code": 6003,
+      "name": "MemoEmpty",
+      "msg": "the memo carried no bytes"
+    },
+    {
+      "code": 6004,
+      "name": "MemoTooLarge",
+      "msg": "the memo is larger than a portrait should ever be"
+    },
+    {
+      "code": 6005,
+      "name": "NotOwner",
+      "msg": "only the broker's owner may inscribe it"
+    },
+    {
+      "code": 6006,
+      "name": "TokenNotLaunched",
+      "msg": "$PLANCK has not launched yet"
+    },
+    {
+      "code": 6007,
+      "name": "NothingToBurn",
+      "msg": "the burn vault is empty; there is nothing to destroy"
+    },
+    {
+      "code": 6008,
+      "name": "SlotHashUnavailable",
+      "msg": "the slot hashes sysvar could not be read"
+    }
+  ],
+  "types": [
+    {
+      "name": "Broker",
+      "docs": [
+        "One broker. The PDA is seeded on its owner, so a wallet can hold exactly",
+        "one — enforced by the address space rather than by a check that could be",
+        "raced or forgotten."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "desk",
+            "docs": [
+              "0 equities · 1 index · 2 bullion · 3 yield · 4 credit"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "tier",
+            "docs": [
+              "0 common · 1 uncommon · 2 rare · 3 epic · 4 legendary. COSMETIC."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "nerve",
+            "type": "u8"
+          },
+          {
+            "name": "latency",
+            "type": "u8"
+          },
+          {
+            "name": "coverage",
+            "type": "u8"
+          },
+          {
+            "name": "effective_nerve",
+            "docs": [
+              "Surplus coverage converted to nerve. Stored so the roster can sort on",
+              "it without every reader re-deriving the overflow rule."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "image_hash",
+            "docs": [
+              "SHA-256 of the base64 portrait. Zero until inscribed.",
+              "",
+              "The program cannot render a PNG, so it cannot prove this matches the",
+              "traits. Anyone can: re-render from the traits above, hash, compare.",
+              "A faked inscription is publicly detectable, which is the honest claim."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "index",
+            "docs": [
+              "Mint ordinal, from `Config::minted`."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "minted_at",
+            "type": "i64"
+          },
+          {
+            "name": "slot",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BrokerInscribed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "broker",
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "bytes",
+            "type": "u16"
+          },
+          {
+            "name": "image_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "BrokerMinted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "broker",
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "index",
+            "type": "u64"
+          },
+          {
+            "name": "desk",
+            "type": "u8"
+          },
+          {
+            "name": "tier",
+            "type": "u8"
+          },
+          {
+            "name": "nerve",
+            "type": "u8"
+          },
+          {
+            "name": "latency",
+            "type": "u8"
+          },
+          {
+            "name": "coverage",
+            "type": "u8"
+          },
+          {
+            "name": "effective_nerve",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Config",
+      "docs": [
+        "Firm-wide state. One per deployment."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "planck_mint",
+            "docs": [
+              "`Pubkey::default()` until the token launches. Nothing burns before then."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "mint_price",
+            "docs": [
+              "`h`, in lamports."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "minted",
+            "docs": [
+              "`f` — brokers hired. The burn is `h * f`, so this is the whole story."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "burned",
+            "docs": [
+              "Cumulative $PLANCK destroyed, in base units."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "collected",
+            "docs": [
+              "Cumulative lamports taken in mint fees."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "treasury_bump",
+            "type": "u8"
+          },
+          {
+            "name": "vault_bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SupplyBurned",
+      "docs": [
+        "E = hf. `minted` is f; the burn is what h*f bought and destroyed."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "total_burned",
+            "type": "u64"
+          },
+          {
+            "name": "minted",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ],
+  "constants": [
+    {
+      "name": "MEMO_PROGRAM_ID",
+      "docs": [
+        "SPL Memo v2. The portrait rides in a memo so it decodes cleanly on its own."
+      ],
+      "type": "pubkey",
+      "value": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"
+    }
+  ]
+}

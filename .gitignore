@@ -4,3 +4,9 @@ dist/
 .env.local
 target/
 dist-standalone/
+
+# Anchor build artifacts. Programs build in WSL (see CLAUDE.md); only sources
+# and the generated IDL are tracked.
+program/target/
+program/test-ledger/
+program/.anchor/

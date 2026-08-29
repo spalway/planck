@@ -177,23 +177,39 @@ fails because the account already exists. Not a check — a fact about the addre
 space. It is bypassable with more wallets; the 0.1 ◎ is what bounds that, and the
 site should say so rather than claim scarcity it does not have.
 
-### 5.2 `mint_broker`
+### 5.2 `mint_broker` and `inscribe` — TWO transactions
 
-One transaction, two instructions:
+> **Amended 2026-08-29, during implementation.** The original spec had the
+> memo ride along inside the mint. That is impossible, and the contradiction
+> was mine: D2 says the client puts the rendered PNG in the mint transaction,
+> D7 says the program rolls the traits. If the program rolls them, the client
+> cannot know what the broker looks like when it builds that transaction, so
+> it cannot draw it. You cannot paint the chimp before you know its face.
+>
+> It cannot be patched by having the program check the image either —
+> rendering a PNG on chain means running deflate in BPF.
+>
+> So it splits in two. Both were built and proven; measurements below are
+> from the real run, not estimates.
 
-1. **SPL Memo** — nothing but the base64 PNG. Pure, so paste → base64 decoder →
-   the chimp appears. This is the whole shareable demo.
-2. **`mint_broker`** — transfers 0.1 ◎ payer → Treasury; reads the memo back
-   through the **Instructions sysvar**, hashes it, stores the hash; rolls traits
-   from the **SlotHashes sysvar**; writes the Broker PDA.
+**Tx 1 — `mint_broker`.** Transfers 0.1 ◎ payer → Treasury, rolls traits from
+the **SlotHashes sysvar**, writes the Broker PDA with `image_hash` zeroed.
 
-**Budget** (8 accounts, 1 signer, worst-case 380-char memo):
+**Tx 2 — `inscribe`.** Two instructions:
 
-```
-signatures  65 · header 3 · accounts 257 · blockhash 32
-memo ix    384 · mint ix  18 · counts    1
-                                  total ≈ 760 bytes  ·  472 spare
-```
+1. **SPL Memo** — nothing but the base64 PNG, rendered from the traits the
+   chain just rolled. Pure, so paste → base64 decoder → the chimp appears.
+2. **`inscribe`** — reads the memo back through the **Instructions sysvar**,
+   hashes it, writes the hash to the broker. Owner-only, once, never replaced.
+
+**Measured on a live deployment:** the inscribe transaction is **624 bytes**
+against the 1,232 limit, carrying a 344-char portrait.
+
+**What the chain does and does not prove.** The program stores a hash of
+whatever bytes it is shown. It cannot render a PNG, so it cannot check the
+image against the traits. Anyone else can — re-render from the on-chain traits
+via `src/lib/onchain-portrait.ts`, hash, compare. A faked inscription is
+**publicly detectable**, and that is the claim to make. Not "proven on chain".
 
 **Trait rolling.** Derived from the slot hash at execution, so the roll cannot be
 simulated reliably — the slot moves before the transaction lands. A bot can still
