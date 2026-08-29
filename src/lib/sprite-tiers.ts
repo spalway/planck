@@ -17,10 +17,13 @@ export type Tier = {
   label: string
   /** Probability in 0..1. The table must sum to exactly 1. */
   odds: number
-  /** Dark ground and outline, so non-natural fur does not wash out. */
+  /**
+   * Non-natural fur. Swaps the garment, hat and outline set to the cool,
+   * near-black one so cyan and chrome sit on something that belongs with
+   * them. It used to mean "dark ground" too, back when there was a ground.
+   */
   dark: boolean
   muzzle: string
-  grounds: readonly string[]
   /** [fur, shadow] pairs. */
   furs: readonly (readonly [string, string])[]
 }
@@ -32,7 +35,6 @@ export const TIERS: readonly Tier[] = [
     odds: 0.62,
     dark: false,
     muzzle: "#d9bb95",
-    grounds: ["#c9d9c4", "#dfd6c2", "#d6ccc0"],
     furs: [
       ["#7a5537", "#4a3728"],
       ["#6b4a2a", "#42301c"],
@@ -45,7 +47,6 @@ export const TIERS: readonly Tier[] = [
     odds: 0.25,
     dark: false,
     muzzle: "#cfb99b",
-    grounds: ["#f0d9c0", "#e8dcc4", "#dde6c4"],
     furs: [
       ["#2f2a26", "#1a1714"],
       ["#b09070", "#836a52"],
@@ -58,7 +59,6 @@ export const TIERS: readonly Tier[] = [
     odds: 0.09,
     dark: false,
     muzzle: "#c9c0b4",
-    grounds: ["#e8c9d6", "#cfc6e8", "#c6dbe8"],
     furs: [
       ["#5c6b7a", "#3a4652"],
       ["#6b7a5c", "#455239"],
@@ -71,7 +71,6 @@ export const TIERS: readonly Tier[] = [
     odds: 0.035,
     dark: true,
     muzzle: "#eaf6f8",
-    grounds: ["#101418", "#18101c", "#0e1a18"],
     furs: [
       ["#17c3d4", "#0d7d88"],
       ["#d417a8", "#8a0d6c"],
@@ -84,9 +83,12 @@ export const TIERS: readonly Tier[] = [
     odds: 0.005,
     dark: true,
     muzzle: "#ffffff",
-    grounds: ["#000000", "#0a0a12", "#120a00"],
     furs: [
-      ["#e8f4f8", "#9db4c0"],
+      // Chrome was #e8f4f8 back when it sat on a black ground. On the site's
+      // paper it was the same value as the page and the face collapsed into
+      // an outline, so it is a darker polished steel now — still chrome, but
+      // it holds its own structure against a light surface.
+      ["#bcd4e2", "#7d97a8"],
       ["#c8a2ff", "#7a5cb0"],
       ["#ffd700", "#b08d00"],
     ],

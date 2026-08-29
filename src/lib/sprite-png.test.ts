@@ -64,7 +64,10 @@ describe("sprite PNG", () => {
     expect(worst, `worst case ${worstLabel} at ${worst} chars`).toBeLessThanOrEqual(
       MEMO_BUDGET
     )
-  })
+    // 900 combinations, each spinning up its own CompressionStream. It lands
+    // around 5s, which is the default timeout — so it gets an explicit one
+    // rather than a sampled loop. Exhaustive is the point of this test.
+  }, 30_000)
 
   it("produces bytes a real decoder accepts", async () => {
     // The signature bytes alone prove nothing: a malformed CRC or a bad IDAT
@@ -82,6 +85,45 @@ describe("sprite PNG", () => {
     // Round-trips to raw pixels, so IDAT and PLTE are internally consistent.
     const raw = await sharp(buf).raw().toBuffer()
     expect(raw.length).toBeGreaterThan(0)
+  })
+
+  it("leaves the background transparent rather than painting a ground", async () => {
+    // A flat square behind the chimp read as a sticker pasted onto the panel.
+    // The portrait has to be a cutout, which for an indexed PNG means a tRNS
+    // chunk — not a background colour that happens to match today's theme.
+    const sharp = (await import("sharp")).default
+    const buf = Buffer.from(await spritePngBase64(ROSTER[0]), "base64")
+
+    expect((await sharp(buf).metadata()).hasAlpha, "no tRNS chunk").toBe(true)
+
+    const { data, info } = await sharp(buf)
+      .ensureAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true })
+    expect(info.channels).toBe(4)
+    // Top-left corner is outside the silhouette on every broker.
+    expect(data[3], "corner pixel is opaque").toBe(0)
+    // ...and the chimp itself is still there.
+    const centre = (12 * 24 + 12) * 4
+    expect(data[centre + 3], "centre pixel is transparent").toBe(255)
+  })
+
+  it("keeps every drawn pixel opaque, so only the ground drops out", async () => {
+    const sharp = (await import("sharp")).default
+    const rows = (await import("@/lib/sprite-compose")).composeSprite(ROSTER[0])
+    const buf = Buffer.from(await spritePngBase64(ROSTER[0]), "base64")
+    const { data } = await sharp(buf).ensureAlpha().raw().toBuffer({
+      resolveWithObject: true,
+    })
+
+    for (let y = 0; y < 24; y++) {
+      for (let x = 0; x < 24; x++) {
+        const alpha = data[(y * 24 + x) * 4 + 3]
+        expect(alpha, `${x},${y} glyph "${rows[y][x]}"`).toBe(
+          rows[y][x] === "." ? 0 : 255
+        )
+      }
+    }
   })
 
   it("is deterministic — the hash stored on chain must be stable", async () => {

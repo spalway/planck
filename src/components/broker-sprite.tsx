@@ -1,6 +1,6 @@
 import type { Broker } from "@/lib/brokers"
 import { SPRITE_SIZE } from "@/lib/sprite-base"
-import { composeSprite, spriteGround, spritePalette } from "@/lib/sprite-compose"
+import { composeSprite, spritePalette } from "@/lib/sprite-compose"
 
 /**
  * A broker portrait, composed rather than drawn.
@@ -22,7 +22,6 @@ import { composeSprite, spriteGround, spritePalette } from "@/lib/sprite-compose
 export function BrokerSprite({ broker, size = 96 }: { broker: Broker; size?: number }) {
   const rows = composeSprite(broker)
   const palette = spritePalette(broker)
-  const ground = spriteGround(broker)
 
   return (
     <svg
@@ -34,9 +33,11 @@ export function BrokerSprite({ broker, size = 96 }: { broker: Broker; size?: num
       shapeRendering="crispEdges"
       className="pixel shrink-0"
     >
-      {/* The ground is part of the art: it carries the tier, and a transparent
-          portrait would take the panel colour behind it instead. */}
-      <rect x={0} y={0} width={SPRITE_SIZE} height={SPRITE_SIZE} fill={ground} />
+      {/* No ground rect. A flat square behind the chimp read as a sticker
+          pasted onto the panel, and it fought the sunk well it sits in. The
+          portrait is a cutout: it takes the surface behind it, here and in
+          the PNG that goes on chain. Tier is carried by the fur, which was
+          always the part that read at thumbnail size anyway. */}
       {rows.map((row, y) =>
         [...row].map((c, x) =>
           c === "." ? null : (

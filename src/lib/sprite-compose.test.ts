@@ -1,12 +1,7 @@
 import { describe, expect, it } from "vitest"
 
 import { ROSTER, type Broker } from "@/lib/brokers"
-import {
-  brokerLayers,
-  composeSprite,
-  spriteGround,
-  spritePalette,
-} from "@/lib/sprite-compose"
+import { brokerLayers, composeSprite, spritePalette } from "@/lib/sprite-compose"
 
 const B: Broker = {
   id: "PB-001",
@@ -61,13 +56,15 @@ describe("composeSprite", () => {
   })
 
   it("stays within 16 colours so the PNG can be indexed", () => {
+    // 15, not 16: the encoder reserves palette index 0 for the transparent
+    // background, so a portrait that used all 16 would overflow the table.
     for (const b of ROSTER) {
       const used = new Set<string>()
       const pal = spritePalette(b)
       for (const row of composeSprite(b)) {
-        for (const ch of row) used.add(ch === "." ? spriteGround(b) : pal[ch])
+        for (const ch of row) if (ch !== ".") used.add(pal[ch])
       }
-      expect(used.size, b.id).toBeLessThanOrEqual(16)
+      expect(used.size, b.id).toBeLessThanOrEqual(15)
     }
   })
 
@@ -90,12 +87,6 @@ describe("composeSprite", () => {
       seen.add(brokerLayers({ ...B, desk, effectiveNerve: 90, coverage: 1 }).headwear)
     }
     expect(seen.size).toBe(5)
-  })
-
-  it("changes the ground with the tier", () => {
-    expect(spriteGround({ ...B, tier: "common" })).not.toBe(
-      spriteGround({ ...B, tier: "legendary" })
-    )
   })
 
   it("changes the fur with the tier", () => {

@@ -139,12 +139,6 @@ export function composeSprite(b: Broker): string[] {
   return fromGrid(g)
 }
 
-/** The flat ground behind the portrait. Carries the tier. */
-export function spriteGround(b: Broker): string {
-  const tier = tierById(b.tier)
-  return tier.grounds[spriteHash(b.id) % tier.grounds.length]
-}
-
 /** Glyph character to colour, for one broker. */
 export function spritePalette(b: Broker): Record<string, string> {
   const tier = tierById(b.tier)

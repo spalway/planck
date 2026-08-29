@@ -14,6 +14,11 @@
  * zlib-wrapped, exactly what IDAT wants, and present in browsers and Node 18+.
  * No dependency, and the same bytes on both sides.
  *
+ * The background is a cutout, not a colour: palette index 0 is reserved and
+ * marked transparent in tRNS. A painted ground travelled with the portrait,
+ * so the chimp arrived in a wallet or a decoder wearing whatever square
+ * matched the site's theme on the day it was minted.
+ *
  * An uncompressed ("stored") deflate was tried first and is not viable: the
  * 312-byte raw scanline block lands around 468 bytes of PNG, or 624 base64
  * characters, which is over the memo ceiling on its own.
@@ -21,7 +26,7 @@
 
 import type { Broker } from "@/lib/brokers"
 import { SPRITE_SIZE } from "@/lib/sprite-base"
-import { composeSprite, spriteGround, spritePalette } from "@/lib/sprite-compose"
+import { composeSprite, spritePalette } from "@/lib/sprite-compose"
 
 /** Maximum base64 length. Below the ~566 SPL Memo ceiling, with margin. */
 export const MEMO_BUDGET = 420
@@ -71,18 +76,29 @@ function rgb(hex: string): [number, number, number] {
   ]
 }
 
+/**
+ * Palette entry 0 is reserved, fully transparent, and never drawn.
+ *
+ * The RGB still has to be something: a decoder that ignores tRNS shows it.
+ * White is the safe miss — those decoders are almost always compositing onto
+ * a white preview pane, so the failure mode is an invisible square rather
+ * than a black one.
+ */
+const TRANSPARENT_RGB = "#ffffff"
+
 export async function encodePng(
   rows: readonly string[],
-  palette: Record<string, string>,
-  ground: string
+  palette: Record<string, string>
 ): Promise<Uint8Array> {
-  // Index colours in first-seen order. "." takes the ground.
+  // Index colours in first-seen order after the reserved transparent slot.
+  // "." is not a colour and never enters the table — an opaque #ffffff glyph
+  // gets its own later index, which is correct: same RGB, different alpha.
   const index = new Map<string, number>()
-  const table: string[] = []
-  const colourOf = (ch: string) => (ch === "." ? ground : palette[ch])
+  const table: string[] = [TRANSPARENT_RGB]
   for (const row of rows) {
     for (const ch of row) {
-      const hex = colourOf(ch)
+      if (ch === ".") continue
+      const hex = palette[ch]
       if (!index.has(hex)) {
         index.set(hex, table.length)
         table.push(hex)
@@ -93,6 +109,8 @@ export async function encodePng(
     throw new Error(`${table.length} colours — a 4-bit indexed PNG holds 16`)
   }
 
+  const at = (ch: string) => (ch === "." ? 0 : index.get(palette[ch])!)
+
   // 4bpp: two pixels per byte, one filter byte (0 = None) per scanline.
   const stride = SPRITE_SIZE / 2
   const raw = new Uint8Array(SPRITE_SIZE * (stride + 1))
@@ -100,9 +118,7 @@ export async function encodePng(
   for (let y = 0; y < SPRITE_SIZE; y++) {
     raw[p++] = 0
     for (let x = 0; x < SPRITE_SIZE; x += 2) {
-      const hi = index.get(colourOf(rows[y][x]))!
-      const lo = index.get(colourOf(rows[y][x + 1]))!
-      raw[p++] = (hi << 4) | lo
+      raw[p++] = (at(rows[y][x]) << 4) | at(rows[y][x + 1])
     }
   }
 
@@ -126,6 +142,11 @@ export async function encodePng(
     new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
     chunk("IHDR", ihdr),
     chunk("PLTE", plte),
+    // tRNS holds one alpha byte per palette entry, from index 0, and every
+    // entry past the end is opaque. Reserving index 0 for the transparent
+    // slot is what keeps this chunk 13 bytes instead of one byte per colour
+    // — which is why the reservation is worth the extra palette entry.
+    chunk("tRNS", new Uint8Array([0])),
     chunk("IDAT", await deflate(raw)),
     chunk("IEND", new Uint8Array(0)),
   ]
@@ -147,6 +168,6 @@ function toBase64(bytes: Uint8Array): string {
 
 /** The portrait as base64, exactly as it goes into the memo. */
 export async function spritePngBase64(b: Broker): Promise<string> {
-  const png = await encodePng(composeSprite(b), spritePalette(b), spriteGround(b))
+  const png = await encodePng(composeSprite(b), spritePalette(b))
   return toBase64(png)
 }

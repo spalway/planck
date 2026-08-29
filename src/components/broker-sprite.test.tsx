@@ -35,10 +35,16 @@ describe("BrokerSprite", () => {
     expect(container.querySelector("svg")?.getAttribute("viewBox")).toBe("0 0 24 24")
   })
 
-  it("paints a ground, so the portrait is never transparent", () => {
+  it("paints no ground, so the portrait is a cutout", () => {
+    // Every rect is one pixel. A full-bleed 24x24 rect would be a background
+    // square, which read as a sticker pasted onto the panel behind it.
     const { container } = render(<BrokerSprite broker={BROKER} />)
-    const first = container.querySelector("svg rect")
-    expect(first?.getAttribute("width")).toBe("24")
+    const rects = [...container.querySelectorAll("svg rect")]
+    expect(rects.length).toBeGreaterThan(0)
+    for (const r of rects) {
+      expect(r.getAttribute("width")).toBe("1")
+      expect(r.getAttribute("height")).toBe("1")
+    }
   })
 
   it("is deterministic — the same broker yields identical markup", () => {

@@ -14,10 +14,9 @@ describe("tier table", () => {
     expect(odds).toEqual([...odds].sort((a, b) => b - a))
   })
 
-  it("gives every tier at least one fur pair and one ground", () => {
+  it("gives every tier at least one fur pair", () => {
     for (const t of TIERS) {
       expect(t.furs.length, t.id).toBeGreaterThan(0)
-      expect(t.grounds.length, t.id).toBeGreaterThan(0)
       for (const [main, shadow] of t.furs) {
         expect(main, `${t.id} fur`).toMatch(/^#[0-9a-f]{6}$/)
         expect(shadow, `${t.id} shadow`).toMatch(/^#[0-9a-f]{6}$/)
@@ -25,8 +24,8 @@ describe("tier table", () => {
     }
   })
 
-  it("marks epic and legendary as dark ground", () => {
-    // Non-natural fur needs a dark ground or the cyan vanishes into cream.
+  it("marks epic and legendary as dark", () => {
+    // Non-natural fur takes the cool garment and outline set, not the brown.
     expect(tierById("epic").dark).toBe(true)
     expect(tierById("legendary").dark).toBe(true)
     expect(tierById("common").dark).toBe(false)
