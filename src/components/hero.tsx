@@ -38,7 +38,7 @@ export function Hero({ brokers }: { brokers: readonly Broker[] }) {
         </p>
 
         <p className="mt-4 max-w-xl text-sm text-ink-muted">
-          A <span className="text-ink">planckbit</span> is the smallest bit of a real
+          An <span className="text-ink">apebit</span> is the smallest bit of a real
           thing you can own. It is what the firm counts in.
         </p>
 

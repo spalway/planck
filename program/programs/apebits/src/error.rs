@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 
 #[error_code]
-pub enum PlanckError {
+pub enum ApeError {
     #[msg("this wallet has already minted a broker")]
     AlreadyMinted,
     #[msg("this broker already carries a portrait; it cannot be replaced")]
@@ -14,7 +14,7 @@ pub enum PlanckError {
     MemoTooLarge,
     #[msg("only the broker's owner may inscribe it")]
     NotOwner,
-    #[msg("$PLANCK has not launched yet")]
+    #[msg("$APE has not launched yet")]
     TokenNotLaunched,
     #[msg("the burn vault is empty; there is nothing to destroy")]
     NothingToBurn,

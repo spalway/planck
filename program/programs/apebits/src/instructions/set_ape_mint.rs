@@ -4,7 +4,7 @@ use crate::constants::*;
 use crate::state::Config;
 
 #[derive(Accounts)]
-pub struct SetPlanckMint<'info> {
+pub struct SetApeMint<'info> {
     pub authority: Signer<'info>,
 
     #[account(
@@ -22,8 +22,8 @@ pub struct SetPlanckMint<'info> {
 /// contract address lives in Postgres rather than the bundle: a rebuild on
 /// the one day it matters most is minutes of downtime with the wrong address
 /// on the site the whole time.
-pub fn handle_set_planck_mint(ctx: Context<SetPlanckMint>, mint: Pubkey) -> Result<()> {
-    ctx.accounts.config.planck_mint = mint;
-    msg!("planck mint set to {}", mint);
+pub fn handle_set_ape_mint(ctx: Context<SetApeMint>, mint: Pubkey) -> Result<()> {
+    ctx.accounts.config.ape_mint = mint;
+    msg!("ape mint set to {}", mint);
     Ok(())
 }

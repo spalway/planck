@@ -41,7 +41,7 @@ export function ContractSection() {
     <section id="contract" aria-label="Contract address" className="panel">
       <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
         <div className="min-w-0">
-          <span className="tag text-[0.6rem]">$PLANCK contract</span>
+          <span className="tag text-[0.6rem]">$APE contract</span>
 
           {mint !== null ? (
             // A sunk well: the address is a value to be read and copied, not
@@ -71,7 +71,7 @@ export function ContractSection() {
       </div>
 
       <p className="border-t-2 border-ink/20 px-5 py-3 text-xs leading-relaxed text-ink-muted">
-        Creator fees on $PLANCK fund the vault, which buys real tokenized assets
+        Creator fees on $APE fund the vault, which buys real tokenized assets
         and never sells them. Holding is what opens minting and hiring.
       </p>
     </section>

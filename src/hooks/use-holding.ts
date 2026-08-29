@@ -10,7 +10,7 @@ export type HoldingState =
   | { status: "unavailable"; reason: ApiFailure }
 
 /**
- * Whether the connected wallet holds $PLANCK.
+ * Whether the connected wallet holds $APE.
  *
  * Gating minting on this is the token's only job in the product, so the states
  * are kept distinct: not connected, checking, known, and could-not-tell. They

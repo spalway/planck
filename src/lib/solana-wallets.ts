@@ -70,7 +70,7 @@ export async function connectWallet(w: Wallet): Promise<string | null> {
     const { accounts } = await f.connect()
     return solanaAccount(accounts)?.address ?? null
   } catch (e) {
-    console.warn("[PLANCKBITS] wallet connect failed:", e)
+    console.warn("[APEBITS] wallet connect failed:", e)
     return null
   }
 }
@@ -81,7 +81,7 @@ export async function disconnectWallet(w: Wallet): Promise<void> {
   try {
     await f.disconnect()
   } catch (e) {
-    console.warn("[PLANCKBITS] wallet disconnect failed:", e)
+    console.warn("[APEBITS] wallet disconnect failed:", e)
   }
 }
 

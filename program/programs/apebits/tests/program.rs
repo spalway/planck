@@ -16,7 +16,7 @@ use {
 };
 
 // The program already names it; reading it from there keeps one source.
-use planckbits::constants::MEMO_PROGRAM_ID as MEMO_ID;
+use apebits::constants::MEMO_PROGRAM_ID as MEMO_ID;
 
 struct Env {
     svm: LiteSVM,
@@ -26,16 +26,16 @@ struct Env {
 }
 
 fn pda(seeds: &[&[u8]]) -> Pubkey {
-    Pubkey::find_program_address(seeds, &planckbits::id()).0
+    Pubkey::find_program_address(seeds, &apebits::id()).0
 }
 
 fn setup() -> Env {
-    let program_id = planckbits::id();
+    let program_id = apebits::id();
     let mut svm = LiteSVM::new().with_sysvars();
 
     let bytes = include_bytes!(concat!(
         env!("CARGO_TARGET_TMPDIR"),
-        "/../deploy/planckbits.so"
+        "/../deploy/apebits.so"
     ));
     svm.add_program(program_id, bytes).unwrap();
     svm.add_program(MEMO_ID, include_bytes!("fixtures/spl_memo.so"))
@@ -70,9 +70,9 @@ fn send(env: &mut Env, ixs: &[Instruction], signer: &Keypair) -> Result<(), Stri
 
 fn initialize(env: &mut Env) {
     let ix = Instruction::new_with_bytes(
-        planckbits::id(),
-        &planckbits::instruction::Initialize { mint_price: None }.data(),
-        planckbits::accounts::Initialize {
+        apebits::id(),
+        &apebits::instruction::Initialize { mint_price: None }.data(),
+        apebits::accounts::Initialize {
             authority: env.payer.pubkey(),
             config: env.config,
             treasury: env.treasury,
@@ -86,26 +86,26 @@ fn initialize(env: &mut Env) {
 
 fn mint_ix(env: &Env, owner: &Pubkey) -> Instruction {
     Instruction::new_with_bytes(
-        planckbits::id(),
-        &planckbits::instruction::MintBroker {}.data(),
-        planckbits::accounts::MintBroker {
+        apebits::id(),
+        &apebits::instruction::MintBroker {}.data(),
+        apebits::accounts::MintBroker {
             owner: *owner,
             config: env.config,
             broker: pda(&[b"broker", owner.as_ref()]),
             treasury: env.treasury,
-            slot_hashes: planckbits::constants::SLOT_HASHES_ID,
+            slot_hashes: apebits::constants::SLOT_HASHES_ID,
             system_program: system_program::ID,
         }
         .to_account_metas(None),
     )
 }
 
-fn read_broker(env: &Env, owner: &Pubkey) -> planckbits::Broker {
+fn read_broker(env: &Env, owner: &Pubkey) -> apebits::Broker {
     let acct = env
         .svm
         .get_account(&pda(&[b"broker", owner.as_ref()]))
         .expect("broker account");
-    planckbits::Broker::try_deserialize(&mut acct.data.as_slice()).expect("broker decode")
+    apebits::Broker::try_deserialize(&mut acct.data.as_slice()).expect("broker decode")
 }
 
 #[test]
@@ -114,13 +114,13 @@ fn initialize_sets_the_firm_constant() {
     initialize(&mut env);
 
     let acct = env.svm.get_account(&env.config).unwrap();
-    let config = planckbits::Config::try_deserialize(&mut acct.data.as_slice()).unwrap();
+    let config = apebits::Config::try_deserialize(&mut acct.data.as_slice()).unwrap();
 
     // h — the indivisible price of one unit of labor.
     assert_eq!(config.mint_price, 100_000_000);
     assert_eq!(config.minted, 0);
     assert_eq!(config.burned, 0);
-    assert_eq!(config.planck_mint, Pubkey::default(), "no token until launch");
+    assert_eq!(config.ape_mint, Pubkey::default(), "no token until launch");
 }
 
 #[test]
@@ -148,7 +148,7 @@ fn mint_takes_the_fee_and_rolls_traits_in_range() {
     assert_eq!(b.image_hash, [0u8; 32], "no portrait until inscribed");
 
     let acct = env.svm.get_account(&env.config).unwrap();
-    let config = planckbits::Config::try_deserialize(&mut acct.data.as_slice()).unwrap();
+    let config = apebits::Config::try_deserialize(&mut acct.data.as_slice()).unwrap();
     assert_eq!(config.minted, 1, "f advances by one");
     assert_eq!(config.collected, 100_000_000);
 }
@@ -205,12 +205,12 @@ fn inscribe_stores_the_hash_of_the_memo() {
 
     let memo = Instruction::new_with_bytes(MEMO_ID, portrait, vec![]);
     let inscribe = Instruction::new_with_bytes(
-        planckbits::id(),
-        &planckbits::instruction::Inscribe {}.data(),
-        planckbits::accounts::Inscribe {
+        apebits::id(),
+        &apebits::instruction::Inscribe {}.data(),
+        apebits::accounts::Inscribe {
             owner: owner.pubkey(),
             broker: pda(&[b"broker", owner.pubkey().as_ref()]),
-            instructions: planckbits::constants::INSTRUCTIONS_ID,
+            instructions: apebits::constants::INSTRUCTIONS_ID,
         }
         .to_account_metas(None),
     );
@@ -236,12 +236,12 @@ fn a_portrait_cannot_be_replaced() {
         vec![
             Instruction::new_with_bytes(MEMO_ID, bytes, vec![]),
             Instruction::new_with_bytes(
-                planckbits::id(),
-                &planckbits::instruction::Inscribe {}.data(),
-                planckbits::accounts::Inscribe {
+                apebits::id(),
+                &apebits::instruction::Inscribe {}.data(),
+                apebits::accounts::Inscribe {
                     owner: owner.pubkey(),
                     broker,
-                    instructions: planckbits::constants::INSTRUCTIONS_ID,
+                    instructions: apebits::constants::INSTRUCTIONS_ID,
                 }
                 .to_account_metas(None),
             ),
@@ -264,12 +264,12 @@ fn inscribe_without_a_memo_fails() {
     send(&mut env, &[ix], &owner).expect("mint");
 
     let inscribe = Instruction::new_with_bytes(
-        planckbits::id(),
-        &planckbits::instruction::Inscribe {}.data(),
-        planckbits::accounts::Inscribe {
+        apebits::id(),
+        &apebits::instruction::Inscribe {}.data(),
+        apebits::accounts::Inscribe {
             owner: owner.pubkey(),
             broker: pda(&[b"broker", owner.pubkey().as_ref()]),
-            instructions: planckbits::constants::INSTRUCTIONS_ID,
+            instructions: apebits::constants::INSTRUCTIONS_ID,
         }
         .to_account_metas(None),
     );
@@ -279,13 +279,13 @@ fn inscribe_without_a_memo_fails() {
 
 #[test]
 fn burn_refuses_before_the_token_launches() {
-    // planck_mint is Pubkey::default() until set_planck_mint runs, and nothing
+    // ape_mint is Pubkey::default() until set_ape_mint runs, and nothing
     // may be destroyed before there is something to destroy.
     let mut env = setup();
     initialize(&mut env);
 
     let acct = env.svm.get_account(&env.config).unwrap();
-    let config = planckbits::Config::try_deserialize(&mut acct.data.as_slice()).unwrap();
-    assert_eq!(config.planck_mint, Pubkey::default());
+    let config = apebits::Config::try_deserialize(&mut acct.data.as_slice()).unwrap();
+    assert_eq!(config.ape_mint, Pubkey::default());
     assert_eq!(config.burned, 0);
 }

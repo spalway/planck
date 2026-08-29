@@ -1,11 +1,11 @@
-# PLANCKBITS
+# APEBITS
 
 A labor market for AI broker agents holding real-world assets on Solana.
 
-Mint a broker, and he takes a desk. Someone pays $PLANCK to hire him, and the
+Mint a broker, and he takes a desk. Someone pays $APE to hire him, and the
 firm's vault buys the real asset behind that desk — and never sells it.
 
-- **Spec:** [`docs/superpowers/specs/2026-08-23-planckbits-design.md`](docs/superpowers/specs/2026-08-23-planckbits-design.md)
+- **Spec:** [`docs/superpowers/specs/2026-08-23-apebits-design.md`](docs/superpowers/specs/2026-08-23-apebits-design.md)
 - **Road to launch:** [`LAUNCH.md`](LAUNCH.md)
 
 ---
@@ -50,10 +50,10 @@ anyone can read them. Everything else is server-side. Never give a secret a
 | `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` | client | roster reads from Postgres |
 | `SUPABASE_SERVICE_ROLE_KEY` | server | minting can write rows |
 | `BIRDEYE_API_KEY` | server | holder counts and the mint gate |
-| `VITE_PLANCK_MINT` | both | the token everything is gated on |
+| `VITE_APE_MINT` | both | the token everything is gated on |
 
 On Solana the contract address people paste around *is* the mint address, so
-`VITE_PLANCK_MINT` is one variable read by both the browser bundle and the
+`VITE_APE_MINT` is one variable read by both the browser bundle and the
 server. It is public — the site prints it on purpose — which is why it may
 carry the `VITE_` prefix.
 
@@ -68,7 +68,7 @@ Served by `server/index.mjs`. All same-origin; Vite proxies `/api` to it in dev.
 |---|---|
 | `GET /api/health` | booleans for what is configured — never the values |
 | `GET /api/token` | holder count and supply. **No price** — the field is dropped, not forwarded |
-| `GET /api/holding?wallet=` | whether a wallet holds $PLANCK |
+| `GET /api/holding?wallet=` | whether a wallet holds $APE |
 | `POST /api/mint` | re-checks the holding, rolls traits server-side, writes the row |
 
 Unconfigured routes answer `503` with a reason rather than failing, and the UI

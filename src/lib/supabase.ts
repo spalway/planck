@@ -46,7 +46,7 @@ export async function selectFrom<T>(
     })
 
     if (!res.ok) {
-      console.warn(`[PLANCKBITS] supabase ${table} returned ${res.status}`)
+      console.warn(`[APEBITS] supabase ${table} returned ${res.status}`)
       return null
     }
 
@@ -54,7 +54,7 @@ export async function selectFrom<T>(
     return Array.isArray(rows) ? (rows as T[]) : null
   } catch (e) {
     if ((e as Error).name !== "AbortError") {
-      console.warn(`[PLANCKBITS] supabase ${table} fetch failed:`, e)
+      console.warn(`[APEBITS] supabase ${table} fetch failed:`, e)
     }
     return null
   }

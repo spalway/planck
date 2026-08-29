@@ -3,7 +3,7 @@ use solana_instructions_sysvar as ix_sysvar;
 use solana_sha256_hasher::hash;
 
 use crate::constants::*;
-use crate::error::PlanckError;
+use crate::error::ApeError;
 use crate::state::Broker;
 
 /// Nothing larger than this is a 24x24 portrait, and an unsigned SPL Memo
@@ -18,7 +18,7 @@ pub struct Inscribe<'info> {
         mut,
         seeds = [BROKER_SEED, owner.key().as_ref()],
         bump = broker.bump,
-        has_one = owner @ PlanckError::NotOwner
+        has_one = owner @ ApeError::NotOwner
     )]
     pub broker: Account<'info, Broker>,
 
@@ -42,7 +42,7 @@ pub struct Inscribe<'info> {
 pub fn handle_inscribe(ctx: Context<Inscribe>) -> Result<()> {
     require!(
         ctx.accounts.broker.image_hash == [0u8; 32],
-        PlanckError::AlreadyInscribed
+        ApeError::AlreadyInscribed
     );
 
     let ix_account = ctx.accounts.instructions.to_account_info();
@@ -58,9 +58,9 @@ pub fn handle_inscribe(ctx: Context<Inscribe>) -> Result<()> {
         }
     }
 
-    let data = memo.ok_or(error!(PlanckError::MemoMissing))?;
-    require!(!data.is_empty(), PlanckError::MemoEmpty);
-    require!(data.len() <= MAX_MEMO_LEN, PlanckError::MemoTooLarge);
+    let data = memo.ok_or(error!(ApeError::MemoMissing))?;
+    require!(!data.is_empty(), ApeError::MemoEmpty);
+    require!(data.len() <= MAX_MEMO_LEN, ApeError::MemoTooLarge);
 
     let digest = hash(&data).to_bytes();
     ctx.accounts.broker.image_hash = digest;

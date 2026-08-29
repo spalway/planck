@@ -68,7 +68,7 @@ function build(overrides = {}) {
     ...overrides,
   }
 
-  const config = { birdeyeKey: SECRET, planckMint: MINT, ...(overrides.config ?? {}) }
+  const config = { birdeyeKey: SECRET, apeMint: MINT, ...(overrides.config ?? {}) }
   return { app: createApp({ config, deps }), deps }
 }
 
@@ -86,7 +86,7 @@ describe("health", () => {
 
   it("still answers when nothing is configured", async () => {
     const { app } = build({
-      config: { birdeyeKey: "", planckMint: "" },
+      config: { birdeyeKey: "", apeMint: "" },
       supabaseConfigured: () => false,
     })
     const res = await call(app, "GET", "/api/health")
@@ -97,14 +97,14 @@ describe("health", () => {
 
 describe("configuration gates", () => {
   it("says the token has not launched rather than erroring", async () => {
-    const { app } = build({ config: { birdeyeKey: SECRET, planckMint: "" } })
+    const { app } = build({ config: { birdeyeKey: SECRET, apeMint: "" } })
     const res = await call(app, "GET", "/api/token")
     expect(res.status).toBe(503)
     expect(res.body.error).toBe("token_not_launched")
   })
 
   it("distinguishes a missing Birdeye key from a missing mint", async () => {
-    const { app } = build({ config: { birdeyeKey: "", planckMint: MINT } })
+    const { app } = build({ config: { birdeyeKey: "", apeMint: MINT } })
     const res = await call(app, "GET", "/api/token")
     expect(res.body.error).toBe("birdeye_not_configured")
   })
@@ -197,7 +197,7 @@ describe("/api/hire", () => {
       1_700_000_000_000 + TERM_DAYS * 86_400_000
     )
     // Hiring is gated on holding, not on a fee. Nothing may be charged.
-    expect(row.fee_planck).toBeUndefined()
+    expect(row.fee_ape).toBeUndefined()
   })
 
   it("rejects a malformed broker id before touching the database", async () => {
@@ -271,11 +271,11 @@ describe("missing static assets", () => {
     const { tmpdir } = await import("node:os")
     const { join } = await import("node:path")
 
-    const dir = mkdtempSync(join(tmpdir(), "planckbits-"))
+    const dir = mkdtempSync(join(tmpdir(), "apebits-"))
     writeFileSync(join(dir, "index.html"), "<!doctype html><div id=root></div>")
 
     const { deps } = build()
-    return createApp({ config: { birdeyeKey: SECRET, planckMint: MINT }, deps, dist: dir })
+    return createApp({ config: { birdeyeKey: SECRET, apeMint: MINT }, deps, dist: dir })
   }
 
   it("404s a missing file instead of serving the SPA under a 200", async () => {

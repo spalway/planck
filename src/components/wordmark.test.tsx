@@ -43,9 +43,21 @@ describe("Wordmark", () => {
 
   it("gives narrow letters narrow cells", () => {
     // The disjointed look was every glyph padded to a fixed 5 columns, so a
-    // 1px "i" sat in a 4px hole while "a" and "n" nearly touched.
+    // 1px "i" sat in a 4px hole while "a" and "e" nearly touched.
     expect(WORDMARK_GLYPHS.i[0].length).toBeLessThan(WORDMARK_GLYPHS.a[0].length)
-    expect(WORDMARK_GLYPHS.l[0].length).toBeLessThan(WORDMARK_GLYPHS.n[0].length)
+    expect(WORDMARK_GLYPHS.t[0].length).toBeLessThan(WORDMARK_GLYPHS.b[0].length)
+  })
+
+  it("carries a glyph for every letter in the word, and no others", () => {
+    // Renaming the site is where this breaks: a missing glyph renders as a
+    // hole, and a leftover one is dead art nobody notices.
+    const used = new Set(WORDMARK_TEXT.split(""))
+    for (const ch of used) {
+      expect(WORDMARK_GLYPHS[ch], `no glyph for "${ch}"`).toBeDefined()
+    }
+    for (const ch of Object.keys(WORDMARK_GLYPHS)) {
+      expect(used.has(ch), `glyph "${ch}" is unused`).toBe(true)
+    }
   })
 
   it("uses only on and off cells", () => {

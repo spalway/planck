@@ -21,7 +21,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 bg-bar text-ground">
       <div className="mx-auto flex max-w-[110rem] flex-wrap items-center justify-between gap-x-6 gap-y-2 px-3 py-3">
-        <NavLink to="/" className="text-ground hover:text-tan" aria-label="planckbits, home">
+        <NavLink to="/" className="text-ground hover:text-tan" aria-label="apebits, home">
           <Wordmark height={24} />
         </NavLink>
 

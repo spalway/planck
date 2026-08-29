@@ -1,4 +1,4 @@
-# PLANCKBITS — path to a live site
+# APEBITS — path to a live site
 
 Architecture: **off-chain v1.** Express server on Railway, Postgres on Supabase,
 Birdeye for holder data, Jupiter for prices. No Anchor program.
@@ -16,7 +16,7 @@ site runs today with none of them set.
 |---|---|---|---|---|
 | A1 | Supabase project | `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` | roster from Postgres, minting | **done — needs wiring to Railway** |
 | A2 | Birdeye API key | `BIRDEYE_API_KEY` | holder counts, the mint gate | you |
-| A3 | $PLANCK mint address | *(SQL, not an env var)* | everything token-gated | you, at launch |
+| A3 | $APE mint address | *(SQL, not an env var)* | everything token-gated | you, at launch |
 | A4 | Railway project + domain | — | deployment | you |
 | A5 | Vault treasury address | `VAULT_ADDRESS` | real holdings | phase 2 — no code reads it |
 | A6 | Solana RPC (Helius) | `SOLANA_RPC` | on-chain holdings | phase 2 — no code reads it |
@@ -28,7 +28,7 @@ must never gain that prefix — it would publish the secret in the browser bundl
 
 | | |
 |---|---|
-| project | `planckbits` |
+| project | `apebits` |
 | ref | `feutpsjkftlpfatcatap` |
 | region | `us-east-1` |
 | cost | $0/month |
@@ -78,7 +78,7 @@ is why `0002_seed_roster.sql` exists and is already applied.
 | C1 | Roster served from Postgres instead of the fixture | A1 |
 | C2 | Real vault holdings with cost basis and P&L | A4 + A5 |
 | C3 | Price snapshot cron → track records over time | A1 |
-| C4 | Hire flow: pay $PLANCK, verify the transfer by signature, write the engagement | A1 + A3 + A5 |
+| C4 | Hire flow: pay $APE, verify the transfer by signature, write the engagement | A1 + A3 + A5 |
 | C5 | "My brokers" for the connected wallet | A1 |
 | C6 | Holder count surfaced on the floor | A2 + A3 |
 
@@ -129,7 +129,7 @@ The mint address is **not** an environment variable any more. It lives in
 Postgres, so going live is one statement and no deploy:
 
 ```sql
-update public_config set value = '<MINT ADDRESS>' where key = 'planck_mint';
+update public_config set value = '<MINT ADDRESS>' where key = 'ape_mint';
 ```
 
 Every process picks it up within ~15 seconds:
@@ -142,7 +142,7 @@ Every process picks it up within ~15 seconds:
 
 To un-launch (a mistake, a wrong address), set it back to `null`. The database
 wins over the environment in both directions, so a `null` here is respected
-even if `VITE_PLANCK_MINT` is still set on the deploy.
+even if `VITE_APE_MINT` is still set on the deploy.
 
 Verified against the live project: `token:false` → `token:true` with no
 restart, and `updated_at` stamped by the trigger.

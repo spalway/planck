@@ -1,4 +1,4 @@
-//! PLANCKBITS — a labor market for AI broker agents holding real-world assets.
+//! APEBITS — a labor market for AI broker agents holding real-world assets.
 //!
 //! Three things live on chain here:
 //!
@@ -8,7 +8,7 @@
 //!   2. Its portrait. Carried as base64 in an SPL Memo and hashed onto the
 //!      broker account. The chain stores the hash, not the pixels — the pixels
 //!      are in the transaction, which is where the demo lives.
-//!   3. The burn. Mint fees accumulate as SOL; a keeper swaps them for $PLANCK
+//!   3. The burn. Mint fees accumulate as SOL; a keeper swaps them for $APE
 //!      and anyone may then destroy the vault balance.
 //!
 //! E = hf. `h` is the mint price, fixed and indivisible. `f` is how fast the
@@ -30,7 +30,7 @@ pub use state::*;
 declare_id!("2SCL1yBjXxnhqTUrF1MrEtxmLFZJaxoqCeCPUi5mijFt");
 
 #[program]
-pub mod planckbits {
+pub mod apebits {
     use super::*;
 
     pub fn initialize(ctx: Context<Initialize>, mint_price: Option<u64>) -> Result<()> {
@@ -45,11 +45,11 @@ pub mod planckbits {
         instructions::inscribe::handle_inscribe(ctx)
     }
 
-    pub fn burn_planck(ctx: Context<BurnPlanck>) -> Result<()> {
-        instructions::burn_planck::handle_burn_planck(ctx)
+    pub fn burn_ape(ctx: Context<BurnApe>) -> Result<()> {
+        instructions::burn_ape::handle_burn_ape(ctx)
     }
 
-    pub fn set_planck_mint(ctx: Context<SetPlanckMint>, mint: Pubkey) -> Result<()> {
-        instructions::set_planck_mint::handle_set_planck_mint(ctx, mint)
+    pub fn set_ape_mint(ctx: Context<SetApeMint>, mint: Pubkey) -> Result<()> {
+        instructions::set_ape_mint::handle_set_ape_mint(ctx, mint)
     }
 }

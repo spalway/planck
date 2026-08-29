@@ -7,7 +7,7 @@ const OTHER = "So11111111111111111111111111111111111111112"
 /**
  * The contract address is runtime config, not a build-time constant.
  *
- * It used to be VITE_PLANCK_MINT compiled into the bundle, so launching the
+ * It used to be VITE_APE_MINT compiled into the bundle, so launching the
  * token required a rebuild and a redeploy — with the address wrong on the
  * site for the whole deploy, on the one day it matters most. It now comes
  * from public_config over /api/config.
@@ -25,7 +25,7 @@ afterEach(() => {
 
 describe("useSiteConfig", () => {
   async function mount(env = "") {
-    vi.stubEnv("VITE_PLANCK_MINT", env)
+    vi.stubEnv("VITE_APE_MINT", env)
     const { useSiteConfig } = await import("@/hooks/use-site-config")
 
     function Probe() {
@@ -88,7 +88,7 @@ describe("useSiteConfig", () => {
 
 describe("the whole site agrees about the address", () => {
   it("shows it in the contract section and the funding line together", async () => {
-    vi.stubEnv("VITE_PLANCK_MINT", "")
+    vi.stubEnv("VITE_APE_MINT", "")
     vi.stubGlobal("fetch", respondWith({ mint: MINT }))
 
     const { ContractSection } = await import("@/components/contract-section")

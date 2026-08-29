@@ -3,7 +3,7 @@ import * as React from "react"
 /**
  * Runtime config, fetched rather than compiled in.
  *
- * The mint address used to be VITE_PLANCK_MINT, baked into the bundle at
+ * The mint address used to be VITE_APE_MINT, baked into the bundle at
  * build time, so launching the token meant a rebuild and a redeploy. It now
  * lives in public_config in Postgres and arrives over /api/config, which
  * means an UPDATE takes effect within seconds and the address is never wrong
@@ -15,7 +15,7 @@ import * as React from "react"
  */
 
 const BUILD_TIME_MINT =
-  ((import.meta.env.VITE_PLANCK_MINT as string | undefined) ?? "").trim() || null
+  ((import.meta.env.VITE_APE_MINT as string | undefined) ?? "").trim() || null
 
 export type SiteConfig = {
   /** Null until the token launches. */

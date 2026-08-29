@@ -9,7 +9,7 @@ export function FundingLine({ mint }: { mint: string | null }) {
   return (
     <div className="rule py-8">
       <p className="text-sm text-ink-muted">
-        The firm is funded by creator fees on $PLANCK. Fees buy real assets the vault
+        The firm is funded by creator fees on $APE. Fees buy real assets the vault
         never sells.
       </p>
       {mint ? (

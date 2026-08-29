@@ -1,4 +1,4 @@
-# PLANCKBITS — Design Spec
+# APEBITS — Design Spec
 
 **Date:** 2026-08-23
 **Status:** Approved, ready for implementation planning
@@ -7,15 +7,15 @@
 
 ## 1. Summary
 
-PLANCKBITS is a labor market for AI broker agents that hold real-world assets on Solana.
+APEBITS is a labor market for AI broker agents that hold real-world assets on Solana.
 
-A *planckbit* is the firm's unit of account: the atomic slice of RWA exposure — the smallest
-bit of a real thing that can be owned. The vault's holdings are denominated in planckbits.
+A *apebit* is the firm's unit of account: the atomic slice of RWA exposure — the smallest
+bit of a real thing that can be owned. The vault's holdings are denominated in apebits.
 
 **The loop:**
 
 1. A user mints a **broker** — a generative pixel-art AI agent with rolled stats and one assigned desk.
-2. Another user pays a **hiring fee** in $PLANCK to engage that broker for a term.
+2. Another user pays a **hiring fee** in $APE to engage that broker for a term.
 3. The fee splits three ways: **broker owner / house vault / burn**.
 4. While engaged, the broker deploys the vault's allocation into his desk's real tokenized RWA,
    stamping an on-chain **cost basis**.
@@ -133,7 +133,7 @@ derived from the roll. Rarity is emergent from the stat distribution rather than
 
 ## 5. Hiring
 
-A hirer pays a fee in $PLANCK to engage a broker for one **term** (default: 7 days / one epoch).
+A hirer pays a fee in $APE to engage a broker for one **term** (default: 7 days / one epoch).
 
 **Fee split — default, stored in `Firm` config and tunable without redeploy:**
 
@@ -211,7 +211,7 @@ floor scene. Sprites are authored at low resolution and scaled by integer factor
 2. **Nav + live status strip** — wordmark, nav, connect wallet. Strip shows desks live,
    brokers employed, vault AUM.
 3. **Hero** — wordmark, pixel floor scene, one-line statement of what the firm is.
-4. **THE FLOOR** — census: brokers minted, employed, idle; total planckbits held.
+4. **THE FLOOR** — census: brokers minted, employed, idle; total apebits held.
 5. **THE DESKS** — five desk cards with live Jupiter prices, vault holdings per desk,
    brokers assigned.
 6. **THE ROSTER** — broker cards, sortable by track record, tenure, desk. Hire action per card.
@@ -248,7 +248,7 @@ Each unit has one purpose, a defined interface, and can be tested in isolation.
 
 `lib/records/` is deliberately pure — all P&L math is unit-testable without network or wallet.
 
-### Anchor program `planckbits`
+### Anchor program `apebits`
 
 **Accounts:**
 
@@ -300,7 +300,7 @@ against real Jupiter prices, generative pixel roster, disclaimer gate, visual sy
 wallet connect over the Wallet Standard. Mint and Hire render in a pre-launch state.
 
 **Phase 2 — off-chain v1 on Supabase.** Brokers, engagements and price history in Postgres.
-Hiring is paid in $PLANCK by ordinary transfer to the treasury and verified server-side by
+Hiring is paid in $APE by ordinary transfer to the treasury and verified server-side by
 signature; the engagement row is written under the service role. Vault holdings are read
 from Solana RPC against a public treasury address.
 
@@ -323,7 +323,7 @@ data" is a fair claim for holdings and P&L; it is not a fair claim for a hire co
 
 1. **Fee split percentages** — 60/30/10 is a placeholder default (see §5). Confirm before
    launch. Phase 1 does not depend on it; Phase 2 cannot start without it.
-2. **$PLANCK contract address** — pending the tokens.xyz launch. Typed `string | null`, so
+2. **$APE contract address** — pending the tokens.xyz launch. Typed `string | null`, so
    its absence renders as "token not live yet" rather than a placeholder string.
 3. **Vault treasury address** — pending; required for the auditable-holdings link.
 

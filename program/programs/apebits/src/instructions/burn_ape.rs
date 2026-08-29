@@ -2,11 +2,11 @@ use anchor_lang::prelude::*;
 use anchor_spl::token_interface::{self, Burn, Mint, TokenAccount, TokenInterface};
 
 use crate::constants::*;
-use crate::error::PlanckError;
+use crate::error::ApeError;
 use crate::state::Config;
 
 #[derive(Accounts)]
-pub struct BurnPlanck<'info> {
+pub struct BurnApe<'info> {
     /// Permissionless: anyone may fire the crank. Whoever calls it pays the
     /// fee and gets nothing, which is fine — the point is that destroying
     /// supply needs nobody's permission.
@@ -17,9 +17,9 @@ pub struct BurnPlanck<'info> {
 
     #[account(
         mut,
-        address = config.planck_mint @ PlanckError::TokenNotLaunched
+        address = config.ape_mint @ ApeError::TokenNotLaunched
     )]
-    pub planck_mint: InterfaceAccount<'info, Mint>,
+    pub ape_mint: InterfaceAccount<'info, Mint>,
 
     /// CHECK: PDA that owns the vault; seeds are verified here.
     #[account(seeds = [VAULT_SEED], bump)]
@@ -27,7 +27,7 @@ pub struct BurnPlanck<'info> {
 
     #[account(
         mut,
-        token::mint = planck_mint,
+        token::mint = ape_mint,
         token::authority = vault_authority
     )]
     pub burn_vault: InterfaceAccount<'info, TokenAccount>,
@@ -37,7 +37,7 @@ pub struct BurnPlanck<'info> {
 
 /// Destroy everything the vault holds.
 ///
-/// The keeper does the SOL to $PLANCK swap as an ordinary Jupiter
+/// The keeper does the SOL to $APE swap as an ordinary Jupiter
 /// transaction and sends the proceeds here. That leg is operated. This one is
 /// not: the burn is on chain, permissionless and public, and the running
 /// total lives in Config where anyone can read it.
@@ -46,14 +46,14 @@ pub struct BurnPlanck<'info> {
 /// 64 account infos and a route routinely exceeds it (SIMD-0339 names Jupiter
 /// as the case). Batching also makes the burn a visible event rather than
 /// dust nobody notices.
-pub fn handle_burn_planck(ctx: Context<BurnPlanck>) -> Result<()> {
+pub fn handle_burn_ape(ctx: Context<BurnApe>) -> Result<()> {
     require!(
-        ctx.accounts.config.planck_mint != Pubkey::default(),
-        PlanckError::TokenNotLaunched
+        ctx.accounts.config.ape_mint != Pubkey::default(),
+        ApeError::TokenNotLaunched
     );
 
     let amount = ctx.accounts.burn_vault.amount;
-    require!(amount > 0, PlanckError::NothingToBurn);
+    require!(amount > 0, ApeError::NothingToBurn);
 
     let bump = ctx.bumps.vault_authority;
     let seeds: &[&[u8]] = &[VAULT_SEED, &[bump]];
@@ -63,7 +63,7 @@ pub fn handle_burn_planck(ctx: Context<BurnPlanck>) -> Result<()> {
         CpiContext::new_with_signer(
             ctx.accounts.token_program.key(),
             Burn {
-                mint: ctx.accounts.planck_mint.to_account_info(),
+                mint: ctx.accounts.ape_mint.to_account_info(),
                 from: ctx.accounts.burn_vault.to_account_info(),
                 authority: ctx.accounts.vault_authority.to_account_info(),
             },

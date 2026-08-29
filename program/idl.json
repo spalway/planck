@@ -1,23 +1,23 @@
 {
   "address": "2SCL1yBjXxnhqTUrF1MrEtxmLFZJaxoqCeCPUi5mijFt",
   "metadata": {
-    "name": "planckbits",
+    "name": "apebits",
     "version": "0.1.0",
     "spec": "0.1.0",
     "description": "A labor market for AI broker agents holding real-world assets"
   },
   "instructions": [
     {
-      "name": "burn_planck",
+      "name": "burn_ape",
       "discriminator": [
-        8,
-        73,
-        235,
-        51,
-        18,
-        57,
-        1,
-        16
+        26,
+        41,
+        128,
+        106,
+        177,
+        92,
+        105,
+        104
       ],
       "accounts": [
         {
@@ -49,7 +49,7 @@
           }
         },
         {
-          "name": "planck_mint",
+          "name": "ape_mint",
           "writable": true
         },
         {
@@ -308,16 +308,16 @@
       "args": []
     },
     {
-      "name": "set_planck_mint",
+      "name": "set_ape_mint",
       "discriminator": [
-        229,
-        30,
-        176,
-        162,
-        112,
-        152,
-        62,
-        125
+        128,
+        230,
+        8,
+        105,
+        157,
+        211,
+        233,
+        118
       ],
       "accounts": [
         {
@@ -458,7 +458,7 @@
     {
       "code": 6006,
       "name": "TokenNotLaunched",
-      "msg": "$PLANCK has not launched yet"
+      "msg": "$APE has not launched yet"
     },
     {
       "code": 6007,
@@ -644,7 +644,7 @@
             "type": "pubkey"
           },
           {
-            "name": "planck_mint",
+            "name": "ape_mint",
             "docs": [
               "`Pubkey::default()` until the token launches. Nothing burns before then."
             ],
@@ -667,7 +667,7 @@
           {
             "name": "burned",
             "docs": [
-              "Cumulative $PLANCK destroyed, in base units."
+              "Cumulative $APE destroyed, in base units."
             ],
             "type": "u64"
           },
