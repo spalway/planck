@@ -26,6 +26,7 @@ const ROW = {
   coverage: 2,
   effective_nerve: 40,
   tenure_hours: 120,
+  tier: "epic" as const,
 }
 
 describe("rowToBroker", () => {
@@ -108,5 +109,21 @@ describe("fetchRoster", () => {
     mockConfigured.mockReturnValue(true)
     mockSelect.mockResolvedValue(null)
     expect(await fetchRoster()).toBeNull()
+  })
+})
+
+describe("rowToBroker tiers", () => {
+  it("carries the tier through", () => {
+    expect(rowToBroker(ROW)?.tier).toBe("epic")
+  })
+
+  it("falls back to common when the column is null", () => {
+    // Rows written before 0004 have no tier. They must still render rather
+    // than vanish from the floor.
+    expect(rowToBroker({ ...ROW, tier: null })?.tier).toBe("common")
+  })
+
+  it("falls back to common on an unrecognised tier", () => {
+    expect(rowToBroker({ ...ROW, tier: "mythic" as never })?.tier).toBe("common")
   })
 })

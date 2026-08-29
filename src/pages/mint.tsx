@@ -8,6 +8,7 @@ import { useWalletContext } from "@/components/wallet-context"
 import { useHolding } from "@/hooks/use-holding"
 import type { Broker } from "@/lib/brokers"
 import type { DeskId } from "@/lib/instruments"
+import { TIERS, type TierId } from "@/lib/sprite-tiers"
 import { mintBroker, type MintResult, type MintedBroker } from "@/lib/token-api"
 
 /**
@@ -34,6 +35,7 @@ function toBroker(m: MintedBroker): Broker {
     nerve: m.nerve,
     latency: m.latency,
     coverage: m.coverage,
+    tier: TIERS.some((t) => t.id === m.tier) ? (m.tier as TierId) : "common",
     effectiveNerve: m.effective_nerve,
     tenureHours: m.tenure_hours ?? 0,
   }

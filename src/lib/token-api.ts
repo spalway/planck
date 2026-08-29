@@ -80,6 +80,12 @@ export type MintedBroker = {
   coverage: number
   effective_nerve: number
   tenure_hours: number
+  /**
+   * Optional until the program rolls it. The server does not send a tier yet,
+   * and a freshly minted broker must still render — so the client falls back
+   * rather than failing on a field that is coming later.
+   */
+  tier?: string
 }
 
 /** Why a mint was refused. Each maps to a different thing to tell the visitor. */
