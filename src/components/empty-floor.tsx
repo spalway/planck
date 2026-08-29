@@ -1,8 +1,6 @@
 import { Link } from "react-router-dom"
 
-import { BrokerSprite } from "@/components/broker-sprite"
-import { ROSTER } from "@/lib/brokers"
-import { DESKS } from "@/lib/instruments"
+import { SampleBroker } from "@/components/sample-broker"
 
 /**
  * The floor with nobody on it.
@@ -28,13 +26,6 @@ import { DESKS } from "@/lib/instruments"
  * own borders so there is no container ground to show through.
  */
 const SLOTS = 14
-
-/** A real broker from the fixture, so the sample is the actual art. */
-const SAMPLE = ROSTER[0]
-
-function deskLabel(id: (typeof ROSTER)[number]["desk"]) {
-  return DESKS.find((d) => d.id === id)?.label ?? id.toUpperCase()
-}
 
 export function EmptyFloor({ failed = false }: { failed?: boolean }) {
   return (
@@ -64,22 +55,7 @@ export function EmptyFloor({ failed = false }: { failed?: boolean }) {
 
       {/* What a filled slot turns into. Nobody arriving at an empty floor
           knows what they would be minting otherwise. */}
-      {SAMPLE && (
-        <figure className="panel mx-auto flex w-full max-w-[15rem] flex-col items-center gap-3 p-3">
-          <figcaption className="tag self-start text-[0.55rem]">Sample</figcaption>
-          <div className="panel-sunk w-full px-6 py-5">
-            <div className="flex justify-center">
-              <BrokerSprite broker={SAMPLE} size={120} />
-            </div>
-          </div>
-          <div className="w-full border-t-2 border-ink/20 pt-2 text-center">
-            <p className="font-display text-sm font-bold">{SAMPLE.name}</p>
-            <p className="num mt-1 text-[0.65rem] text-ink-muted">
-              <span className="text-cobalt">{deskLabel(SAMPLE.desk)}</span> desk
-            </p>
-          </div>
-        </figure>
-      )}
+      <SampleBroker />
 
       <Link to="/mint" className="btn btn-primary mx-auto px-5 py-2.5 text-xs">
         Mint your broker

@@ -48,7 +48,12 @@ export function ContractSection() {
     >
       <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
         <div className="min-w-0">
-          <span className="tag tag-invert text-[0.6rem]">$SBIT contract</span>
+          {/* Black, not the inverted bone: this is the one label on the card
+              that names what the address is, and the filled black block is
+              what the palette reserves for a mark that indexes something.
+              Larger than the other tags on the page — the label grows, the
+              card does not. */}
+          <span className="tag px-2 py-0.5 text-sm">$SBIT contract</span>
 
           {mint !== null ? (
             // A sunk well: the address is a value to be read and copied, not

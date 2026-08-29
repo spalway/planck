@@ -2,6 +2,7 @@ import { Link } from "react-router-dom"
 
 import { BrokerShowcase } from "@/components/broker-showcase"
 import { ContractSection } from "@/components/contract-section"
+import { SampleBroker } from "@/components/sample-broker"
 import { Wordmark } from "@/components/wordmark"
 import type { Broker } from "@/lib/brokers"
 
@@ -58,6 +59,23 @@ export function Hero({ brokers }: { brokers: readonly Broker[] }) {
           <ContractSection />
         </div>
 
+        {/*
+          The portrait sits directly under the address, where it used to hang
+          off the bottom of the whole hero.
+
+          Capped, or it stretches to the full column and the portrait floats
+          in the middle of a very wide, very short card. The sample stands in
+          when the roster is empty or unreachable — the showcase renders
+          nothing at all with no brokers, which left a gap here.
+        */}
+        <div className="mx-auto mt-6 w-full max-w-[17rem]">
+          {brokers.length > 0 ? (
+            <BrokerShowcase brokers={brokers} />
+          ) : (
+            <SampleBroker />
+          )}
+        </div>
+
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <Link to="/mint" className="btn btn-primary px-5 py-2.5 text-xs">
             Mint a broker
@@ -66,13 +84,6 @@ export function Hero({ brokers }: { brokers: readonly Broker[] }) {
             How it works
           </Link>
         </div>
-      </div>
-
-      {/* Capped, or the showcase stretches to the full column and the 168px
-          portrait floats in the middle of a very wide, very short card.
-          Centred in the column rather than left-aligned under the copy. */}
-      <div className="mx-auto w-full max-w-[17rem]">
-        <BrokerShowcase brokers={brokers} />
       </div>
     </section>
   )
